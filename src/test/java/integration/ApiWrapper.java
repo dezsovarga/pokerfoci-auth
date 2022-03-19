@@ -1,10 +1,10 @@
 package integration;
 
+import com.dezso.varga.pokerfoci.authentication.dto.RegisterRequest;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
 import java.util.Map;
 
 /**
@@ -23,8 +23,7 @@ public class ApiWrapper {
         headers.clear();
         headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
         ResponseEntity<String> registerResponse = callApi(path, port, headers, jsonBody, HttpMethod.POST);
-        String decodedResponse = new String(Base64.decodeBase64(registerResponse.getBody().getBytes()));
-        return mapper.readValue(decodedResponse, Map.class).get("token").toString();
+        return mapper.readValue(registerResponse.getBody(), RegisterRequest.class).getConfirmToken();
     }
 
     public ResponseEntity<String> callApi(String path, int port, HttpHeaders headers, String jsonBody, HttpMethod httpMethod) {
@@ -41,8 +40,7 @@ public class ApiWrapper {
     public ResponseEntity<String> confirmUser(String path, int port, String confirmToken) throws Exception {
         headers.clear();
         headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-        headers.add(HttpHeaders.AUTHORIZATION, confirmToken);
-        ResponseEntity<String> confirmResponse = callApi(path, port, headers, null, HttpMethod.GET);
+        ResponseEntity<String> confirmResponse = callApi(path+confirmToken, port, headers, null, HttpMethod.GET);
         return confirmResponse;
     }
 

@@ -1,22 +1,29 @@
-package com.dezso.varga.pokerfoci.authentication.authentication.services;
+package com.dezso.varga.pokerfoci.authentication.services;
 
 import com.dezso.varga.pokerfoci.authentication.authentication.utils.AuthUtils;
-import com.dezso.varga.pokerfoci.authentication.authentication.domain.Account;
-import com.dezso.varga.pokerfoci.authentication.authentication.domain.RegisterRequest;
-import com.dezso.varga.pokerfoci.authentication.authentication.repositories.AccountRepository;
+import com.dezso.varga.pokerfoci.authentication.domain.Account;
+import com.dezso.varga.pokerfoci.authentication.dto.RegisterRequest;
+import com.dezso.varga.pokerfoci.authentication.repository.AccountRepository;
 import com.dezso.varga.pokerfoci.authentication.exeptions.AuthExeption;
 import com.dezso.varga.pokerfoci.authentication.exeptions.BgException;
 import com.dezso.varga.pokerfoci.authentication.exeptions.UserAlreadyExistsException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 @Service
+@AllArgsConstructor
 public class AuthenticationService {
 
-    @Autowired
     private AccountRepository accountRepository;
+
+    public URL generateConfirmationLink(String confirmToken) throws MalformedURLException {
+        return new URL("http://localhost:8081/account/register/confirm/"+confirmToken);
+    }
 
     public Account login(String authHeader) throws Exception {
         Account credentials = AuthUtils.extractAccountFromBasicToken(authHeader);
@@ -44,10 +51,8 @@ public class AuthenticationService {
 
     public String getConfirmationToken(RegisterRequest registerRequest) throws Exception{
         if (registerRequest == null
-                || registerRequest.getAccount().getFirstName() == null
-                || registerRequest.getAccount().getFirstName().trim().isEmpty()
-                || registerRequest.getAccount().getLastName() == null
-                || registerRequest.getAccount().getLastName().trim().isEmpty()
+                  || registerRequest.getAccount().getUsername() == null
+                  || registerRequest.getAccount().getUsername().trim().isEmpty()
                 || registerRequest.getAccount().getEmail() == null
                 || registerRequest.getAccount().getEmail().trim().isEmpty()
                 || registerRequest.getAccount().getPassword() == null

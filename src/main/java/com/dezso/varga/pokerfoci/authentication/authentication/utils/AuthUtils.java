@@ -1,10 +1,11 @@
 package com.dezso.varga.pokerfoci.authentication.authentication.utils;
 
-import com.dezso.varga.pokerfoci.authentication.authentication.domain.Account;
-import com.dezso.varga.pokerfoci.authentication.authentication.domain.RegisterRequest;
-import com.dezso.varga.pokerfoci.authentication.authentication.domain.Role;
+import com.dezso.varga.pokerfoci.authentication.domain.Account;
+import com.dezso.varga.pokerfoci.authentication.dto.RegisterRequest;
+import com.dezso.varga.pokerfoci.authentication.domain.Role;
 import com.dezso.varga.pokerfoci.authentication.exeptions.BgException;
 import com.dezso.varga.pokerfoci.authentication.exeptions.ConfirmTokenExpiredException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -44,6 +45,11 @@ public class AuthUtils {
         return Base64.encodeBase64URLSafeString(objectMapper.writeValueAsBytes(fields));
     }
 
+    public static String decodeConfirmToken(String confirmToken) throws JsonProcessingException {
+        String confirmTokenDecoded = new String(org.apache.commons.codec.binary.Base64.decodeBase64(confirmToken));
+        return objectMapper.readValue(confirmTokenDecoded, Map.class).get("token").toString();
+    }
+
     public static String generateBearerToken(Account account) throws Exception{
         String email = account.getEmail();
         Date expirationTime = new Date(System.currentTimeMillis() + LOGIN_EXPIRATION_TIME);
@@ -62,6 +68,7 @@ public class AuthUtils {
     public static Account validateConfirmToken(String confirmToken) throws Exception {
         Claims claims;
         try {
+            confirmToken = decodeConfirmToken(confirmToken);
             claims = Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(confirmToken).getBody();
         } catch (Exception ex) {
             throw new ConfirmTokenExpiredException("Confirmation token expired or invalid", HttpStatus.PRECONDITION_FAILED.value());

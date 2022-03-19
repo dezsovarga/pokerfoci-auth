@@ -20,7 +20,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers("/account/login")
-                .antMatchers("/account/register/confirm")
+                .antMatchers("/account/register/confirm/**")
                 .antMatchers("/account/register")
                 .antMatchers("/ws/**");
     }

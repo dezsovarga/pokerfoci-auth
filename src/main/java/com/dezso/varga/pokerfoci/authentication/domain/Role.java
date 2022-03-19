@@ -1,7 +1,6 @@
-package com.dezso.varga.pokerfoci.authentication.authentication.domain;
+package com.dezso.varga.pokerfoci.authentication.domain;
 
 import javax.persistence.*;
-import java.util.Set;
 
 /**
  * Created by dezso on 01.07.2017.

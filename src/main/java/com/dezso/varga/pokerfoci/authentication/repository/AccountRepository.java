@@ -1,6 +1,6 @@
-package com.dezso.varga.pokerfoci.authentication.authentication.repositories;
+package com.dezso.varga.pokerfoci.authentication.repository;
 
-import com.dezso.varga.pokerfoci.authentication.authentication.domain.Account;
+import com.dezso.varga.pokerfoci.authentication.domain.Account;
 import org.springframework.data.repository.CrudRepository;
 
 /**
