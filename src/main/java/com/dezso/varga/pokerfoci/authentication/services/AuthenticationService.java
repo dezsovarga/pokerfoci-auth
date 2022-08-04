@@ -2,7 +2,7 @@ package com.dezso.varga.pokerfoci.authentication.services;
 
 import com.dezso.varga.pokerfoci.authentication.authentication.utils.AuthUtils;
 import com.dezso.varga.pokerfoci.authentication.domain.Account;
-import com.dezso.varga.pokerfoci.authentication.dto.RegisterRequest;
+import com.dezso.varga.pokerfoci.authentication.dto.RegisterRequestDto;
 import com.dezso.varga.pokerfoci.authentication.repository.AccountRepository;
 import com.dezso.varga.pokerfoci.authentication.exeptions.AuthExeption;
 import com.dezso.varga.pokerfoci.authentication.exeptions.BgException;
@@ -49,23 +49,23 @@ public class AuthenticationService {
         return account;
     }
 
-    public String getConfirmationToken(RegisterRequest registerRequest) throws Exception{
-        if (registerRequest == null
-                  || registerRequest.getAccount().getUsername() == null
-                  || registerRequest.getAccount().getUsername().trim().isEmpty()
-                || registerRequest.getAccount().getEmail() == null
-                || registerRequest.getAccount().getEmail().trim().isEmpty()
-                || registerRequest.getAccount().getPassword() == null
-                || registerRequest.getAccount().getPassword().trim().isEmpty()) {
+    public String getConfirmationToken(RegisterRequestDto registerRequestDto) throws Exception{
+        if (registerRequestDto == null
+                  || registerRequestDto.getAccountDto().getUsername() == null
+                  || registerRequestDto.getAccountDto().getUsername().trim().isEmpty()
+                || registerRequestDto.getAccountDto().getEmail() == null
+                || registerRequestDto.getAccountDto().getEmail().trim().isEmpty()
+                || registerRequestDto.getAccountDto().getPassword() == null
+                || registerRequestDto.getAccountDto().getPassword().trim().isEmpty()) {
             throw new BgException("Missing or invalid mandatory fields at registration",
                     HttpStatus.PRECONDITION_FAILED.value());
         }
-        Account existingAccount = accountRepository.findByEmail(registerRequest.getAccount().getEmail().trim());
+        Account existingAccount = accountRepository.findByEmail(registerRequestDto.getAccountDto().getEmail().trim());
         if (existingAccount != null) {
             throw new UserAlreadyExistsException("Account already exists", HttpStatus.CONFLICT.value());
         }
 
-        return AuthUtils.generateRegisterConfirmationToken(registerRequest);
+        return AuthUtils.generateRegisterConfirmationToken(registerRequestDto);
     }
 
     public BCryptPasswordEncoder getPasswordEncoder() {

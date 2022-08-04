@@ -1,6 +1,6 @@
 package com.dezso.varga.pokerfoci.authentication.domain;
 
-import com.dezso.varga.pokerfoci.authentication.dto.RegisterRequest;
+import com.dezso.varga.pokerfoci.authentication.dto.RegisterRequestDto;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -30,11 +30,10 @@ public class Account {
 		this.roles = roles;
 	}
 
-	public Account(RegisterRequest registerRequest) {
-		this.firstName = registerRequest.getAccount().getFirstName();
-		this.lastName = registerRequest.getAccount().getLastName();
-		this.email = registerRequest.getAccount().getEmail();
-		this.password = registerRequest.getAccount().getPassword();
+	public Account(RegisterRequestDto registerRequestDto) {
+		this.username = registerRequestDto.getAccountDto().getUsername();
+		this.email = registerRequestDto.getAccountDto().getEmail();
+		this.password = registerRequestDto.getAccountDto().getPassword();
 	}
 
 	public Account(String username, String email, String password) {

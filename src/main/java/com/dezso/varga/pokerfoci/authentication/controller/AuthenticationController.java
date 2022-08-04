@@ -4,7 +4,7 @@ import com.dezso.varga.pokerfoci.authentication.authentication.utils.AuthUtils;
 import com.dezso.varga.pokerfoci.authentication.services.AuthenticationService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import com.dezso.varga.pokerfoci.authentication.dto.RegisterRequest;
+import com.dezso.varga.pokerfoci.authentication.dto.RegisterRequestDto;
 
 @CrossOrigin(origins="http://localhost:3000")
 @RestController
@@ -15,10 +15,10 @@ public class AuthenticationController {
 	private AuthenticationService authenticationService;
 
 	@RequestMapping(method=RequestMethod.POST,value="/register")
-	public RegisterRequest signup(@RequestBody RegisterRequest registerRequest) throws Exception{
+	public RegisterRequestDto signup(@RequestBody RegisterRequestDto registerRequest) throws Exception{
 		String confirmationToken = authenticationService.getConfirmationToken(registerRequest);
 		String confirmationLink = authenticationService.generateConfirmationLink(confirmationToken).toString();
-		return RegisterRequest.builder().verificationLink(confirmationLink).confirmToken(confirmationToken).build();
+		return RegisterRequestDto.builder().verificationLink(confirmationLink).confirmToken(confirmationToken).build();
 	}
 
 	@GetMapping("/register/confirm/{confirmToken}")

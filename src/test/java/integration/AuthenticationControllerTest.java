@@ -2,7 +2,8 @@ package integration;
 
 import com.dezso.varga.pokerfoci.authentication.PokerfociAuthMain;
 import com.dezso.varga.pokerfoci.authentication.domain.Account;
-import com.dezso.varga.pokerfoci.authentication.dto.RegisterRequest;
+import com.dezso.varga.pokerfoci.authentication.dto.AccountDto;
+import com.dezso.varga.pokerfoci.authentication.dto.RegisterRequestDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -48,12 +49,12 @@ public class AuthenticationControllerTest {
 
     String randomEmail = RandomStringUtils.randomAlphabetic(10)+"@varga.com";
     String password = "password";
-    Account account = new Account("username", randomEmail, password);
+    AccountDto accountDto = AccountDto.builder().username("username").email(randomEmail).password(password).build();
 
     @Test
     public void testUserLogin() throws Exception {
 
-        this.registerAccount(account);
+        this.registerAccount(accountDto);
 
         //Login user
         String basicAuthToken = BASIC + new String(Base64.encodeBase64(String.valueOf(randomEmail+":"+password).getBytes()));
@@ -62,8 +63,8 @@ public class AuthenticationControllerTest {
 
     }
 
-    private String registerAccount(Account account) throws Exception{
-        RegisterRequest requestBody = RegisterRequest.builder().account(account).build();
+    private String registerAccount(AccountDto accountDto) throws Exception{
+        RegisterRequestDto requestBody = RegisterRequestDto.builder().accountDto(accountDto).build();
         String jsonBody = mapper.writeValueAsString(requestBody);
 
         String confirmToken = apiWrapper.registerUser("/account/register", port, jsonBody);
@@ -94,7 +95,7 @@ public class AuthenticationControllerTest {
 
         //User registration
 
-        RegisterRequest requestBody = RegisterRequest.builder().account(account).build();
+        RegisterRequestDto requestBody = RegisterRequestDto.builder().accountDto(accountDto).build();
         String jsonBody = mapper.writeValueAsString(requestBody);
 
         String confirmToken = apiWrapper.registerUser("/account/register", port, jsonBody);

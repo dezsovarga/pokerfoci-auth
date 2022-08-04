@@ -1,7 +1,7 @@
 package com.dezso.varga.pokerfoci.authentication.authentication.utils;
 
 import com.dezso.varga.pokerfoci.authentication.domain.Account;
-import com.dezso.varga.pokerfoci.authentication.dto.RegisterRequest;
+import com.dezso.varga.pokerfoci.authentication.dto.RegisterRequestDto;
 import com.dezso.varga.pokerfoci.authentication.domain.Role;
 import com.dezso.varga.pokerfoci.authentication.exeptions.BgException;
 import com.dezso.varga.pokerfoci.authentication.exeptions.ConfirmTokenExpiredException;
@@ -29,8 +29,8 @@ public class AuthUtils {
     public static final String BASIC_TOKEN = "Basic ";
     public static final String BASIC_AUTH_ENCODER_SEPARATOR = ":";
 
-    public static String generateRegisterConfirmationToken(RegisterRequest registerRequest) throws Exception{
-        String email = registerRequest.getAccount().getEmail();
+    public static String generateRegisterConfirmationToken(RegisterRequestDto registerRequest) throws Exception{
+        String email = registerRequest.getAccountDto().getEmail();
         Date expirationTime = new Date(System.currentTimeMillis() + CONFIRMATION_EXPIRATION_TIME);
         String request = objectMapper.writeValueAsString(registerRequest);
         String jwtToken = Jwts.builder().claim("perm",request)
@@ -74,7 +74,7 @@ public class AuthUtils {
             throw new ConfirmTokenExpiredException("Confirmation token expired or invalid", HttpStatus.PRECONDITION_FAILED.value());
         }
 
-        RegisterRequest initialRequest = objectMapper.readValue(claims.get("perm").toString(), RegisterRequest.class);
+        RegisterRequestDto initialRequest = objectMapper.readValue(claims.get("perm").toString(), RegisterRequestDto.class);
         Set roles = new HashSet();
         roles.add(new Role(claims.get("roles").toString()));
         Account account = new Account(initialRequest);

@@ -1,6 +1,6 @@
 package integration;
 
-import com.dezso.varga.pokerfoci.authentication.dto.RegisterRequest;
+import com.dezso.varga.pokerfoci.authentication.dto.RegisterRequestDto;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
@@ -23,7 +23,7 @@ public class ApiWrapper {
         headers.clear();
         headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
         ResponseEntity<String> registerResponse = callApi(path, port, headers, jsonBody, HttpMethod.POST);
-        return mapper.readValue(registerResponse.getBody(), RegisterRequest.class).getConfirmToken();
+        return mapper.readValue(registerResponse.getBody(), RegisterRequestDto.class).getConfirmToken();
     }
 
     public ResponseEntity<String> callApi(String path, int port, HttpHeaders headers, String jsonBody, HttpMethod httpMethod) {

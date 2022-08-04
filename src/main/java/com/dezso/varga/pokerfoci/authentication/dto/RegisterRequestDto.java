@@ -1,6 +1,5 @@
 package com.dezso.varga.pokerfoci.authentication.dto;
 
-import com.dezso.varga.pokerfoci.authentication.domain.Account;
 import lombok.*;
 
 @Getter
@@ -8,9 +7,9 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class RegisterRequest {
+public class RegisterRequestDto {
 	
-	private Account account;
+	private AccountDto accountDto;
 	private String verificationLink;
 	private String confirmToken;
 
