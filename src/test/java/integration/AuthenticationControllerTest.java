@@ -49,7 +49,12 @@ public class AuthenticationControllerTest {
 
     String randomEmail = RandomStringUtils.randomAlphabetic(10)+"@varga.com";
     String password = "password";
-    AccountDto accountDto = AccountDto.builder().username("username").email(randomEmail).password(password).build();
+    AccountDto accountDto = AccountDto.builder()
+            .username("username")
+            .email(randomEmail)
+            .password(password)
+            .confirmPassword(password)
+            .build();
 
     @Test
     public void testUserLogin() throws Exception {
@@ -57,7 +62,7 @@ public class AuthenticationControllerTest {
         this.registerAccount(accountDto);
 
         //Login user
-        String basicAuthToken = BASIC + new String(Base64.encodeBase64(String.valueOf(randomEmail+":"+password).getBytes()));
+        String basicAuthToken = BASIC + new String(Base64.encodeBase64((randomEmail + ":" + password).getBytes()));
         String authToken = apiWrapper.loginUser(port, basicAuthToken);
         assertNotNull(authToken);
 

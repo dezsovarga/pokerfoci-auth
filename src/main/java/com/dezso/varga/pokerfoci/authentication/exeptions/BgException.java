@@ -26,4 +26,8 @@ public class BgException extends Exception {
         errorBody.put("code", String.valueOf(statusCode));
         return  errorBody;
     }
+
+    public int getStatusCode() {
+        return statusCode;
+    }
 }
