@@ -7,7 +7,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ConfirmTokenResponseDto {
+public class TokenInfoResponseDto {
 
     private String username;
     private String bearerToken;

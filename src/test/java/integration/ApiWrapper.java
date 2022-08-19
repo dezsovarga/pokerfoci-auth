@@ -1,6 +1,7 @@
 package integration;
 
 import com.dezso.varga.pokerfoci.authentication.dto.RegisterRequestDto;
+import com.dezso.varga.pokerfoci.authentication.dto.TokenInfoResponseDto;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
@@ -50,8 +51,8 @@ public class ApiWrapper {
         headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
         headers.add(HttpHeaders.AUTHORIZATION, basicAuthToken);
         ResponseEntity<String> authTokenResponse = callApi(LOGIN_PATH, port, headers, null, HttpMethod.POST);
-        String decodedResponse = new String(Base64.decodeBase64(authTokenResponse.getBody().getBytes()));
+        String bearerToken = mapper.readValue(authTokenResponse.getBody(), TokenInfoResponseDto.class).getBearerToken();
+        String decodedResponse = new String(Base64.decodeBase64(bearerToken));
         return mapper.readValue(decodedResponse, Map.class).get("token").toString();
-
     }
 }
