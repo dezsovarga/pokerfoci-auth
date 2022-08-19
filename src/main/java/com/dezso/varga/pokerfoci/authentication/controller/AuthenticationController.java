@@ -1,6 +1,8 @@
 package com.dezso.varga.pokerfoci.authentication.controller;
 
 import com.dezso.varga.pokerfoci.authentication.authentication.utils.AuthUtils;
+import com.dezso.varga.pokerfoci.authentication.domain.Account;
+import com.dezso.varga.pokerfoci.authentication.dto.ConfirmTokenResponseDto;
 import com.dezso.varga.pokerfoci.authentication.services.AuthenticationService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -22,9 +24,13 @@ public class AuthenticationController {
 	}
 
 	@GetMapping("/register/confirm/{confirmToken}")
-	public String confirm(@PathVariable String confirmToken) throws Exception {
+	public ConfirmTokenResponseDto confirm(@PathVariable String confirmToken) throws Exception {
 
-		return AuthUtils.generateBearerToken(authenticationService.saveAccount(confirmToken));
+
+		Account account = authenticationService.saveAccount(confirmToken);
+		String bearerToken = AuthUtils.generateBearerToken(account);
+
+		return ConfirmTokenResponseDto.builder().username(account.getUsername()).bearerToken(bearerToken).build();
 	}
 
 	@RequestMapping(method=RequestMethod.POST, value="/login")

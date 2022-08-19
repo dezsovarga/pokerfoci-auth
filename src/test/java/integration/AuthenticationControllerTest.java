@@ -1,8 +1,8 @@
 package integration;
 
 import com.dezso.varga.pokerfoci.authentication.PokerfociAuthMain;
-import com.dezso.varga.pokerfoci.authentication.domain.Account;
 import com.dezso.varga.pokerfoci.authentication.dto.AccountDto;
+import com.dezso.varga.pokerfoci.authentication.dto.ConfirmTokenResponseDto;
 import com.dezso.varga.pokerfoci.authentication.dto.RegisterRequestDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.codec.binary.Base64;
@@ -77,7 +77,8 @@ public class AuthenticationControllerTest {
 
         //User confirmation
         ResponseEntity<String> confirmResponse = apiWrapper.confirmUser("/account/register/confirm/", port, confirmToken);
-        String decodedConfirmResponse = new String(Base64.decodeBase64(confirmResponse.getBody().getBytes()));
+        String bearerToken = mapper.readValue(confirmResponse.getBody(), ConfirmTokenResponseDto.class).getBearerToken();
+        String decodedConfirmResponse = new String(Base64.decodeBase64(bearerToken));
         String authToken = mapper.readValue(decodedConfirmResponse, Map.class).get("token").toString();
         return authToken;
     }
@@ -108,7 +109,8 @@ public class AuthenticationControllerTest {
 
         //User confirmation
         ResponseEntity<String> confirmResponse = apiWrapper.confirmUser("/account/register/confirm/", port, confirmToken);
-        String decodedConfirmResponse = new String(Base64.decodeBase64(confirmResponse.getBody().getBytes()));
+        String bearerToken = mapper.readValue(confirmResponse.getBody(), ConfirmTokenResponseDto.class).getBearerToken();
+        String decodedConfirmResponse = new String(Base64.decodeBase64(bearerToken));
         String authToken = mapper.readValue(decodedConfirmResponse, Map.class).get("token").toString();
         assertNotNull(authToken);
 

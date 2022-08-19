@@ -23,7 +23,7 @@ public class AuthenticationServiceImpl implements AuthenticationService{
 
     @Override
     public URL generateConfirmationLink(String confirmToken) throws MalformedURLException {
-        return new URL("http://localhost:8081/account/register/confirm/"+confirmToken);
+        return new URL("http://localhost:3000/activate-account/"+confirmToken);
     }
 
     @Override
