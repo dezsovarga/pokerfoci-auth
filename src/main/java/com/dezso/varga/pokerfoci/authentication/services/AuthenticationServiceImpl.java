@@ -2,6 +2,7 @@ package com.dezso.varga.pokerfoci.authentication.services;
 
 import com.dezso.varga.pokerfoci.authentication.authentication.utils.AuthUtils;
 import com.dezso.varga.pokerfoci.authentication.domain.Account;
+import com.dezso.varga.pokerfoci.authentication.dto.ChangePasswordRequestDto;
 import com.dezso.varga.pokerfoci.authentication.dto.RegisterRequestDto;
 import com.dezso.varga.pokerfoci.authentication.repository.AccountRepository;
 import com.dezso.varga.pokerfoci.authentication.exeptions.AuthExeption;
@@ -85,5 +86,19 @@ public class AuthenticationServiceImpl implements AuthenticationService{
     @Override
     public BCryptPasswordEncoder getPasswordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Override
+    public boolean changePassword(ChangePasswordRequestDto changePasswordRequestDto) throws BgException {
+        Account existingAccount = accountRepository.findByEmail(changePasswordRequestDto.getEmail());
+        boolean isValidAccount = getPasswordEncoder().matches(changePasswordRequestDto.getOldPassword(), existingAccount.getPassword());
+        if (isValidAccount) {
+            existingAccount.setPassword(getPasswordEncoder().encode(changePasswordRequestDto.getNewPassword()));
+            accountRepository.save(existingAccount);
+            return true;
+        } else {
+            throw new BgException("Invalid request. Authorization failed for changing password",
+                    HttpStatus.PRECONDITION_FAILED.value());
+        }
     }
 }

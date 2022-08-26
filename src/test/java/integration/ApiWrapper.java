@@ -19,6 +19,8 @@ public class ApiWrapper {
     HttpHeaders headers = new HttpHeaders();
 
     private static final String LOGIN_PATH = "/account/login";
+    private static final String CHANGE_PASSWORD_PATH = "/account/change-password";
+
 
     public String registerUser(String path, int port, String jsonBody) throws Exception{
         headers.clear();
@@ -54,5 +56,16 @@ public class ApiWrapper {
         String bearerToken = mapper.readValue(authTokenResponse.getBody(), TokenInfoResponseDto.class).getBearerToken();
         String decodedResponse = new String(Base64.decodeBase64(bearerToken));
         return mapper.readValue(decodedResponse, Map.class).get("token").toString();
+    }
+
+    public ResponseEntity<String> changePassword(int port, String bearerToken, String changePasswordRequestBody) throws Exception{
+        headers.clear();
+        headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
+        headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + bearerToken);
+        ResponseEntity<String> changePasswordResponse =
+                callApi(CHANGE_PASSWORD_PATH, port, headers, changePasswordRequestBody, HttpMethod.POST);
+        return changePasswordResponse;
+
     }
 }

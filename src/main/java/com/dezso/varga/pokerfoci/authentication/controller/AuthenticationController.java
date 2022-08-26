@@ -2,9 +2,11 @@ package com.dezso.varga.pokerfoci.authentication.controller;
 
 import com.dezso.varga.pokerfoci.authentication.authentication.utils.AuthUtils;
 import com.dezso.varga.pokerfoci.authentication.domain.Account;
+import com.dezso.varga.pokerfoci.authentication.dto.ChangePasswordRequestDto;
 import com.dezso.varga.pokerfoci.authentication.dto.TokenInfoResponseDto;
 import com.dezso.varga.pokerfoci.authentication.services.AuthenticationService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.dezso.varga.pokerfoci.authentication.dto.RegisterRequestDto;
 
@@ -34,10 +36,18 @@ public class AuthenticationController {
 	}
 
 	@RequestMapping(method=RequestMethod.POST, value="/login")
-	public TokenInfoResponseDto login(@RequestHeader (value="Authorization", required=false) String authHeader) throws Exception {
+	public TokenInfoResponseDto login(@RequestHeader ("Authorization") String authHeader) throws Exception {
 
 		Account account = authenticationService.login(authHeader);
 		String bearerToken = AuthUtils.generateBearerToken(account);
 		return TokenInfoResponseDto.builder().username(account.getUsername()).bearerToken(bearerToken).build();
+	}
+
+	@RequestMapping(method=RequestMethod.POST, value="/change-password")
+	public ResponseEntity<Object> changePassword(@RequestBody ChangePasswordRequestDto changePasswordRequestDto) throws Exception {
+
+		//TODO: add validation for change password
+		authenticationService.changePassword(changePasswordRequestDto);
+		return ResponseEntity.ok().build();
 	}
 }

@@ -1,25 +1,29 @@
 package integration;
 
 import com.dezso.varga.pokerfoci.authentication.PokerfociAuthMain;
+import com.dezso.varga.pokerfoci.authentication.domain.Account;
 import com.dezso.varga.pokerfoci.authentication.dto.AccountDto;
+import com.dezso.varga.pokerfoci.authentication.dto.ChangePasswordRequestDto;
 import com.dezso.varga.pokerfoci.authentication.dto.TokenInfoResponseDto;
 import com.dezso.varga.pokerfoci.authentication.dto.RegisterRequestDto;
+import com.dezso.varga.pokerfoci.authentication.repository.AccountRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.*;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.nio.charset.Charset;
 import java.util.Map;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.*;
 
 /**
  * Created by dezso on 13.12.2017.
@@ -31,6 +35,9 @@ public class AuthenticationControllerTest {
 
     @LocalServerPort
     private int port;
+
+    @Autowired
+    private AccountRepository accountRepository;
 
     ObjectMapper mapper = new ObjectMapper();
 
@@ -126,5 +133,34 @@ public class AuthenticationControllerTest {
         responseMap = mapper.readValue(confirmResponse.getBody(), Map.class);
         assertEquals("Confirmation token expired or invalid", responseMap.get("reason"));
         assertEquals(HttpStatus.PRECONDITION_FAILED, confirmResponse.getStatusCode());
+    }
+
+    @Test
+    public void testChangePassword() throws Exception {
+
+        this.registerAccount(accountDto);
+
+        //Login user
+        String basicAuthToken = BASIC + new String(Base64.encodeBase64((randomEmail + ":" + password).getBytes()));
+        String bearerToken = apiWrapper.loginUser(port, basicAuthToken);
+
+        ChangePasswordRequestDto changePasswordRequestDto =
+                ChangePasswordRequestDto.builder().email(randomEmail).oldPassword(password).newPassword("newPassword").build();
+        String changePasswordRequestBody = mapper.writeValueAsString(changePasswordRequestDto);
+
+        //change password
+        ResponseEntity<String> response = apiWrapper.changePassword(port, bearerToken, changePasswordRequestBody);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        Account account = accountRepository.findByEmail(randomEmail);
+        assertTrue(new BCryptPasswordEncoder().matches("newPassword", account.getPassword()));
+
+        //change with invalid password
+        changePasswordRequestDto.setOldPassword("invalidOldPassword");
+        response = apiWrapper.changePassword(port, bearerToken, changePasswordRequestBody);
+
+        Map<String, String> responseMap = mapper.readValue(response.getBody(), Map.class);
+        assertEquals("Invalid request. Authorization failed for changing password", responseMap.get("reason"));
+        assertEquals(HttpStatus.PRECONDITION_FAILED, response.getStatusCode());
     }
 }
