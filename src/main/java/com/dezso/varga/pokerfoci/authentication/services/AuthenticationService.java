@@ -4,7 +4,6 @@ import com.dezso.varga.pokerfoci.authentication.domain.Account;
 import com.dezso.varga.pokerfoci.authentication.dto.ChangePasswordRequestDto;
 import com.dezso.varga.pokerfoci.authentication.dto.RegisterRequestDto;
 import com.dezso.varga.pokerfoci.authentication.exeptions.BgException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -20,8 +19,6 @@ public interface AuthenticationService {
     void validateRegistrationRequest(RegisterRequestDto registerRequestDto) throws Exception;
 
     String getConfirmationToken(RegisterRequestDto registerRequestDto) throws Exception;
-
-    BCryptPasswordEncoder getPasswordEncoder();
 
     boolean changePassword(ChangePasswordRequestDto changePasswordRequestDto) throws BgException;
 }

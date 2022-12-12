@@ -15,13 +15,13 @@ import org.springframework.stereotype.Service;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.concurrent.TimeUnit;
 
 @Service
 @AllArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService{
 
     private AccountRepository accountRepository;
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
     public URL generateConfirmationLink(String confirmToken) throws MalformedURLException {
@@ -32,7 +32,7 @@ public class AuthenticationServiceImpl implements AuthenticationService{
     public Account login(String authHeader) throws Exception {
         Account credentials = AuthUtils.extractAccountFromBasicToken(authHeader);
         Account existingAccount = accountRepository.findByEmail(credentials.getEmail());
-        if (existingAccount == null || !getPasswordEncoder().matches(credentials.getPassword(), existingAccount.getPassword())) {
+        if (existingAccount == null || !bCryptPasswordEncoder.matches(credentials.getPassword(), existingAccount.getPassword())) {
             throw new AuthExeption("Invalid credentials. Please check your email and password.",
                     HttpStatus.UNAUTHORIZED.value());
         }
@@ -44,7 +44,6 @@ public class AuthenticationServiceImpl implements AuthenticationService{
         Account account = AuthUtils.validateConfirmToken(confirmToken);
         Account existingAccount = accountRepository.findByEmail(account.getEmail());
         if (existingAccount == null) {
-            BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
             String hashedPassword = bCryptPasswordEncoder.encode(account.getPassword());
             account.setPassword(hashedPassword);
             accountRepository.save(account);
@@ -85,16 +84,11 @@ public class AuthenticationServiceImpl implements AuthenticationService{
     }
 
     @Override
-    public BCryptPasswordEncoder getPasswordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Override
     public boolean changePassword(ChangePasswordRequestDto changePasswordRequestDto) throws BgException {
         Account existingAccount = accountRepository.findByEmail(changePasswordRequestDto.getEmail());
-        boolean isValidAccount = getPasswordEncoder().matches(changePasswordRequestDto.getOldPassword(), existingAccount.getPassword());
+        boolean isValidAccount = bCryptPasswordEncoder.matches(changePasswordRequestDto.getOldPassword(), existingAccount.getPassword());
         if (isValidAccount) {
-            existingAccount.setPassword(getPasswordEncoder().encode(changePasswordRequestDto.getNewPassword()));
+            existingAccount.setPassword(bCryptPasswordEncoder.encode(changePasswordRequestDto.getNewPassword()));
             accountRepository.save(existingAccount);
             return true;
         } else {

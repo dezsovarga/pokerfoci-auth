@@ -14,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import static org.mockito.ArgumentMatchers.anyString;
 
@@ -21,10 +22,12 @@ public class AuthenticationServiceImplTest {
 
     @Mock
     private AccountRepository accountRepository;
+    private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+
     private AutoCloseable closeable;
 
     @InjectMocks
-    private AuthenticationService authenticationService = new AuthenticationServiceImpl(accountRepository);
+    private AuthenticationService authenticationService = new AuthenticationServiceImpl(accountRepository, bCryptPasswordEncoder);
 
     private RegisterRequestDto registerRequestDto = createARegisterRequestDto();
 
