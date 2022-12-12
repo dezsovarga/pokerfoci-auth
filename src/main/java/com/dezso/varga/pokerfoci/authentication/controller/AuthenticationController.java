@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.dezso.varga.pokerfoci.authentication.dto.RegisterRequestDto;
 
+import javax.annotation.security.RolesAllowed;
+
 @CrossOrigin(origins="http://localhost:3000")
 @RestController
 @RequestMapping("account")
@@ -44,6 +46,7 @@ public class AuthenticationController {
 	}
 
 	@RequestMapping(method=RequestMethod.POST, value="/change-password")
+	@RolesAllowed("ROLE_USER")
 	public ResponseEntity<Object> changePassword(@RequestBody ChangePasswordRequestDto changePasswordRequestDto) throws Exception {
 
 		//TODO: add validation for change password

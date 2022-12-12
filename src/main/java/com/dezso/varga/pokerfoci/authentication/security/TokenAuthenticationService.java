@@ -1,18 +1,19 @@
 package com.dezso.varga.pokerfoci.authentication.security;
 
+import com.dezso.varga.pokerfoci.authentication.domain.Account;
+import com.dezso.varga.pokerfoci.authentication.domain.Role;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security
         .authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Date;
-
-import static java.util.Collections.emptyList;
+import java.util.*;
 
 @Service
 public class TokenAuthenticationService {
@@ -30,25 +31,49 @@ public class TokenAuthenticationService {
         res.addHeader(HEADER_STRING, TOKEN_PREFIX + " " + JWT);
     }
 
-    public Authentication getAuthentication(HttpServletRequest request) throws ServletException {
-        String token = request.getHeader(HEADER_STRING);
+    private Set<Role> getRoles(Claims claims) {
+        Set rolesSet = new HashSet();
+        String roles = (String) claims.get("roles");
+        roles = roles.replace("[", "").replace("]", "");
+        String[] roleNames = roles.split(",");
+
+        for (String aRoleName : roleNames) {
+            rolesSet.add(new Role(aRoleName));
+        }
+        return rolesSet;
+    }
+
+    private UserDetails getUserDetails(String token) {
+        Claims claims;
+        Set roles = new HashSet();
+        String email = "";
+        Long id = 0L;
+        String []subject;
+        Account account = new Account();
         if (token != null) {
             token = token.replace(TOKEN_PREFIX+" ", "");
-            String user = "";
+
             try {
-                user = Jwts.parser()
-                        .setSigningKey(SECRET)
-                        .parseClaimsJws(token)
-                        .getBody()
-                        .getSubject();
+                claims = Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token).getBody();
+                subject = claims.getSubject().split(",");
+                id = Long.parseLong(subject[0]);
+                email = subject[1];
+                roles = getRoles(claims);
             } catch(Exception ex) {
-//                throw new BgException("Authorization token expired or invalid", HttpStatus.UNAUTHORIZED.value());
                 return null;
             }
-            return user != null ?
-                    new UsernamePasswordAuthenticationToken(user, null, emptyList()) :
-                    null;
         }
-        return null;
+        account.setId(id);
+        account.setUsername(email);
+        account.setRoles(roles);
+        return account;
+    }
+
+    public UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) throws ServletException {
+        String token = request.getHeader(HEADER_STRING);
+        UserDetails userDetails = this.getUserDetails(token);
+        return userDetails.getUsername() != null ?
+                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities()) :
+                null;
     }
 }

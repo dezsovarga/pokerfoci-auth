@@ -4,9 +4,10 @@ package com.dezso.varga.pokerfoci.authentication.security;
  * Created by dezso on 07.12.2017.
  */
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import org.springframework.security.core.Authentication;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -28,7 +29,9 @@ public class JWTAuthenticationFilter extends BasicAuthenticationFilter {
                                  HttpServletResponse res,
                                  FilterChain filterChain)
             throws IOException, ServletException {
-        Authentication authentication = tokenAuthenticationService.getAuthentication(req);
+        UsernamePasswordAuthenticationToken authentication = tokenAuthenticationService.getAuthentication(req);
+        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(req));
+
         SecurityContextHolder.getContext()
                 .setAuthentication(authentication);
 

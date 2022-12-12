@@ -1,8 +1,8 @@
 package com.dezso.varga.pokerfoci.authentication.authentication.utils;
 
 import com.dezso.varga.pokerfoci.authentication.domain.Account;
-import com.dezso.varga.pokerfoci.authentication.dto.RegisterRequestDto;
 import com.dezso.varga.pokerfoci.authentication.domain.Role;
+import com.dezso.varga.pokerfoci.authentication.dto.RegisterRequestDto;
 import com.dezso.varga.pokerfoci.authentication.exeptions.BgException;
 import com.dezso.varga.pokerfoci.authentication.exeptions.ConfirmTokenExpiredException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -22,20 +22,20 @@ public class AuthUtils {
 
     private static ObjectMapper objectMapper = new ObjectMapper();
     static final long CONFIRMATION_EXPIRATION_TIME = 86_400_000; // 1 day
-    static final long LOGIN_EXPIRATION_TIME =14 * 86_400_000; // 14 day
+    static final long LOGIN_EXPIRATION_TIME = 14 * 86_400_000; // 14 day
 
-//    static final long EXPIRATION_TIME = 1_000; // 1 sec
+    //    static final long EXPIRATION_TIME = 1_000; // 1 sec
     private static final String SECRET_KEY = "secretkey";
     public static final String BASIC_TOKEN = "Basic ";
     public static final String BASIC_AUTH_ENCODER_SEPARATOR = ":";
 
-    public static String generateRegisterConfirmationToken(RegisterRequestDto registerRequest) throws Exception{
+    public static String generateRegisterConfirmationToken(RegisterRequestDto registerRequest) throws Exception {
         String email = registerRequest.getAccountDto().getEmail();
         Date expirationTime = new Date(System.currentTimeMillis() + CONFIRMATION_EXPIRATION_TIME);
         String request = objectMapper.writeValueAsString(registerRequest);
-        String jwtToken = Jwts.builder().claim("perm",request)
+        String jwtToken = Jwts.builder().claim("perm", request)
                 .setExpiration(expirationTime)
-                .setSubject(email).claim("roles", "user")
+                .setSubject(email).claim("roles", "ROLE_USER")
                 .setIssuedAt(new Date())
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
@@ -50,12 +50,13 @@ public class AuthUtils {
         return objectMapper.readValue(confirmTokenDecoded, Map.class).get("token").toString();
     }
 
-    public static String generateBearerToken(Account account) throws Exception{
+    public static String generateBearerToken(Account account) throws Exception {
         String email = account.getEmail();
         Date expirationTime = new Date(System.currentTimeMillis() + LOGIN_EXPIRATION_TIME);
         String jwtToken = Jwts.builder()
                 .setExpiration(expirationTime)
-                .setSubject(email).claim("roles", "user")
+                .setSubject(String.format("%s,%s", account.getId(), account.getEmail()))
+                .claim("roles", account.getRoles().toString())
                 .setIssuedAt(new Date())
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
@@ -82,7 +83,7 @@ public class AuthUtils {
         return account;
     }
 
-    public static Account extractAccountFromBasicToken(String authHeader) throws Exception{
+    public static Account extractAccountFromBasicToken(String authHeader) throws Exception {
         if (authHeader == null || authHeader.isEmpty()) {
             throw new BgException("Missing authorization header", HttpStatus.UNAUTHORIZED.value());
         }

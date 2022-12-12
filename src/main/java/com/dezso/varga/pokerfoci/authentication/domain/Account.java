@@ -1,19 +1,30 @@
 package com.dezso.varga.pokerfoci.authentication.domain;
 
 import com.dezso.varga.pokerfoci.authentication.dto.RegisterRequestDto;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 @Entity
-public class Account {
+public class Account implements UserDetails {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	private String username;
 	private String firstName;
 	private String lastName;
 	private String email;
 	private String password;
+
+	@ManyToMany(cascade = CascadeType.ALL)
+	@JoinTable(name = "account_role", joinColumns = @JoinColumn(name = "account_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private Set<Role> roles;
 
 	public Account() {
@@ -43,8 +54,7 @@ public class Account {
 		this.password = password;
 	}
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+
 	public Long getId() {
 		return id;
 	}
@@ -55,6 +65,26 @@ public class Account {
 
 	public String getUsername() {
 		return username;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return true;
 	}
 
 	public void setUsername(String username) {
@@ -73,21 +103,29 @@ public class Account {
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
+
 	public String getEmail() {
 		return email;
 	}
 	public void setEmail(String email) {
 		this.email = email;
 	}
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+			for (Role role : roles) {
+			authorities.add(new SimpleGrantedAuthority(role.getName()));
+		}
+		return authorities;
+	}
+
 	public String getPassword() {
 		return password;
 	}
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
-	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "account_role", joinColumns = @JoinColumn(name = "account_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
 
 	public Set<Role> getRoles() {
 		return roles;

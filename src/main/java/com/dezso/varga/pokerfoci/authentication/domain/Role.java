@@ -8,6 +8,8 @@ import javax.persistence.*;
 @Entity
 public class Role {
     private Long id;
+
+    @Column(nullable = false, length = 50, unique = true)
     private String name;
 
     public Role() {
@@ -34,5 +36,10 @@ public class Role {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return this.name;
     }
 }
