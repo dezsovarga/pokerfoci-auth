@@ -18,8 +18,8 @@ public class ApiWrapper {
     ObjectMapper mapper = new ObjectMapper();
     HttpHeaders headers = new HttpHeaders();
 
-    private static final String LOGIN_PATH = "/account/login";
-    private static final String CHANGE_PASSWORD_PATH = "/account/change-password";
+    public static final String LOGIN_PATH = "/account/login";
+    public static final String CHANGE_PASSWORD_PATH = "/account/change-password";
 
 
     public String registerUser(String path, int port, String jsonBody) throws Exception{

@@ -2,6 +2,7 @@ package com.dezso.varga.pokerfoci.authentication.controller;
 
 import com.dezso.varga.pokerfoci.authentication.authentication.utils.AuthUtils;
 import com.dezso.varga.pokerfoci.authentication.domain.Account;
+import com.dezso.varga.pokerfoci.authentication.domain.Role;
 import com.dezso.varga.pokerfoci.authentication.dto.ChangePasswordRequestDto;
 import com.dezso.varga.pokerfoci.authentication.dto.TokenInfoResponseDto;
 import com.dezso.varga.pokerfoci.authentication.services.AuthenticationService;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import com.dezso.varga.pokerfoci.authentication.dto.RegisterRequestDto;
 
 import javax.annotation.security.RolesAllowed;
+import java.util.stream.Collectors;
 
 @CrossOrigin(origins="http://localhost:3000")
 @RestController
@@ -34,7 +36,11 @@ public class AuthenticationController {
 		Account account = authenticationService.saveAccount(confirmToken);
 		String bearerToken = AuthUtils.generateBearerToken(account);
 
-		return TokenInfoResponseDto.builder().username(account.getUsername()).bearerToken(bearerToken).build();
+		return TokenInfoResponseDto.builder()
+				.username(account.getUsername())
+				.bearerToken(bearerToken)
+				.roles(account.getRoles().stream().map(Role::getName).collect(Collectors.toSet()))
+				.build();
 	}
 
 	@RequestMapping(method=RequestMethod.POST, value="/login")
@@ -42,7 +48,11 @@ public class AuthenticationController {
 
 		Account account = authenticationService.login(authHeader);
 		String bearerToken = AuthUtils.generateBearerToken(account);
-		return TokenInfoResponseDto.builder().username(account.getUsername()).bearerToken(bearerToken).build();
+		return TokenInfoResponseDto.builder()
+				.username(account.getUsername())
+				.bearerToken(bearerToken)
+				.roles(account.getRoles().stream().map(Role::getName).collect(Collectors.toSet()))
+				.build();
 	}
 
 	@RequestMapping(method=RequestMethod.POST, value="/change-password")

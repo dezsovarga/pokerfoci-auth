@@ -2,6 +2,7 @@ package integration;
 
 import com.dezso.varga.pokerfoci.authentication.PokerfociAuthMain;
 import com.dezso.varga.pokerfoci.authentication.domain.Account;
+import com.dezso.varga.pokerfoci.authentication.domain.Role;
 import com.dezso.varga.pokerfoci.authentication.dto.AccountDto;
 import com.dezso.varga.pokerfoci.authentication.dto.ChangePasswordRequestDto;
 import com.dezso.varga.pokerfoci.authentication.dto.TokenInfoResponseDto;
@@ -21,8 +22,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+import static integration.ApiWrapper.LOGIN_PATH;
 import static junit.framework.TestCase.*;
 
 /**
@@ -72,6 +77,25 @@ public class AuthenticationControllerTest {
         String basicAuthToken = BASIC + new String(Base64.encodeBase64((randomEmail + ":" + password).getBytes()));
         String authToken = apiWrapper.loginUser(port, basicAuthToken);
         assertNotNull(authToken);
+
+    }
+
+    @Test
+    public void testLoginTokenResponseContainsRoles() throws Exception {
+
+        this.registerAccount(accountDto);
+
+        //Login user
+        String basicAuthToken = BASIC + new String(Base64.encodeBase64((randomEmail + ":" + password).getBytes()));
+
+        headers.clear();
+        headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
+        headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+        headers.add(HttpHeaders.AUTHORIZATION, basicAuthToken);
+        ResponseEntity<String> authTokenResponse = apiWrapper.callApi(LOGIN_PATH, port, headers, null, HttpMethod.POST);
+        Set<String> roles = mapper.readValue(authTokenResponse.getBody(), TokenInfoResponseDto.class).getRoles();
+
+        assertEquals(Set.of("ROLE_USER"), roles);
 
     }
 
