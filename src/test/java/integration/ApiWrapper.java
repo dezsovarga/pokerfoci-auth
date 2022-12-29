@@ -1,7 +1,7 @@
 package integration;
 
-import com.dezso.varga.pokerfoci.authentication.dto.RegisterRequestDto;
-import com.dezso.varga.pokerfoci.authentication.dto.TokenInfoResponseDto;
+import com.dezso.varga.pokerfoci.dto.RegisterRequestDto;
+import com.dezso.varga.pokerfoci.dto.TokenInfoResponseDto;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
@@ -20,7 +20,7 @@ public class ApiWrapper {
 
     public static final String LOGIN_PATH = "/account/login";
     public static final String CHANGE_PASSWORD_PATH = "/account/change-password";
-
+    public static final String LIST_ACCOUNTS_FOR_ADMIN_PATH = "/admin/accounts";
 
     public String registerUser(String path, int port, String jsonBody) throws Exception{
         headers.clear();
@@ -32,9 +32,8 @@ public class ApiWrapper {
     public ResponseEntity<String> callApi(String path, int port, HttpHeaders headers, String jsonBody, HttpMethod httpMethod) {
 
         HttpEntity<String> entity = new HttpEntity<>(jsonBody, headers);
-        ResponseEntity<String> response = null;
 
-        response = restTemplate.exchange(
+        ResponseEntity<String> response = restTemplate.exchange(
                 "http://localhost:" + port + path, httpMethod, entity, String.class);
 
         return response;
@@ -67,5 +66,15 @@ public class ApiWrapper {
                 callApi(CHANGE_PASSWORD_PATH, port, headers, changePasswordRequestBody, HttpMethod.POST);
         return changePasswordResponse;
 
+    }
+
+    public ResponseEntity<String> getAccountsForAdmin(int port, String bearerToken) {
+        headers.clear();
+        headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
+        headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + bearerToken);
+        ResponseEntity<String> accountListResponse =
+                callApi(LIST_ACCOUNTS_FOR_ADMIN_PATH, port, headers, null, HttpMethod.GET);
+        return accountListResponse;
     }
 }
