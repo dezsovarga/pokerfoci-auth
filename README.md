@@ -1,2 +1,2 @@
-# backgammon_api
-backend solution for backgammon project
+# pokerfoci_auth_api
+pokerfoci auth api

@@ -9,6 +9,7 @@ import lombok.*;
 @Builder
 public class AccountForAdminDto {
 
+    private long id;
     private String username;
     private String email;
     private boolean isAdmin;

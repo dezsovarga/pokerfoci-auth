@@ -50,7 +50,7 @@ class AdminServiceImplTest {
                 "password",
                 true,
                 Set.of(new Role( "ROLE_ADMIN")));
-        Account anotherAccount = new Account(1L,
+        Account anotherAccount = new Account(2L,
                 "username",
                 "firstname",
                 "lastName",
@@ -64,8 +64,12 @@ class AdminServiceImplTest {
         Assert.assertFalse(accountList.isEmpty());
         assertTrue(accountList.get(0).isAdmin());
         assertTrue(accountList.get(0).isActive());
+        assertTrue(accountList.get(0).getId() != 0);
+
         assertFalse(accountList.get(1).isAdmin());
         assertFalse(accountList.get(1).isActive());
+        assertTrue(accountList.get(1).getId() != 0);
+
 
     }
 }

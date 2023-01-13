@@ -19,7 +19,6 @@ public class AdminController {
 
     @GetMapping("/accounts")
     public List<AccountForAdminDto> listAccounts() {
-
         return adminService.listAccounts();
     }
 }

@@ -14,6 +14,7 @@ public class AccountConverterImpl implements AccountConverter {
     public AccountForAdminDto fromAccountToAccountForAdminDto(Account account) {
         AccountForAdminDto accountForAdminDto =
                 AccountForAdminDto.builder()
+                        .id(account.getId())
                         .username(account.getUsername())
                         .email(account.getEmail())
                         .isActive(account.isActive()).build();
