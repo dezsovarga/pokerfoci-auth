@@ -20,10 +20,11 @@ public class Account implements UserDetails {
 	private String username;
 	private String email;
 	private String password;
+	private int skill;
 	private Boolean active = true;
 
-	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "account_role", joinColumns = @JoinColumn(name = "account_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "account_id")
 	private Set<Role> roles;
 
 	public Account() {
@@ -111,6 +112,14 @@ public class Account implements UserDetails {
 	}
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public int getSkill() {
+		return skill;
+	}
+
+	public void setSkill(int skill) {
+		this.skill = skill;
 	}
 
 	public boolean isActive() {
