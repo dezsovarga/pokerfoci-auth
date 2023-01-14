@@ -18,8 +18,6 @@ public class Account implements UserDetails {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	private String username;
-	private String firstName;
-	private String lastName;
 	private String email;
 	private String password;
 	private Boolean active = true;
@@ -33,11 +31,9 @@ public class Account implements UserDetails {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Account(Long id, String username, String firstName, String lastName, String email, String password, Boolean active, Set<Role> roles) {
+	public Account(Long id, String username, String email, String password, Boolean active, Set<Role> roles) {
 		this.id = id;
 		this.username = username;
-		this.firstName = firstName;
-		this.lastName = lastName;
 		this.email = email;
 		this.password = password;
 		this.active = active;
@@ -92,19 +88,6 @@ public class Account implements UserDetails {
 
 	public void setUsername(String username) {
 		this.username = username;
-	}
-
-	public String getFirstName() {
-		return firstName;
-	}
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-	public String getLastName() {
-		return lastName;
-	}
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
 	}
 
 	public String getEmail() {

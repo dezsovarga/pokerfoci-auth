@@ -39,8 +39,6 @@ public class AdminControllerTest extends BaseControllerTest {
     private Account aTestAccount() {
         return new Account(1L,
                 "username",
-                "firstname",
-                "lastName",
                 "email@varga.com",
                 passwordEncoder.encode("password"),
                 true,

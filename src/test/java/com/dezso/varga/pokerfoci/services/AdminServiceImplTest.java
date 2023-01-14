@@ -44,16 +44,12 @@ class AdminServiceImplTest {
     void listAccounts() {
         Account account = new Account(1L,
                 "username",
-                "firstname",
-                "lastName",
                 "email",
                 "password",
                 true,
                 Set.of(new Role( "ROLE_ADMIN")));
         Account anotherAccount = new Account(2L,
                 "username",
-                "firstname",
-                "lastName",
                 "email",
                 "password",
                 false,
