@@ -7,12 +7,11 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AccountForAdminDto {
+public class AddNewAccountDto {
 
-    private long id;
     private String username;
     private String email;
-    private boolean isAdmin;
-    private boolean isActive;
+    private String password;
+    private String confirmPassword;
     private int skill;
 }

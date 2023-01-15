@@ -2,6 +2,8 @@ package integration;
 
 import com.dezso.varga.pokerfoci.dto.RegisterRequestDto;
 import com.dezso.varga.pokerfoci.dto.TokenInfoResponseDto;
+import com.dezso.varga.pokerfoci.dto.admin.AddNewAccountDto;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
@@ -21,6 +23,8 @@ public class ApiWrapper {
     public static final String LOGIN_PATH = "/account/login";
     public static final String CHANGE_PASSWORD_PATH = "/account/change-password";
     public static final String LIST_ACCOUNTS_FOR_ADMIN_PATH = "/admin/accounts";
+    public static final String ADD_NEW_ACCOUNT_FOR_ADMIN_PATH = "/admin/account";
+
 
     public String registerUser(String path, int port, String jsonBody) throws Exception{
         headers.clear();
@@ -33,17 +37,14 @@ public class ApiWrapper {
 
         HttpEntity<String> entity = new HttpEntity<>(jsonBody, headers);
 
-        ResponseEntity<String> response = restTemplate.exchange(
+        return restTemplate.exchange(
                 "http://localhost:" + port + path, httpMethod, entity, String.class);
-
-        return response;
     }
 
     public ResponseEntity<String> confirmUser(String path, int port, String confirmToken) throws Exception {
         headers.clear();
         headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-        ResponseEntity<String> confirmResponse = callApi(path+confirmToken, port, headers, null, HttpMethod.GET);
-        return confirmResponse;
+        return callApi(path+confirmToken, port, headers, null, HttpMethod.GET);
     }
 
     public String loginUser(int port, String basicAuthToken) throws Exception{
@@ -62,9 +63,7 @@ public class ApiWrapper {
         headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
         headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
         headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + bearerToken);
-        ResponseEntity<String> changePasswordResponse =
-                callApi(CHANGE_PASSWORD_PATH, port, headers, changePasswordRequestBody, HttpMethod.POST);
-        return changePasswordResponse;
+        return callApi(CHANGE_PASSWORD_PATH, port, headers, changePasswordRequestBody, HttpMethod.POST);
 
     }
 
@@ -73,8 +72,16 @@ public class ApiWrapper {
         headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
         headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
         headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + bearerToken);
-        ResponseEntity<String> accountListResponse =
-                callApi(LIST_ACCOUNTS_FOR_ADMIN_PATH, port, headers, null, HttpMethod.GET);
-        return accountListResponse;
+        return callApi(LIST_ACCOUNTS_FOR_ADMIN_PATH, port, headers, null, HttpMethod.GET);
+    }
+
+    public ResponseEntity<String> addNewAccountForAdmin(int port, String bearerToken, AddNewAccountDto newAccountDto) throws JsonProcessingException {
+        headers.clear();
+        headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
+        headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + bearerToken);
+        String jsonBody = mapper.writeValueAsString(newAccountDto);
+
+        return callApi(ADD_NEW_ACCOUNT_FOR_ADMIN_PATH, port, headers, jsonBody, HttpMethod.POST);
     }
 }
