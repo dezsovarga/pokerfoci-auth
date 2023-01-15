@@ -5,6 +5,8 @@ import com.dezso.varga.pokerfoci.domain.Role;
 import com.dezso.varga.pokerfoci.domain.RoleEnum;
 import com.dezso.varga.pokerfoci.dto.admin.AccountForAdminDto;
 import com.dezso.varga.pokerfoci.dto.admin.AddNewAccountDto;
+import lombok.AllArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -13,7 +15,11 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
+@AllArgsConstructor
 public class AccountConverterImpl implements AccountConverter {
+
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
     @Override
     public AccountForAdminDto fromAccountToAccountForAdminDto(Account account) {
         AccountForAdminDto accountForAdminDto =
@@ -38,7 +44,7 @@ public class AccountConverterImpl implements AccountConverter {
         return Account.builder()
                 .username(addNewAccountDto.getUsername())
                 .email(addNewAccountDto.getEmail())
-                .password(addNewAccountDto.getPassword())
+                .password(bCryptPasswordEncoder.encode(addNewAccountDto.getPassword()))
                 .skill(addNewAccountDto.getSkill())
                 .active(true)
                 .roles(Stream.of(new Role(RoleEnum.ROLE_USER.name())).collect(Collectors.toCollection(HashSet::new)))
