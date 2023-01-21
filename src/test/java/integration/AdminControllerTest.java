@@ -7,6 +7,7 @@ import com.dezso.varga.pokerfoci.dto.admin.AddNewAccountDto;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -23,7 +24,7 @@ public class AdminControllerTest extends BaseControllerTest {
 
     @Test
     public void getListOfAccountsForAdminPage() throws Exception {
-        Account account = aTestAccount();
+        Account account = aTestAccount("ROLE_ADMIN");
         accountRepository.save(account);
         String bearerToken = this.generateBearerToken( "email@varga.com","password");
         ResponseEntity<String> response = apiWrapper.getAccountsForAdmin(port, bearerToken);
@@ -39,8 +40,18 @@ public class AdminControllerTest extends BaseControllerTest {
     }
 
     @Test
+    public void getListOfAccountsForAdminPageWithNoAdminRole() throws Exception {
+        Account account = aTestAccount("ROLE_USER");
+        accountRepository.save(account);
+        String bearerToken = this.generateBearerToken( "email@varga.com","password");
+        ResponseEntity<String> response = apiWrapper.getAccountsForAdmin(port, bearerToken);
+
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+    }
+
+    @Test
     public void addNewAccount() throws Exception {
-        Account account = aTestAccount();
+        Account account = aTestAccount("ROLE_ADMIN");
         accountRepository.save(account);
         String bearerToken = this.generateBearerToken( "email@varga.com","password");
 
@@ -53,13 +64,13 @@ public class AdminControllerTest extends BaseControllerTest {
         assertEquals(responseAccount.get("email"), savedAccount.getEmail());
     }
 
-    private Account aTestAccount() {
+    private Account aTestAccount(String role) {
         return new Account(1L,
                 "username",
                 "email@varga.com",
                 passwordEncoder.encode("password"),
                 true,
-                Set.of(new Role( "ROLE_ADMIN")));
+                Set.of(new Role( role)));
     }
 
     private AddNewAccountDto anAccountToBeAdded() {

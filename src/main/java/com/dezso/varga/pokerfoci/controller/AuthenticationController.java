@@ -55,7 +55,6 @@ public class AuthenticationController {
 	}
 
 	@RequestMapping(method=RequestMethod.POST, value="/change-password")
-	@RolesAllowed("ROLE_USER")
 	public ResponseEntity<Object> changePassword(@RequestBody ChangePasswordRequestDto changePasswordRequestDto) throws Exception {
 
 		//TODO: add validation for change password
