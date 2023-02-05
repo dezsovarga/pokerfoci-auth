@@ -1,4 +1,4 @@
-package integration;
+package com.dezso.varga.pokerfoci.controller;
 
 import com.dezso.varga.pokerfoci.dto.RegisterRequestDto;
 import com.dezso.varga.pokerfoci.dto.TokenInfoResponseDto;

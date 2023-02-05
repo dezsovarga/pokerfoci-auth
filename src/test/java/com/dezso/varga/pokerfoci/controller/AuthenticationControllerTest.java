@@ -1,4 +1,4 @@
-package integration;
+package com.dezso.varga.pokerfoci.controller;
 
 import com.dezso.varga.pokerfoci.domain.Account;
 import com.dezso.varga.pokerfoci.dto.ChangePasswordRequestDto;
@@ -12,14 +12,14 @@ import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.Set;
 
-import static integration.ApiWrapper.LOGIN_PATH;
+import static com.dezso.varga.pokerfoci.controller.ApiWrapper.LOGIN_PATH;
 import static junit.framework.TestCase.*;
 
 /**
  * Created by dezso on 13.12.2017.
  */
 
-public class AuthenticationControllerTest extends BaseControllerTest{
+public class AuthenticationControllerTest extends BaseControllerTest {
 
     public static final MediaType APPLICATION_JSON_UTF8 = new MediaType(MediaType.APPLICATION_JSON.getType(),
             MediaType.APPLICATION_JSON.getSubtype(),

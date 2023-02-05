@@ -1,6 +1,7 @@
-package integration;
+package com.dezso.varga.pokerfoci.controller;
 
 import com.dezso.varga.pokerfoci.PokerfociAuthMain;
+import com.dezso.varga.pokerfoci.controller.ApiWrapper;
 import com.dezso.varga.pokerfoci.dto.AccountDto;
 import com.dezso.varga.pokerfoci.dto.RegisterRequestDto;
 import com.dezso.varga.pokerfoci.dto.TokenInfoResponseDto;

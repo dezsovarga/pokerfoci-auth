@@ -1,4 +1,4 @@
-package integration;
+package com.dezso.varga.pokerfoci.controller;
 
 import com.dezso.varga.pokerfoci.domain.Account;
 import com.dezso.varga.pokerfoci.domain.Role;
