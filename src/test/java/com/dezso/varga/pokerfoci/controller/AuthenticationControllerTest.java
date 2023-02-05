@@ -5,7 +5,7 @@ import com.dezso.varga.pokerfoci.dto.ChangePasswordRequestDto;
 import com.dezso.varga.pokerfoci.dto.TokenInfoResponseDto;
 import com.dezso.varga.pokerfoci.dto.RegisterRequestDto;
 import org.apache.commons.codec.binary.Base64;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.http.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.nio.charset.Charset;
