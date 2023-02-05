@@ -3,7 +3,7 @@
   	<groupId>com.dezso.varga.pokerfoci.authentication</groupId>
   	<artifactId>pokerfoci-authentication</artifactId>
   	<version>0.0.1-SNAPSHOT</version>
-  	<name>PokerFoci Authentication</name>
+  	<name>pokerfoci-auth</name>
 
 	<properties>
 		<java.version>11</java.version>
@@ -107,4 +107,35 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+	<build>
+		<finalName>pokerfoci-auth</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<!-- Docker -->
+			<plugin>
+				<groupId>com.spotify</groupId>
+				<artifactId>dockerfile-maven-plugin</artifactId>
+				<version>1.4.6</version>
+				<executions>
+					<execution>
+						<id>default</id>
+						<goals>
+							<goal>build</goal>
+							<!-- <goal>push</goal> -->
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<repository>dezsovargadev/${project.name}</repository>
+					<tag>${project.version}</tag>
+					<skipDockerInfo>true</skipDockerInfo>
+				</configuration>
+			</plugin>
+
+		</plugins>
+
+	</build>
 </project>
