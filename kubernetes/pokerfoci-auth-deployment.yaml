@@ -27,6 +27,8 @@ spec:
               value: "3306"
             - name: RDS_USERNAME
               value: root
+            - name: POKERFOCI_UI_CROSS_ORIGIN
+              value: "http://34.72.39.154:3000"
           image: dezsovargadev/pokerfoci-auth:0.0.1-SNAPSHOT
           name: pokerfoci-auth
           ports:

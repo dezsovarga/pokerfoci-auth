@@ -11,10 +11,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.security.RolesAllowed;
 import java.util.stream.Collectors;
 
-@CrossOrigin(origins="http://localhost:3000")
 @RestController
 @RequestMapping("account")
 @AllArgsConstructor
