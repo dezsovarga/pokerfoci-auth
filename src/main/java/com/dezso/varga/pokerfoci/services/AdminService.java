@@ -9,4 +9,6 @@ public interface AdminService {
 
     List<AccountForAdminDto> listAccounts();
     AccountForAdminDto addNewAccount(AddNewAccountDto newAccountDtoRequest);
+    AccountForAdminDto updateAccount(AccountForAdminDto updateAccountDtoRequest) throws Exception;
+
 }

@@ -13,4 +13,6 @@ public interface AccountConverter {
     List<AccountForAdminDto> fromAccountListToAccountForAdminDtoList(List<Account> accountList);
 
     Account fromAddNewAccountDtoToAccount(AddNewAccountDto addNewAccountDto);
+
+    Account fromUpdateAccountDtoToAccount(AccountForAdminDto updateAccountDto, Account account);
 }

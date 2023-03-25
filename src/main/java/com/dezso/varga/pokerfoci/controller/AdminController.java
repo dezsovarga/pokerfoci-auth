@@ -26,4 +26,10 @@ public class AdminController {
     public AccountForAdminDto addAccount(@RequestBody AddNewAccountDto newAccountDtoRequest) {
         return adminService.addNewAccount(newAccountDtoRequest);
     }
+
+    @PutMapping("/account")
+    public AccountForAdminDto updateAccount(@RequestBody AccountForAdminDto updateAccountDtoRequest) throws Exception{
+
+        return adminService.updateAccount(updateAccountDtoRequest);
+    }
 }

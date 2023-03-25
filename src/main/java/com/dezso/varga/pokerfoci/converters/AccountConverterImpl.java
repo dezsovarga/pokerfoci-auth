@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -30,7 +31,7 @@ public class AccountConverterImpl implements AccountConverter {
                         .isActive(account.isActive())
                         .skill(account.getSkill())
                         .build();
-        accountForAdminDto.setAdmin(account.getRoles().stream().anyMatch(role -> role.getName().equals(RoleEnum.ROLE_ADMIN.name())));
+        accountForAdminDto.setIsAdmin(account.getRoles().stream().anyMatch(role -> role.getName().equals(RoleEnum.ROLE_ADMIN.name())));
         return accountForAdminDto;
     }
 
@@ -49,5 +50,19 @@ public class AccountConverterImpl implements AccountConverter {
                 .active(true)
                 .roles(Stream.of(new Role(RoleEnum.ROLE_USER.name())).collect(Collectors.toCollection(HashSet::new)))
                 .build();
+    }
+
+    @Override
+    public Account fromUpdateAccountDtoToAccount(AccountForAdminDto updateAccountDto, Account account) {
+        Optional<Role> adminRole = account.getRoles().stream().filter(role -> role.getName().equals(RoleEnum.ROLE_ADMIN.name())).findFirst();
+        if (updateAccountDto.getIsAdmin() != null) {
+            if (updateAccountDto.getIsAdmin() && adminRole.isEmpty()) {
+                account.getRoles().add(new Role(RoleEnum.ROLE_ADMIN.name()));
+            }
+            if (!updateAccountDto.getIsAdmin() && adminRole.isPresent()) {
+                account.getRoles().remove(adminRole.get());
+            }
+        }
+        return account;
     }
 }

@@ -2,6 +2,7 @@ package com.dezso.varga.pokerfoci.controller;
 
 import com.dezso.varga.pokerfoci.dto.RegisterRequestDto;
 import com.dezso.varga.pokerfoci.dto.TokenInfoResponseDto;
+import com.dezso.varga.pokerfoci.dto.admin.AccountForAdminDto;
 import com.dezso.varga.pokerfoci.dto.admin.AddNewAccountDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.commons.codec.binary.Base64;
@@ -24,7 +25,7 @@ public class ApiWrapper {
     public static final String CHANGE_PASSWORD_PATH = "/account/change-password";
     public static final String LIST_ACCOUNTS_FOR_ADMIN_PATH = "/admin/accounts";
     public static final String ADD_NEW_ACCOUNT_FOR_ADMIN_PATH = "/admin/account";
-
+    public static final String UPDATE_ACCOUNT_FOR_ADMIN_PATH = "/admin/account";
 
     public String registerUser(String path, int port, String jsonBody) throws Exception{
         headers.clear();
@@ -83,5 +84,15 @@ public class ApiWrapper {
         String jsonBody = mapper.writeValueAsString(newAccountDto);
 
         return callApi(ADD_NEW_ACCOUNT_FOR_ADMIN_PATH, port, headers, jsonBody, HttpMethod.POST);
+    }
+
+    public ResponseEntity<String> updateAccount(int port, String bearerToken, AccountForAdminDto accountDto) throws JsonProcessingException {
+        headers.clear();
+        headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
+        headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + bearerToken);
+        String jsonBody = mapper.writeValueAsString(accountDto);
+
+        return callApi(UPDATE_ACCOUNT_FOR_ADMIN_PATH, port, headers, jsonBody, HttpMethod.PUT);
     }
 }

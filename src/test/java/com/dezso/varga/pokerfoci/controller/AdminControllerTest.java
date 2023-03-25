@@ -35,8 +35,8 @@ public class AdminControllerTest extends BaseControllerTest {
         assertFalse(accountForAdminDtoList.isEmpty());
         assertEquals(account.getEmail(), accountForAdminDtoList.get(0).getEmail());
         assertEquals(account.getUsername(), accountForAdminDtoList.get(0).getUsername());
-        assertEquals(account.isActive(), accountForAdminDtoList.get(0).isActive());
-        assertTrue(accountForAdminDtoList.get(0).isAdmin());
+        assertEquals(account.isActive(), accountForAdminDtoList.get(0).getIsActive());
+        assertTrue(accountForAdminDtoList.get(0).getIsAdmin());
     }
 
     @Test
@@ -62,6 +62,37 @@ public class AdminControllerTest extends BaseControllerTest {
 
         Account savedAccount = accountRepository.findByEmail(responseAccount.get("email").toString());
         assertEquals(responseAccount.get("email"), savedAccount.getEmail());
+    }
+
+    @Test
+    public void updateAccount() throws Exception {
+        Account account = aTestAccount("ROLE_ADMIN");
+
+        accountRepository.save(account);
+        String bearerToken = this.generateBearerToken( "email@varga.com","password");
+
+        AddNewAccountDto newAccountDto = anAccountToBeAdded();
+        ResponseEntity<String> response = apiWrapper.addNewAccountForAdmin(port, bearerToken, newAccountDto);
+
+        Map responseAccount = mapper.readValue(response.getBody(), Map.class);
+        Account savedAccount = accountRepository.findByEmail(responseAccount.get("email").toString());
+        assertEquals(responseAccount.get("email"), savedAccount.getEmail());
+        assertEquals(responseAccount.get("isAdmin"), false);
+
+        //update account to be admin
+        AccountForAdminDto accountUpdateData = AccountForAdminDto.builder().id(savedAccount.getId()).isAdmin(true).build();
+        ResponseEntity<String> updateAccountResponse = apiWrapper.updateAccount(port, bearerToken, accountUpdateData);
+        Account updatedAccount = accountRepository.findByEmail(responseAccount.get("email").toString());
+        Map updateAccountResponseMap = mapper.readValue(updateAccountResponse.getBody(), Map.class);
+        assertEquals(updateAccountResponseMap.get("email"), updatedAccount.getEmail());
+        assertEquals(updateAccountResponseMap.get("isAdmin"), true);
+
+        //update account, remove admin role
+        accountUpdateData = AccountForAdminDto.builder().id(savedAccount.getId()).isAdmin(false).build();
+        updateAccountResponse = apiWrapper.updateAccount(port, bearerToken, accountUpdateData);
+        updatedAccount = accountRepository.findByEmail(responseAccount.get("email").toString());
+        updateAccountResponseMap = mapper.readValue(updateAccountResponse.getBody(), Map.class);
+        assertEquals(updateAccountResponseMap.get("isAdmin"), false);
     }
 
     private Account aTestAccount(String role) {

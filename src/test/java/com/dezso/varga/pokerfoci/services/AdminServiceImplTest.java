@@ -58,12 +58,12 @@ class AdminServiceImplTest {
         Mockito.when(accountRepository.findAll()).thenReturn(List.of(account, anotherAccount));
         List<AccountForAdminDto> accountList = adminService.listAccounts();
         Assert.assertFalse(accountList.isEmpty());
-        assertTrue(accountList.get(0).isAdmin());
-        assertTrue(accountList.get(0).isActive());
+        assertTrue(accountList.get(0).getIsAdmin());
+        assertTrue(accountList.get(0).getIsActive());
         assertTrue(accountList.get(0).getId() != 0);
 
-        assertFalse(accountList.get(1).isAdmin());
-        assertFalse(accountList.get(1).isActive());
+        assertFalse(accountList.get(1).getIsAdmin());
+        assertFalse(accountList.get(1).getIsActive());
         assertTrue(accountList.get(1).getId() != 0);
 
 
