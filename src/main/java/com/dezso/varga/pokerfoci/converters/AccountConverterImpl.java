@@ -56,11 +56,12 @@ public class AccountConverterImpl implements AccountConverter {
     public Account fromUpdateAccountDtoToAccount(AccountForAdminDto updateAccountDto, Account account) {
         Optional<Role> adminRole = account.getRoles().stream().filter(role -> role.getName().equals(RoleEnum.ROLE_ADMIN.name())).findFirst();
         if (updateAccountDto.getIsAdmin() != null) {
+            account.getRoles().removeAll(account.getRoles());
             if (updateAccountDto.getIsAdmin() && adminRole.isEmpty()) {
                 account.getRoles().add(new Role(RoleEnum.ROLE_ADMIN.name()));
             }
             if (!updateAccountDto.getIsAdmin() && adminRole.isPresent()) {
-                account.getRoles().remove(adminRole.get());
+                account.getRoles().add(new Role(RoleEnum.ROLE_USER.name()));
             }
         }
         return account;
