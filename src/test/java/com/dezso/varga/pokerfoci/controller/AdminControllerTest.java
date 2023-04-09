@@ -93,6 +93,18 @@ public class AdminControllerTest extends BaseControllerTest {
         updatedAccount = accountRepository.findByEmail(responseAccount.get("email").toString());
         updateAccountResponseMap = mapper.readValue(updateAccountResponse.getBody(), Map.class);
         assertEquals(updateAccountResponseMap.get("isAdmin"), false);
+
+        //update account, deactivate account
+        accountUpdateData = AccountForAdminDto.builder().id(savedAccount.getId()).isActive(false).build();
+        updateAccountResponse = apiWrapper.updateAccount(port, bearerToken, accountUpdateData);
+        updateAccountResponseMap = mapper.readValue(updateAccountResponse.getBody(), Map.class);
+        assertEquals(updateAccountResponseMap.get("isActive"), false);
+
+        //update account, reactivate account
+        accountUpdateData = AccountForAdminDto.builder().id(savedAccount.getId()).isActive(true).build();
+        updateAccountResponse = apiWrapper.updateAccount(port, bearerToken, accountUpdateData);
+        updateAccountResponseMap = mapper.readValue(updateAccountResponse.getBody(), Map.class);
+        assertEquals(updateAccountResponseMap.get("isActive"), true);
     }
 
     private Account aTestAccount(String role) {

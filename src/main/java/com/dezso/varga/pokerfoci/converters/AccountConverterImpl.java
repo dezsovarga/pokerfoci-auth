@@ -64,6 +64,11 @@ public class AccountConverterImpl implements AccountConverter {
                 account.getRoles().add(new Role(RoleEnum.ROLE_USER.name()));
             }
         }
+
+        if (updateAccountDto.getIsActive() != null) {
+            account.setActive(updateAccountDto.getIsActive());
+
+        }
         return account;
     }
 }
