@@ -6,7 +6,7 @@ import com.dezso.varga.pokerfoci.dto.ChangePasswordRequestDto;
 import com.dezso.varga.pokerfoci.dto.RegisterRequestDto;
 import com.dezso.varga.pokerfoci.repository.AccountRepository;
 import com.dezso.varga.pokerfoci.exeptions.AuthExeption;
-import com.dezso.varga.pokerfoci.exeptions.BgException;
+import com.dezso.varga.pokerfoci.exeptions.GlobalException;
 import com.dezso.varga.pokerfoci.exeptions.UserAlreadyExistsException;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -64,7 +64,7 @@ public class AuthenticationServiceImpl implements AuthenticationService{
                 || registerRequestDto.getAccountDto().getPassword().trim().isEmpty()
                 || registerRequestDto.getAccountDto().getConfirmPassword() == null
                 || registerRequestDto.getAccountDto().getConfirmPassword().trim().isEmpty()) {
-            throw new BgException("Missing or invalid mandatory fields at registration",
+            throw new GlobalException("Missing or invalid mandatory fields at registration",
                     HttpStatus.PRECONDITION_FAILED.value());
         }
         Account existingAccount = accountRepository.findByEmail(registerRequestDto.getAccountDto().getEmail().trim());
@@ -72,7 +72,7 @@ public class AuthenticationServiceImpl implements AuthenticationService{
             throw new UserAlreadyExistsException("Account already exists", HttpStatus.CONFLICT.value());
         }
         if (!registerRequestDto.getAccountDto().getPassword().equals(registerRequestDto.getAccountDto().getConfirmPassword())){
-            throw new BgException("Password and confirmPassword fields do not match",
+            throw new GlobalException("Password and confirmPassword fields do not match",
                     HttpStatus.PRECONDITION_FAILED.value());
         }
     }
@@ -84,7 +84,7 @@ public class AuthenticationServiceImpl implements AuthenticationService{
     }
 
     @Override
-    public boolean changePassword(ChangePasswordRequestDto changePasswordRequestDto) throws BgException {
+    public boolean changePassword(ChangePasswordRequestDto changePasswordRequestDto) throws GlobalException {
         Account existingAccount = accountRepository.findByEmail(changePasswordRequestDto.getEmail());
         boolean isValidAccount = bCryptPasswordEncoder.matches(changePasswordRequestDto.getOldPassword(), existingAccount.getPassword());
         if (isValidAccount) {
@@ -92,7 +92,7 @@ public class AuthenticationServiceImpl implements AuthenticationService{
             accountRepository.save(existingAccount);
             return true;
         } else {
-            throw new BgException("Invalid request. Authorization failed for changing password",
+            throw new GlobalException("Invalid request. Authorization failed for changing password",
                     HttpStatus.PRECONDITION_FAILED.value());
         }
     }

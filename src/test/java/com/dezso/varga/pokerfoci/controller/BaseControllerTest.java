@@ -1,10 +1,11 @@
 package com.dezso.varga.pokerfoci.controller;
 
 import com.dezso.varga.pokerfoci.PokerfociAuthMain;
-import com.dezso.varga.pokerfoci.dto.AccountDto;
 import com.dezso.varga.pokerfoci.dto.RegisterRequestDto;
 import com.dezso.varga.pokerfoci.dto.TokenInfoResponseDto;
+import com.dezso.varga.pokerfoci.dto.admin.AccountDto;
 import com.dezso.varga.pokerfoci.repository.AccountRepository;
+import com.dezso.varga.pokerfoci.repository.EventRepository;
 import com.dezso.varga.pokerfoci.repository.RoleRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.codec.binary.Base64;
@@ -57,8 +58,12 @@ public class BaseControllerTest {
             .confirmPassword(password)
             .build();
 
+    @Autowired
+    private EventRepository eventRepository;
+
     @BeforeEach
     public void init() {
+        eventRepository.deleteAll();
         accountRepository.deleteAll();
     }
 

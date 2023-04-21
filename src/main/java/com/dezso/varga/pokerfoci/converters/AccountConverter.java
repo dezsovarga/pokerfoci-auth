@@ -2,7 +2,7 @@ package com.dezso.varga.pokerfoci.converters;
 
 import com.dezso.varga.pokerfoci.domain.Account;
 import com.dezso.varga.pokerfoci.dto.admin.AccountForAdminDto;
-import com.dezso.varga.pokerfoci.dto.admin.AddNewAccountDto;
+import com.dezso.varga.pokerfoci.dto.admin.AccountDto;
 
 import java.util.List;
 
@@ -12,7 +12,13 @@ public interface AccountConverter {
 
     List<AccountForAdminDto> fromAccountListToAccountForAdminDtoList(List<Account> accountList);
 
-    Account fromAddNewAccountDtoToAccount(AddNewAccountDto addNewAccountDto);
+    Account fromAddNewAccountDtoToAccount(AccountDto accountDto);
 
     Account fromUpdateAccountDtoToAccount(AccountForAdminDto updateAccountDto, Account account);
+
+    List<Account> fromAccountNameListToAccountList(List<String> accountNames);
+
+    AccountDto fromAccountToAccountDto(Account account);
+
+    List<AccountDto> fromAccountListToAccountDtoList(List<Account> accountList);
 }

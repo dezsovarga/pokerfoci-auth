@@ -1,9 +1,12 @@
 package com.dezso.varga.pokerfoci.controller;
 
 import com.dezso.varga.pokerfoci.domain.Account;
+import com.dezso.varga.pokerfoci.domain.Event;
 import com.dezso.varga.pokerfoci.domain.Role;
 import com.dezso.varga.pokerfoci.dto.admin.AccountForAdminDto;
-import com.dezso.varga.pokerfoci.dto.admin.AddNewAccountDto;
+import com.dezso.varga.pokerfoci.dto.admin.AccountDto;
+import com.dezso.varga.pokerfoci.dto.admin.CreateEventDto;
+import com.dezso.varga.pokerfoci.repository.EventRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -20,11 +25,14 @@ import static org.junit.Assert.*;
 public class AdminControllerTest extends BaseControllerTest {
 
     @Autowired
-    BCryptPasswordEncoder passwordEncoder;
+    private BCryptPasswordEncoder passwordEncoder;
+
+    @Autowired
+    private EventRepository eventRepository;
 
     @Test
     public void getListOfAccountsForAdminPage() throws Exception {
-        Account account = aTestAccount("ROLE_ADMIN");
+        Account account = aTestAccountWithRole("ROLE_ADMIN");
         accountRepository.save(account);
         String bearerToken = this.generateBearerToken( "email@varga.com","password");
         ResponseEntity<String> response = apiWrapper.getAccountsForAdmin(port, bearerToken);
@@ -41,7 +49,7 @@ public class AdminControllerTest extends BaseControllerTest {
 
     @Test
     public void getListOfAccountsForAdminPageWithNoAdminRole() throws Exception {
-        Account account = aTestAccount("ROLE_USER");
+        Account account = aTestAccountWithRole("ROLE_USER");
         accountRepository.save(account);
         String bearerToken = this.generateBearerToken( "email@varga.com","password");
         ResponseEntity<String> response = apiWrapper.getAccountsForAdmin(port, bearerToken);
@@ -51,11 +59,11 @@ public class AdminControllerTest extends BaseControllerTest {
 
     @Test
     public void addNewAccount() throws Exception {
-        Account account = aTestAccount("ROLE_ADMIN");
+        Account account = aTestAccountWithRole("ROLE_ADMIN");
         accountRepository.save(account);
         String bearerToken = this.generateBearerToken( "email@varga.com","password");
 
-        AddNewAccountDto newAccountDto = anAccountToBeAdded();
+        AccountDto newAccountDto = anAccountToBeAdded();
         ResponseEntity<String> response = apiWrapper.addNewAccountForAdmin(port, bearerToken, newAccountDto);
 
         Map responseAccount = mapper.readValue(response.getBody(), Map.class);
@@ -66,12 +74,12 @@ public class AdminControllerTest extends BaseControllerTest {
 
     @Test
     public void updateAccount() throws Exception {
-        Account account = aTestAccount("ROLE_ADMIN");
+        Account account = aTestAccountWithRole("ROLE_ADMIN");
 
         accountRepository.save(account);
         String bearerToken = this.generateBearerToken( "email@varga.com","password");
 
-        AddNewAccountDto newAccountDto = anAccountToBeAdded();
+        AccountDto newAccountDto = anAccountToBeAdded();
         ResponseEntity<String> response = apiWrapper.addNewAccountForAdmin(port, bearerToken, newAccountDto);
 
         Map responseAccount = mapper.readValue(response.getBody(), Map.class);
@@ -107,7 +115,36 @@ public class AdminControllerTest extends BaseControllerTest {
         assertEquals(updateAccountResponseMap.get("isActive"), true);
     }
 
-    private Account aTestAccount(String role) {
+    @Test
+    public void addNewEvent() throws Exception {
+        Account account = aTestAccountWithRole("ROLE_ADMIN");
+        accountRepository.save(account);
+        Account account1 = aTestAccountWithUsername("szury", 11L);
+        accountRepository.save(account1);
+        Account account2 = aTestAccountWithUsername("dezsovarga", 12L);
+        accountRepository.save(account2);
+
+        String bearerToken = this.generateBearerToken( "email@varga.com","password");
+
+        CreateEventDto createEventDto = aCreateEventDto();
+        ResponseEntity<String> response = apiWrapper.addNewEvent(port, bearerToken, createEventDto);
+
+        Map responseEvent = mapper.readValue(response.getBody(), Map.class);
+
+        Event savedEvent = eventRepository.findById(Long.parseLong(responseEvent.get("id").toString())).get();
+        assertEquals(Long.valueOf(responseEvent.get("id").toString()), savedEvent.getId());
+        assertEquals("INITIATED", savedEvent.getStatus().name());
+
+    }
+
+    private CreateEventDto aCreateEventDto() {
+        return CreateEventDto.builder()
+                .eventDate(LocalDate.now())
+                .registeredPlayers(Arrays.asList("szury","dezsovarga"))
+                .build();
+    }
+
+    private Account aTestAccountWithRole(String role) {
         return new Account(1L,
                 "username",
                 "email@varga.com",
@@ -116,8 +153,17 @@ public class AdminControllerTest extends BaseControllerTest {
                 Set.of(new Role( role)));
     }
 
-    private AddNewAccountDto anAccountToBeAdded() {
-        return AddNewAccountDto.builder().username("username")
+    private Account aTestAccountWithUsername(String username, Long id) {
+        return new Account(id,
+                username,
+                username+"@varga.com",
+                passwordEncoder.encode("password"),
+                true,
+                Set.of(new Role( "ROLE_USER")));
+    }
+
+    private AccountDto anAccountToBeAdded() {
+        return AccountDto.builder().username("username")
                 .email("email@mail.com")
                 .password("password")
                 .confirmPassword("password")

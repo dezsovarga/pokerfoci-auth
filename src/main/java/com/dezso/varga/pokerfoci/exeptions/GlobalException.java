@@ -6,16 +6,16 @@ import java.util.Map;
 /**
  * Created by dezso on 25.06.2017.
  */
-public class BgException extends Exception {
+public class GlobalException extends Exception {
 
     int statusCode;
 
-    public BgException(String message, int statusCode) {
+    public GlobalException(String message, int statusCode) {
         super(message);
         this.statusCode = statusCode;
     }
 
-    public BgException(String message) {
+    public GlobalException(String message) {
         super(message);
     }
 

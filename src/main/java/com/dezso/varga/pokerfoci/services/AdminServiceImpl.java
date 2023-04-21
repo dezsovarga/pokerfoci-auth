@@ -1,11 +1,17 @@
 package com.dezso.varga.pokerfoci.services;
 
 import com.dezso.varga.pokerfoci.converters.AccountConverter;
+import com.dezso.varga.pokerfoci.converters.EventConverter;
 import com.dezso.varga.pokerfoci.domain.Account;
+import com.dezso.varga.pokerfoci.domain.Event;
+import com.dezso.varga.pokerfoci.domain.EventStatus;
+import com.dezso.varga.pokerfoci.dto.EventResponseDto;
 import com.dezso.varga.pokerfoci.dto.admin.AccountForAdminDto;
-import com.dezso.varga.pokerfoci.dto.admin.AddNewAccountDto;
-import com.dezso.varga.pokerfoci.exeptions.BgException;
+import com.dezso.varga.pokerfoci.dto.admin.AccountDto;
+import com.dezso.varga.pokerfoci.dto.admin.CreateEventDto;
+import com.dezso.varga.pokerfoci.exeptions.GlobalException;
 import com.dezso.varga.pokerfoci.repository.AccountRepository;
+import com.dezso.varga.pokerfoci.repository.EventRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -19,6 +25,8 @@ public class AdminServiceImpl implements AdminService {
 
     private AccountRepository accountRepository;
     private AccountConverter accountConverter;
+    private EventConverter eventConverter;
+    private final EventRepository eventRepository;
 
     @Override
     public List<AccountForAdminDto> listAccounts() {
@@ -27,7 +35,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public AccountForAdminDto addNewAccount(AddNewAccountDto newAccountDtoRequest) {
+    public AccountForAdminDto addNewAccount(AccountDto newAccountDtoRequest) {
         //TODO: add validation
         Account account = accountConverter.fromAddNewAccountDtoToAccount(newAccountDtoRequest);
         Account savedAccount = accountRepository.save(account);
@@ -37,14 +45,25 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public AccountForAdminDto updateAccount(AccountForAdminDto updateAccountDtoRequest) throws Exception{
         if (updateAccountDtoRequest.getId() == null) {
-            throw new BgException("Account id cannot be null for update account", HttpStatus.PRECONDITION_FAILED.value());
+            throw new GlobalException("Account id cannot be null for update account", HttpStatus.PRECONDITION_FAILED.value());
         }
         Optional<Account> existingAccount = accountRepository.findById(updateAccountDtoRequest.getId());
         if (existingAccount.isEmpty()) {
-            throw new BgException("Invalid account for update", HttpStatus.PRECONDITION_FAILED.value());
+            throw new GlobalException("Invalid account for update", HttpStatus.PRECONDITION_FAILED.value());
         }
         Account updatedAccount = accountConverter.fromUpdateAccountDtoToAccount(updateAccountDtoRequest, existingAccount.get());
         updatedAccount = accountRepository.save(updatedAccount);
         return accountConverter.fromAccountToAccountForAdminDto(updatedAccount);
+    }
+
+    @Override
+    public EventResponseDto createEvent(CreateEventDto createEventDto) throws Exception {
+        if (createEventDto.getEventDate() == null) {
+            throw new GlobalException("Event date cannot be null", HttpStatus.PRECONDITION_FAILED.value());
+        }
+        Event event = eventConverter.fromCreateEventDtoToEvent(createEventDto);
+        event.setStatus(EventStatus.INITIATED);
+        eventRepository.save(event);
+        return eventConverter.fromEventToEventResponseDto(event);
     }
 }

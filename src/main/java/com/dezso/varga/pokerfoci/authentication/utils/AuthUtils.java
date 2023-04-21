@@ -3,7 +3,7 @@ package com.dezso.varga.pokerfoci.authentication.utils;
 import com.dezso.varga.pokerfoci.domain.Account;
 import com.dezso.varga.pokerfoci.domain.Role;
 import com.dezso.varga.pokerfoci.dto.RegisterRequestDto;
-import com.dezso.varga.pokerfoci.exeptions.BgException;
+import com.dezso.varga.pokerfoci.exeptions.GlobalException;
 import com.dezso.varga.pokerfoci.exeptions.ConfirmTokenExpiredException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -85,11 +85,11 @@ public class AuthUtils {
 
     public static Account extractAccountFromBasicToken(String authHeader) throws Exception {
         if (authHeader == null || authHeader.isEmpty()) {
-            throw new BgException("Missing authorization header", HttpStatus.UNAUTHORIZED.value());
+            throw new GlobalException("Missing authorization header", HttpStatus.UNAUTHORIZED.value());
         }
 
         if (!authHeader.startsWith(BASIC_TOKEN)) {
-            throw new BgException("Invalid authorization header", HttpStatus.UNAUTHORIZED.value());
+            throw new GlobalException("Invalid authorization header", HttpStatus.UNAUTHORIZED.value());
         }
 
         String[] split = authHeader.split(BASIC_TOKEN);
@@ -102,9 +102,9 @@ public class AuthUtils {
                 account.setPassword(userInfo[1]);
                 return account;
             } else {
-                throw new BgException("Invalid authorization header", HttpStatus.UNAUTHORIZED.value());
+                throw new GlobalException("Invalid authorization header", HttpStatus.UNAUTHORIZED.value());
             }
         }
-        throw new BgException("Invalid authorization header", HttpStatus.UNAUTHORIZED.value());
+        throw new GlobalException("Invalid authorization header", HttpStatus.UNAUTHORIZED.value());
     }
 }

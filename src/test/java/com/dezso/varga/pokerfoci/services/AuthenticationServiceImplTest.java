@@ -1,9 +1,9 @@
 package com.dezso.varga.pokerfoci.services;
 
 import com.dezso.varga.pokerfoci.domain.Account;
-import com.dezso.varga.pokerfoci.dto.AccountDto;
 import com.dezso.varga.pokerfoci.dto.RegisterRequestDto;
-import com.dezso.varga.pokerfoci.exeptions.BgException;
+import com.dezso.varga.pokerfoci.dto.admin.AccountDto;
+import com.dezso.varga.pokerfoci.exeptions.GlobalException;
 
 import com.dezso.varga.pokerfoci.repository.AccountRepository;
 import org.junit.jupiter.api.Assertions;
@@ -41,7 +41,7 @@ public class AuthenticationServiceImplTest {
     public void testEmptyEmailAtRegistration() {
 
         registerRequestDto.getAccountDto().setEmail("");
-        BgException thrown = Assertions.assertThrows (BgException.class, () -> {
+        GlobalException thrown = Assertions.assertThrows (GlobalException.class, () -> {
             authenticationService.validateRegistrationRequest(registerRequestDto);
         }, "BgException was expected");
 
@@ -54,7 +54,7 @@ public class AuthenticationServiceImplTest {
 
         Mockito.when(accountRepository.findByEmail(anyString())).thenReturn(null);
         registerRequestDto.getAccountDto().setConfirmPassword("randomPassword");
-        BgException thrown = Assertions.assertThrows (BgException.class, () -> {
+        GlobalException thrown = Assertions.assertThrows (GlobalException.class, () -> {
             authenticationService.validateRegistrationRequest(registerRequestDto);
         }, "BgException was expected");
 
@@ -66,7 +66,7 @@ public class AuthenticationServiceImplTest {
     public void testAccountAlreadyExistsAtRegistration() {
 
         Mockito.when(accountRepository.findByEmail(anyString())).thenReturn(new Account());
-        BgException thrown = Assertions.assertThrows (BgException.class, () -> {
+        GlobalException thrown = Assertions.assertThrows (GlobalException.class, () -> {
             authenticationService.validateRegistrationRequest(registerRequestDto);
         }, "BgException was expected");
 

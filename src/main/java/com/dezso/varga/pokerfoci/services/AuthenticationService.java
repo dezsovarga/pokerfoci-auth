@@ -3,7 +3,7 @@ package com.dezso.varga.pokerfoci.services;
 import com.dezso.varga.pokerfoci.domain.Account;
 import com.dezso.varga.pokerfoci.dto.ChangePasswordRequestDto;
 import com.dezso.varga.pokerfoci.dto.RegisterRequestDto;
-import com.dezso.varga.pokerfoci.exeptions.BgException;
+import com.dezso.varga.pokerfoci.exeptions.GlobalException;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -20,5 +20,5 @@ public interface AuthenticationService {
 
     String getConfirmationToken(RegisterRequestDto registerRequestDto) throws Exception;
 
-    boolean changePassword(ChangePasswordRequestDto changePasswordRequestDto) throws BgException;
+    boolean changePassword(ChangePasswordRequestDto changePasswordRequestDto) throws GlobalException;
 }

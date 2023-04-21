@@ -1,6 +1,6 @@
 package com.dezso.varga.pokerfoci.exeptions;
 
-public class InvalidCredentialsException extends BgException{
+public class InvalidCredentialsException extends GlobalException {
 
     int statusCode;
 

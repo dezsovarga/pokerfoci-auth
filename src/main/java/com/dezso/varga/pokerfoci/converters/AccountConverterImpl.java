@@ -4,7 +4,8 @@ import com.dezso.varga.pokerfoci.domain.Account;
 import com.dezso.varga.pokerfoci.domain.Role;
 import com.dezso.varga.pokerfoci.domain.RoleEnum;
 import com.dezso.varga.pokerfoci.dto.admin.AccountForAdminDto;
-import com.dezso.varga.pokerfoci.dto.admin.AddNewAccountDto;
+import com.dezso.varga.pokerfoci.dto.admin.AccountDto;
+import com.dezso.varga.pokerfoci.repository.AccountRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ import java.util.stream.Stream;
 public class AccountConverterImpl implements AccountConverter {
 
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final AccountRepository accountRepository;
 
     @Override
     public AccountForAdminDto fromAccountToAccountForAdminDto(Account account) {
@@ -41,12 +43,12 @@ public class AccountConverterImpl implements AccountConverter {
     }
 
     @Override
-    public Account fromAddNewAccountDtoToAccount(AddNewAccountDto addNewAccountDto) {
+    public Account fromAddNewAccountDtoToAccount(AccountDto accountDto) {
         return Account.builder()
-                .username(addNewAccountDto.getUsername())
-                .email(addNewAccountDto.getEmail())
-                .password(bCryptPasswordEncoder.encode(addNewAccountDto.getPassword()))
-                .skill(addNewAccountDto.getSkill())
+                .username(accountDto.getUsername())
+                .email(accountDto.getEmail())
+                .password(bCryptPasswordEncoder.encode(accountDto.getPassword()))
+                .skill(accountDto.getSkill())
                 .active(true)
                 .roles(Stream.of(new Role(RoleEnum.ROLE_USER.name())).collect(Collectors.toCollection(HashSet::new)))
                 .build();
@@ -71,4 +73,30 @@ public class AccountConverterImpl implements AccountConverter {
         }
         return account;
     }
+
+    @Override
+    public List<Account> fromAccountNameListToAccountList(List<String> accountNames) {
+        return accountNames.stream()
+                .map(username -> accountRepository.findByUsername(username))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public AccountDto fromAccountToAccountDto(Account account) {
+
+        return AccountDto.builder().email(account.getEmail())
+                .username(account.getUsername())
+                .skill(account.getSkill())
+                .build();
+    }
+
+    @Override
+    public List<AccountDto> fromAccountListToAccountDtoList(List<Account> accountList) {
+        return accountList
+                .stream()
+                .map(account -> fromAccountToAccountDto(account))
+                .collect(Collectors.toList());
+    }
+
+
 }

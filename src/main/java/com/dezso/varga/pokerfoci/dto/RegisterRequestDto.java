@@ -1,5 +1,6 @@
 package com.dezso.varga.pokerfoci.dto;
 
+import com.dezso.varga.pokerfoci.dto.admin.AccountDto;
 import lombok.*;
 
 @Getter

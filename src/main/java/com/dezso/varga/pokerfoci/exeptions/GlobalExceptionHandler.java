@@ -17,7 +17,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler()
     @ResponseStatus(value=HttpStatus.PRECONDITION_FAILED)
     @ResponseBody
-    public Map<String, String> handleMissingFieldsException(BgException ex) {
+    public Map<String, String> handleMissingFieldsException(GlobalException ex) {
         return ex.getErrorBody();
     }
 
@@ -31,14 +31,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UserAlreadyExistsException.class)
     @ResponseStatus(value=HttpStatus.CONFLICT)
     @ResponseBody
-    public Map<String, String> handleUserAlreadyExistsException(BgException ex) {
+    public Map<String, String> handleUserAlreadyExistsException(GlobalException ex) {
         return ex.getErrorBody();
     }
 
     @ExceptionHandler(ConfirmTokenExpiredException.class)
     @ResponseStatus(value=HttpStatus.PRECONDITION_FAILED)
     @ResponseBody
-    public Map<String, String> handleConfirmTokenExpiredException(BgException ex) {
+    public Map<String, String> handleConfirmTokenExpiredException(GlobalException ex) {
         return ex.getErrorBody();
     }
 

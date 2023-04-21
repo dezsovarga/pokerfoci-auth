@@ -3,8 +3,11 @@ package com.dezso.varga.pokerfoci.controller;
 import com.dezso.varga.pokerfoci.dto.RegisterRequestDto;
 import com.dezso.varga.pokerfoci.dto.TokenInfoResponseDto;
 import com.dezso.varga.pokerfoci.dto.admin.AccountForAdminDto;
-import com.dezso.varga.pokerfoci.dto.admin.AddNewAccountDto;
+import com.dezso.varga.pokerfoci.dto.admin.AccountDto;
+import com.dezso.varga.pokerfoci.dto.admin.CreateEventDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
@@ -26,6 +29,7 @@ public class ApiWrapper {
     public static final String LIST_ACCOUNTS_FOR_ADMIN_PATH = "/admin/accounts";
     public static final String ADD_NEW_ACCOUNT_FOR_ADMIN_PATH = "/admin/account";
     public static final String UPDATE_ACCOUNT_FOR_ADMIN_PATH = "/admin/account";
+    public static final String ADD_NEW_EVENT_PATH = "/admin/event";
 
     public String registerUser(String path, int port, String jsonBody) throws Exception{
         headers.clear();
@@ -60,39 +64,43 @@ public class ApiWrapper {
     }
 
     public ResponseEntity<String> changePassword(int port, String bearerToken, String changePasswordRequestBody) throws Exception{
-        headers.clear();
-        headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
-        headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + bearerToken);
-        return callApi(CHANGE_PASSWORD_PATH, port, headers, changePasswordRequestBody, HttpMethod.POST);
 
+        return callApi(CHANGE_PASSWORD_PATH, port, createHeaders(bearerToken), changePasswordRequestBody, HttpMethod.POST);
     }
 
     public ResponseEntity<String> getAccountsForAdmin(int port, String bearerToken) {
-        headers.clear();
-        headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
-        headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + bearerToken);
-        return callApi(LIST_ACCOUNTS_FOR_ADMIN_PATH, port, headers, null, HttpMethod.GET);
+
+        return callApi(LIST_ACCOUNTS_FOR_ADMIN_PATH, port, createHeaders(bearerToken), null, HttpMethod.GET);
     }
 
-    public ResponseEntity<String> addNewAccountForAdmin(int port, String bearerToken, AddNewAccountDto newAccountDto) throws JsonProcessingException {
-        headers.clear();
-        headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
-        headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + bearerToken);
+    public ResponseEntity<String> addNewAccountForAdmin(int port, String bearerToken, AccountDto newAccountDto) throws JsonProcessingException {
+
         String jsonBody = mapper.writeValueAsString(newAccountDto);
 
-        return callApi(ADD_NEW_ACCOUNT_FOR_ADMIN_PATH, port, headers, jsonBody, HttpMethod.POST);
+        return callApi(ADD_NEW_ACCOUNT_FOR_ADMIN_PATH, port, createHeaders(bearerToken), jsonBody, HttpMethod.POST);
     }
 
     public ResponseEntity<String> updateAccount(int port, String bearerToken, AccountForAdminDto accountDto) throws JsonProcessingException {
+
+        String jsonBody = mapper.writeValueAsString(accountDto);
+
+        return callApi(UPDATE_ACCOUNT_FOR_ADMIN_PATH, port, createHeaders(bearerToken), jsonBody, HttpMethod.PUT);
+    }
+
+    public ResponseEntity<String> addNewEvent(int port, String bearerToken, CreateEventDto newEventDto) throws JsonProcessingException {
+
+        mapper.registerModule(new JavaTimeModule());
+        mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+        String jsonBody = mapper.writeValueAsString(newEventDto);
+
+        return callApi(ADD_NEW_EVENT_PATH, port, createHeaders(bearerToken), jsonBody, HttpMethod.POST);
+    }
+
+    private HttpHeaders createHeaders(String bearerToken) {
         headers.clear();
         headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
         headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
         headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + bearerToken);
-        String jsonBody = mapper.writeValueAsString(accountDto);
-
-        return callApi(UPDATE_ACCOUNT_FOR_ADMIN_PATH, port, headers, jsonBody, HttpMethod.PUT);
+        return headers;
     }
 }

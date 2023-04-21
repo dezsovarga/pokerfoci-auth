@@ -3,7 +3,7 @@ package com.dezso.varga.pokerfoci.exeptions;
 /**
  * Created by dezso on 30.11.2017.
  */
-public class ConfirmTokenExpiredException extends BgException{
+public class ConfirmTokenExpiredException extends GlobalException {
 
     int statusCode;
 
