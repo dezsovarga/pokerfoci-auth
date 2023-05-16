@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -23,16 +24,16 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id", nullable = false)
     private Long id;
-    private LocalDate date;
+    private LocalDateTime date;
     private EventStatus status;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(
-            name = "EVENT_PLAYER",
+            name = "EVENT_PARTICIPATION",
             joinColumns = @JoinColumn(name = "EVENT_ID"),
-            inverseJoinColumns = @JoinColumn(name = "PLAYER_ID")
+            inverseJoinColumns = @JoinColumn(name = "PARTICIPATION_ID")
     )
-    private List<Account> registeredPlayers;
+    private List<Participation> participationList;
 
     private String score;
 
@@ -49,11 +50,11 @@ public class Event {
         this.id = id;
     }
 
-    public LocalDate getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 
@@ -65,12 +66,12 @@ public class Event {
         this.status = status;
     }
 
-    public List<Account> getRegisteredPlayers() {
-        return registeredPlayers;
+    public List<Participation> getParticipationList() {
+        return participationList;
     }
 
-    public void setRegisteredPlayers(List<Account> registeredPlayers) {
-        this.registeredPlayers = registeredPlayers;
+    public void setParticipationList(List<Participation> participationList) {
+        this.participationList = participationList;
     }
 
     public String getScore() {

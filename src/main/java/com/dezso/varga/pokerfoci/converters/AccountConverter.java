@@ -1,6 +1,7 @@
 package com.dezso.varga.pokerfoci.converters;
 
 import com.dezso.varga.pokerfoci.domain.Account;
+import com.dezso.varga.pokerfoci.domain.Participation;
 import com.dezso.varga.pokerfoci.dto.admin.AccountForAdminDto;
 import com.dezso.varga.pokerfoci.dto.admin.AccountDto;
 
@@ -16,7 +17,7 @@ public interface AccountConverter {
 
     Account fromUpdateAccountDtoToAccount(AccountForAdminDto updateAccountDto, Account account);
 
-    List<Account> fromAccountNameListToAccountList(List<String> accountNames);
+    List<Participation> fromAccountNameListToEventParticipationList(List<String> accountNames);
 
     AccountDto fromAccountToAccountDto(Account account);
 

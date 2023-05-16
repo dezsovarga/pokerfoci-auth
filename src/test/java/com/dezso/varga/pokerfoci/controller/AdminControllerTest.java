@@ -15,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -138,8 +140,10 @@ public class AdminControllerTest extends BaseControllerTest {
     }
 
     private CreateEventDto aCreateEventDto() {
+        ZoneId zoneId = ZoneId.systemDefault(); // or: ZoneId.of("Europe/Oslo");
+        long epoch = LocalDateTime.now().atZone(zoneId).toEpochSecond();
         return CreateEventDto.builder()
-                .eventDate(LocalDate.now())
+                .eventDateEpoch(epoch)
                 .registeredPlayers(Arrays.asList("szury","dezsovarga"))
                 .build();
     }

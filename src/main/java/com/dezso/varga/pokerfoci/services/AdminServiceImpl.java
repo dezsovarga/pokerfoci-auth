@@ -12,6 +12,7 @@ import com.dezso.varga.pokerfoci.dto.admin.CreateEventDto;
 import com.dezso.varga.pokerfoci.exeptions.GlobalException;
 import com.dezso.varga.pokerfoci.repository.AccountRepository;
 import com.dezso.varga.pokerfoci.repository.EventRepository;
+import com.dezso.varga.pokerfoci.repository.ParticipationRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ public class AdminServiceImpl implements AdminService {
     private AccountConverter accountConverter;
     private EventConverter eventConverter;
     private final EventRepository eventRepository;
+    private final ParticipationRepository participationRepository;
 
     @Override
     public List<AccountForAdminDto> listAccounts() {
@@ -58,10 +60,11 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public EventResponseDto createEvent(CreateEventDto createEventDto) throws Exception {
-        if (createEventDto.getEventDate() == null) {
+        if (createEventDto.getEventDateEpoch() == null) {
             throw new GlobalException("Event date cannot be null", HttpStatus.PRECONDITION_FAILED.value());
         }
         Event event = eventConverter.fromCreateEventDtoToEvent(createEventDto);
+        event.getParticipationList().forEach(eventParticipation -> participationRepository.save(eventParticipation));
         event.setStatus(EventStatus.INITIATED);
         eventRepository.save(event);
         return eventConverter.fromEventToEventResponseDto(event);

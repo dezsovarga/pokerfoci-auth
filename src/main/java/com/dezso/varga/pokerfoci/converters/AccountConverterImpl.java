@@ -1,6 +1,7 @@
 package com.dezso.varga.pokerfoci.converters;
 
 import com.dezso.varga.pokerfoci.domain.Account;
+import com.dezso.varga.pokerfoci.domain.Participation;
 import com.dezso.varga.pokerfoci.domain.Role;
 import com.dezso.varga.pokerfoci.domain.RoleEnum;
 import com.dezso.varga.pokerfoci.dto.admin.AccountForAdminDto;
@@ -75,9 +76,9 @@ public class AccountConverterImpl implements AccountConverter {
     }
 
     @Override
-    public List<Account> fromAccountNameListToAccountList(List<String> accountNames) {
+    public List<Participation> fromAccountNameListToEventParticipationList(List<String> accountNames) {
         return accountNames.stream()
-                .map(username -> accountRepository.findByUsername(username))
+                .map(username -> new Participation(accountRepository.findByUsername(username)))
                 .collect(Collectors.toList());
     }
 

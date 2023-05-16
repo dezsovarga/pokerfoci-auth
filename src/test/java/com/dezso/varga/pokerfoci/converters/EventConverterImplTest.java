@@ -12,7 +12,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -43,16 +46,18 @@ class EventConverterImplTest {
         CreateEventDto createEventDto = aCreateEventDto();
         Event event = eventConverter.fromCreateEventDtoToEvent(createEventDto);
 
-        assertEquals(createEventDto.getEventDate(), event.getDate());
-        assertEquals(createEventDto.getRegisteredPlayers().size(), event.getRegisteredPlayers().size());
-        assertTrue(event.getRegisteredPlayers().stream().map(player -> player.getUsername())
+        LocalDateTime eventDateTime = Instant.ofEpochMilli(createEventDto.getEventDateEpoch())
+                .atZone(ZoneId.systemDefault()).toLocalDateTime();
+        assertEquals(eventDateTime, event.getDate());
+        assertEquals(createEventDto.getRegisteredPlayers().size(), event.getParticipationList().size());
+        assertTrue(event.getParticipationList().stream().map(participation -> participation.getAccount().getUsername())
                 .collect(Collectors.toList()).containsAll(Arrays.asList("szury", "dezsovarga")));
 
     }
 
     private CreateEventDto aCreateEventDto() {
         return CreateEventDto.builder()
-                .eventDate(LocalDate.now())
+                .eventDateEpoch(LocalDate.now().toEpochDay())
                 .registeredPlayers(Arrays.asList("szury","dezsovarga"))
                 .build();
     }

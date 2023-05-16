@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -19,7 +19,7 @@ import java.util.List;
 public class EventResponseDto {
 
     private Long id;
-    private LocalDate eventDate;
+    private LocalDateTime eventDateTime;
     private List<AccountDto> registeredPlayers;
     private EventStatus status;
     private String score;
