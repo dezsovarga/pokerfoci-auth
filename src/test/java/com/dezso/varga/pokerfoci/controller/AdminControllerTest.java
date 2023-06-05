@@ -3,6 +3,7 @@ package com.dezso.varga.pokerfoci.controller;
 import com.dezso.varga.pokerfoci.domain.Account;
 import com.dezso.varga.pokerfoci.domain.Event;
 import com.dezso.varga.pokerfoci.domain.Role;
+import com.dezso.varga.pokerfoci.dto.EventResponseDto;
 import com.dezso.varga.pokerfoci.dto.admin.AccountForAdminDto;
 import com.dezso.varga.pokerfoci.dto.admin.AccountDto;
 import com.dezso.varga.pokerfoci.dto.admin.CreateEventDto;
@@ -13,18 +14,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
 
-public class AdminControllerTest extends BaseControllerTest {
+class AdminControllerTest extends BaseControllerTest {
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
@@ -33,7 +33,7 @@ public class AdminControllerTest extends BaseControllerTest {
     private EventRepository eventRepository;
 
     @Test
-    public void getListOfAccountsForAdminPage() throws Exception {
+    void getListOfAccountsForAdminPage() throws Exception {
         Account account = aTestAccountWithRole("ROLE_ADMIN");
         accountRepository.save(account);
         String bearerToken = this.generateBearerToken( "email@varga.com","password");
@@ -50,7 +50,7 @@ public class AdminControllerTest extends BaseControllerTest {
     }
 
     @Test
-    public void getListOfAccountsForAdminPageWithNoAdminRole() throws Exception {
+    void getListOfAccountsForAdminPageWithNoAdminRole() throws Exception {
         Account account = aTestAccountWithRole("ROLE_USER");
         accountRepository.save(account);
         String bearerToken = this.generateBearerToken( "email@varga.com","password");
@@ -60,7 +60,7 @@ public class AdminControllerTest extends BaseControllerTest {
     }
 
     @Test
-    public void addNewAccount() throws Exception {
+    void addNewAccount() throws Exception {
         Account account = aTestAccountWithRole("ROLE_ADMIN");
         accountRepository.save(account);
         String bearerToken = this.generateBearerToken( "email@varga.com","password");
@@ -75,7 +75,7 @@ public class AdminControllerTest extends BaseControllerTest {
     }
 
     @Test
-    public void updateAccount() throws Exception {
+    void updateAccount() throws Exception {
         Account account = aTestAccountWithRole("ROLE_ADMIN");
 
         accountRepository.save(account);
@@ -118,7 +118,7 @@ public class AdminControllerTest extends BaseControllerTest {
     }
 
     @Test
-    public void addNewEvent() throws Exception {
+    void addNewEvent() throws Exception {
         Account account = aTestAccountWithRole("ROLE_ADMIN");
         accountRepository.save(account);
         Account account1 = aTestAccountWithUsername("szury", 11L);
@@ -128,7 +128,7 @@ public class AdminControllerTest extends BaseControllerTest {
 
         String bearerToken = this.generateBearerToken( "email@varga.com","password");
 
-        CreateEventDto createEventDto = aCreateEventDto();
+        CreateEventDto createEventDto = aCreateEventDto(Arrays.asList("szury","dezsovarga"));
         ResponseEntity<String> response = apiWrapper.addNewEvent(port, bearerToken, createEventDto);
 
         Map responseEvent = mapper.readValue(response.getBody(), Map.class);
@@ -139,12 +139,46 @@ public class AdminControllerTest extends BaseControllerTest {
 
     }
 
-    private CreateEventDto aCreateEventDto() {
+    @Test
+    void getListOfEventsForAdminPage() throws Exception {
+        Account account = aTestAccountWithRole("ROLE_ADMIN");
+        accountRepository.save(account);
+        Account account1 = aTestAccountWithUsername("szury", 11L);
+        accountRepository.save(account1);
+        Account account2 = aTestAccountWithUsername("dezsovarga", 12L);
+        accountRepository.save(account2);
+        Account account3 = aTestAccountWithUsername("csabesz", 13L);
+        accountRepository.save(account3);
+        String bearerToken = this.generateBearerToken( "email@varga.com","password");
+
+        CreateEventDto createEventDto1 = aCreateEventDto(Arrays.asList("szury","dezsovarga"));
+        apiWrapper.addNewEvent(port, bearerToken, createEventDto1);
+
+        CreateEventDto createEventDto2 = aCreateEventDto(Arrays.asList("szury","csabesz"));
+        apiWrapper.addNewEvent(port, bearerToken, createEventDto2);
+
+        CreateEventDto createEventDto3 = aCreateEventDto(Arrays.asList("dezsovarga","csabesz"));
+        apiWrapper.addNewEvent(port, bearerToken, createEventDto3);
+
+        ResponseEntity<String> response = apiWrapper.getEventsForAdmin(port, bearerToken);
+        List<EventResponseDto> eventForAdminDtoList =
+                mapper.readValue(response.getBody(), new TypeReference<List<EventResponseDto>>(){} );
+
+        assertFalse(eventForAdminDtoList.isEmpty());
+        assertEquals("INITIATED", eventForAdminDtoList.get(0).getStatus().name());
+        assertEquals(Arrays.asList("szury","dezsovarga"),
+                eventForAdminDtoList.get(0).getRegisteredPlayers()
+                        .stream()
+                        .map(AccountDto::getUsername)
+                        .collect(Collectors.toList()));
+    }
+
+    private CreateEventDto aCreateEventDto(List<String> registeredPlayers) {
         ZoneId zoneId = ZoneId.systemDefault(); // or: ZoneId.of("Europe/Oslo");
         long epoch = LocalDateTime.now().atZone(zoneId).toEpochSecond();
         return CreateEventDto.builder()
                 .eventDateEpoch(epoch)
-                .registeredPlayers(Arrays.asList("szury","dezsovarga"))
+                .registeredPlayers(registeredPlayers)
                 .build();
     }
 

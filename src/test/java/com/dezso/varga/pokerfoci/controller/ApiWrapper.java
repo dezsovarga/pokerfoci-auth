@@ -30,6 +30,8 @@ public class ApiWrapper {
     public static final String ADD_NEW_ACCOUNT_FOR_ADMIN_PATH = "/admin/account";
     public static final String UPDATE_ACCOUNT_FOR_ADMIN_PATH = "/admin/account";
     public static final String ADD_NEW_EVENT_PATH = "/admin/event";
+    public static final String LIST_EVENTS_FOR_ADMIN_PATH = "/admin/events";
+
 
     public String registerUser(String path, int port, String jsonBody) throws Exception{
         headers.clear();
@@ -71,6 +73,11 @@ public class ApiWrapper {
     public ResponseEntity<String> getAccountsForAdmin(int port, String bearerToken) {
 
         return callApi(LIST_ACCOUNTS_FOR_ADMIN_PATH, port, createHeaders(bearerToken), null, HttpMethod.GET);
+    }
+
+    public ResponseEntity<String> getEventsForAdmin(int port, String bearerToken) {
+
+        return callApi(LIST_EVENTS_FOR_ADMIN_PATH, port, createHeaders(bearerToken), null, HttpMethod.GET);
     }
 
     public ResponseEntity<String> addNewAccountForAdmin(int port, String bearerToken, AccountDto newAccountDto) throws JsonProcessingException {

@@ -13,5 +13,6 @@ public interface AdminService {
     AccountForAdminDto addNewAccount(AccountDto newAccountDtoRequest);
     AccountForAdminDto updateAccount(AccountForAdminDto updateAccountDtoRequest) throws Exception;
     EventResponseDto createEvent(CreateEventDto createEventDto) throws Exception;
+    List<EventResponseDto> listEvents();
 
 }

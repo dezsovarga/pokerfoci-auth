@@ -46,7 +46,7 @@ class EventConverterImplTest {
         CreateEventDto createEventDto = aCreateEventDto();
         Event event = eventConverter.fromCreateEventDtoToEvent(createEventDto);
 
-        LocalDateTime eventDateTime = Instant.ofEpochMilli(createEventDto.getEventDateEpoch())
+        LocalDateTime eventDateTime = Instant.ofEpochSecond(createEventDto.getEventDateEpoch())
                 .atZone(ZoneId.systemDefault()).toLocalDateTime();
         assertEquals(eventDateTime, event.getDate());
         assertEquals(createEventDto.getRegisteredPlayers().size(), event.getParticipationList().size());

@@ -69,4 +69,10 @@ public class AdminServiceImpl implements AdminService {
         eventRepository.save(event);
         return eventConverter.fromEventToEventResponseDto(event);
     }
+
+    @Override
+    public List<EventResponseDto> listEvents() {
+        List<Event> allEvents = eventRepository.findAll();
+        return eventConverter.fromEventListToEventResponseDtoList(allEvents);
+    }
 }

@@ -39,4 +39,10 @@ public class AdminController {
     public EventResponseDto addEvent(@RequestBody CreateEventDto newEventDtoRequest) throws Exception{
         return adminService.createEvent(newEventDtoRequest);
     }
+
+    @GetMapping("/events")
+    public List<EventResponseDto> listEvents() {
+
+        return adminService.listEvents();
+    }
 }

@@ -8,6 +8,7 @@ import com.dezso.varga.pokerfoci.repository.AccountRepository;
 import com.dezso.varga.pokerfoci.repository.EventRepository;
 import com.dezso.varga.pokerfoci.repository.RoleRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Test;
@@ -63,6 +64,7 @@ public class BaseControllerTest {
 
     @BeforeEach
     public void init() {
+        mapper.registerModule(new JavaTimeModule());
         eventRepository.deleteAll();
         accountRepository.deleteAll();
     }
