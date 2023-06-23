@@ -172,7 +172,7 @@ class AdminControllerTest extends BaseControllerTest {
 
     private CreateEventDto aCreateEventDto(List<String> registeredPlayers) {
         ZoneId zoneId = ZoneId.systemDefault(); // or: ZoneId.of("Europe/Oslo");
-        long epoch = LocalDateTime.now().atZone(zoneId).toEpochSecond();
+        long epoch = LocalDateTime.now().atZone(zoneId).toEpochSecond()*1000;
         return CreateEventDto.builder()
                 .eventDateEpoch(epoch)
                 .registeredPlayers(registeredPlayers)
