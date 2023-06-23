@@ -163,7 +163,8 @@ class AdminControllerTest extends BaseControllerTest {
 
         ResponseEntity<String> response = apiWrapper.getEventsForAdmin(port, bearerToken);
         List<EventResponseDto> eventForAdminDtoList =
-                mapper.readValue(response.getBody(), new TypeReference<List<EventResponseDto>>(){} );
+                mapper.readValue(response.getBody(), new TypeReference<>() {
+                } );
 
         assertFalse(eventForAdminDtoList.isEmpty());
         assertEquals("INITIATED", eventForAdminDtoList.get(0).getStatus().name());
