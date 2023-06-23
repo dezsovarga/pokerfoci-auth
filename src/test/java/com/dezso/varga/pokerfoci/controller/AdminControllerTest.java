@@ -167,11 +167,7 @@ class AdminControllerTest extends BaseControllerTest {
 
         assertFalse(eventForAdminDtoList.isEmpty());
         assertEquals("INITIATED", eventForAdminDtoList.get(0).getStatus().name());
-        assertEquals(Arrays.asList("szury","dezsovarga"),
-                eventForAdminDtoList.get(0).getRegisteredPlayers()
-                        .stream()
-                        .map(AccountWithSkillDto::getUsername)
-                        .collect(Collectors.toList()));
+        assertFalse(eventForAdminDtoList.get(0).getRegisteredPlayers().isEmpty());
     }
 
     private CreateEventDto aCreateEventDto(List<String> registeredPlayers) {

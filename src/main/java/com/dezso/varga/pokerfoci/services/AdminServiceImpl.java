@@ -17,6 +17,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -73,6 +75,8 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public List<EventResponseDto> listEvents() {
         List<Event> allEvents = eventRepository.findAll();
-        return eventConverter.fromEventListToEventResponseDtoList(allEvents);
+        List<EventResponseDto> dtoList = eventConverter.fromEventListToEventResponseDtoList(allEvents);
+        Collections.sort(dtoList, Comparator.comparing(EventResponseDto::getEventDateTime).reversed());
+        return dtoList;
     }
 }

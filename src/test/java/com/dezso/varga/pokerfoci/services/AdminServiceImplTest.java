@@ -8,6 +8,7 @@ import com.dezso.varga.pokerfoci.domain.Participation;
 import com.dezso.varga.pokerfoci.domain.Role;
 import com.dezso.varga.pokerfoci.dto.EventResponseDto;
 import com.dezso.varga.pokerfoci.dto.admin.AccountForAdminDto;
+import com.dezso.varga.pokerfoci.dto.admin.AccountWithSkillDto;
 import com.dezso.varga.pokerfoci.repository.AccountRepository;
 import com.dezso.varga.pokerfoci.repository.EventRepository;
 import org.junit.Assert;
@@ -107,12 +108,12 @@ class AdminServiceImplTest {
         Assert.assertFalse(eventList.isEmpty());
         assertEquals(EventStatus.INITIATED, eventList.get(0).getStatus());
         List<String> firstEventRegisteredPlayers =
-                eventList.get(0).getRegisteredPlayers().stream().map(player -> player.getUsername()).collect(Collectors.toList());
-        assertEquals(Arrays.asList("user1", "user2"),firstEventRegisteredPlayers);
+                eventList.get(0).getRegisteredPlayers().stream().map(AccountWithSkillDto::getUsername).collect(Collectors.toList());
+        assertEquals(Arrays.asList("user1", "user3"),firstEventRegisteredPlayers);
 
         assertEquals(EventStatus.INITIATED, eventList.get(1).getStatus());
         List<String> secondEventRegisteredPlayers =
-                eventList.get(1).getRegisteredPlayers().stream().map(player -> player.getUsername()).collect(Collectors.toList());
-        assertEquals(Arrays.asList("user1", "user3"),secondEventRegisteredPlayers);
+                eventList.get(1).getRegisteredPlayers().stream().map(AccountWithSkillDto::getUsername).collect(Collectors.toList());
+        assertEquals(Arrays.asList("user1", "user2"),secondEventRegisteredPlayers);
     }
 }
