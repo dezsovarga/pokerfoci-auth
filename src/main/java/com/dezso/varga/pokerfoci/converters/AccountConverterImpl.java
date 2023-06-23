@@ -6,6 +6,7 @@ import com.dezso.varga.pokerfoci.domain.Role;
 import com.dezso.varga.pokerfoci.domain.RoleEnum;
 import com.dezso.varga.pokerfoci.dto.admin.AccountForAdminDto;
 import com.dezso.varga.pokerfoci.dto.admin.AccountDto;
+import com.dezso.varga.pokerfoci.dto.admin.AccountWithSkillDto;
 import com.dezso.varga.pokerfoci.repository.AccountRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -83,19 +84,18 @@ public class AccountConverterImpl implements AccountConverter {
     }
 
     @Override
-    public AccountDto fromAccountToAccountDto(Account account) {
+    public AccountWithSkillDto fromAccountToAccountWithSkillDto(Account account) {
 
-        return AccountDto.builder().email(account.getEmail())
-                .username(account.getUsername())
+        return AccountWithSkillDto.builder().username(account.getUsername())
                 .skill(account.getSkill())
                 .build();
     }
 
     @Override
-    public List<AccountDto> fromAccountListToAccountDtoList(List<Account> accountList) {
+    public List<AccountWithSkillDto> fromAccountListToAccountWithSkillDtoList(List<Account> accountList) {
         return accountList
                 .stream()
-                .map(account -> fromAccountToAccountDto(account))
+                .map(account -> fromAccountToAccountWithSkillDto(account))
                 .collect(Collectors.toList());
     }
 

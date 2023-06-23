@@ -24,7 +24,7 @@ public class EventConverterImpl implements EventConverter {
     @Override
     public Event fromCreateEventDtoToEvent(CreateEventDto createEventDto) {
 
-        LocalDateTime eventDateTime = Instant.ofEpochSecond(createEventDto.getEventDateEpoch())
+        LocalDateTime eventDateTime = Instant.ofEpochMilli(createEventDto.getEventDateEpoch())
                 .atZone(ZoneId.systemDefault()).toLocalDateTime();
         return Event.builder()
                 .date(eventDateTime)
@@ -39,7 +39,7 @@ public class EventConverterImpl implements EventConverter {
                 .id(event.getId())
                 .eventDateTime(event.getDate())
                 .status(event.getStatus())
-                .registeredPlayers(accountConverter.fromAccountListToAccountDtoList(registeredPlayers))
+                .registeredPlayers(accountConverter.fromAccountListToAccountWithSkillDtoList(registeredPlayers))
                 .build();
     }
 

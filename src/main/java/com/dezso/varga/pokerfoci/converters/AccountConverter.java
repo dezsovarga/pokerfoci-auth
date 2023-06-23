@@ -4,6 +4,7 @@ import com.dezso.varga.pokerfoci.domain.Account;
 import com.dezso.varga.pokerfoci.domain.Participation;
 import com.dezso.varga.pokerfoci.dto.admin.AccountForAdminDto;
 import com.dezso.varga.pokerfoci.dto.admin.AccountDto;
+import com.dezso.varga.pokerfoci.dto.admin.AccountWithSkillDto;
 
 import java.util.List;
 
@@ -19,7 +20,7 @@ public interface AccountConverter {
 
     List<Participation> fromAccountNameListToEventParticipationList(List<String> accountNames);
 
-    AccountDto fromAccountToAccountDto(Account account);
+    AccountWithSkillDto fromAccountToAccountWithSkillDto(Account account);
 
-    List<AccountDto> fromAccountListToAccountDtoList(List<Account> accountList);
+    List<AccountWithSkillDto> fromAccountListToAccountWithSkillDtoList(List<Account> accountList);
 }

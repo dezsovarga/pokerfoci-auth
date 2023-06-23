@@ -6,6 +6,7 @@ import com.dezso.varga.pokerfoci.domain.Role;
 import com.dezso.varga.pokerfoci.dto.EventResponseDto;
 import com.dezso.varga.pokerfoci.dto.admin.AccountForAdminDto;
 import com.dezso.varga.pokerfoci.dto.admin.AccountDto;
+import com.dezso.varga.pokerfoci.dto.admin.AccountWithSkillDto;
 import com.dezso.varga.pokerfoci.dto.admin.CreateEventDto;
 import com.dezso.varga.pokerfoci.repository.EventRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -169,7 +170,7 @@ class AdminControllerTest extends BaseControllerTest {
         assertEquals(Arrays.asList("szury","dezsovarga"),
                 eventForAdminDtoList.get(0).getRegisteredPlayers()
                         .stream()
-                        .map(AccountDto::getUsername)
+                        .map(AccountWithSkillDto::getUsername)
                         .collect(Collectors.toList()));
     }
 

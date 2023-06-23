@@ -1,7 +1,7 @@
 package com.dezso.varga.pokerfoci.dto;
 
 import com.dezso.varga.pokerfoci.domain.EventStatus;
-import com.dezso.varga.pokerfoci.dto.admin.AccountDto;
+import com.dezso.varga.pokerfoci.dto.admin.AccountWithSkillDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,7 +20,7 @@ public class EventResponseDto {
 
     private Long id;
     private LocalDateTime eventDateTime;
-    private List<AccountDto> registeredPlayers;
+    private List<AccountWithSkillDto> registeredPlayers;
     private EventStatus status;
     private String score;
 }
