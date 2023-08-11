@@ -95,7 +95,7 @@ public class AccountConverterImpl implements AccountConverter {
     public List<AccountWithSkillDto> fromAccountListToAccountWithSkillDtoList(List<Account> accountList) {
         return accountList
                 .stream()
-                .map(account -> fromAccountToAccountWithSkillDto(account))
+                .map(this::fromAccountToAccountWithSkillDto)
                 .collect(Collectors.toList());
     }
 

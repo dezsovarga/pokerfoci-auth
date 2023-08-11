@@ -29,8 +29,8 @@ public class ApiWrapper {
     public static final String LIST_ACCOUNTS_FOR_ADMIN_PATH = "/admin/accounts";
     public static final String ADD_NEW_ACCOUNT_FOR_ADMIN_PATH = "/admin/account";
     public static final String UPDATE_ACCOUNT_FOR_ADMIN_PATH = "/admin/account";
-    public static final String ADD_NEW_EVENT_PATH = "/admin/event";
-    public static final String LIST_EVENTS_FOR_ADMIN_PATH = "/admin/events";
+    public static final String ADD_NEW_EVENT_PATH = "/event/event";
+    public static final String LIST_EVENTS_FOR_ADMIN_PATH = "/event/events";
 
 
     public String registerUser(String path, int port, String jsonBody) throws Exception{

@@ -61,6 +61,16 @@ class AdminControllerTest extends BaseControllerTest {
     }
 
     @Test
+    void getListOfEventsForAdminPageWithNoAdminRole() throws Exception {
+        Account account = aTestAccountWithRole("ROLE_USER");
+        accountRepository.save(account);
+        String bearerToken = this.generateBearerToken( "email@varga.com","password");
+        ResponseEntity<String> response = apiWrapper.getEventsForAdmin(port, bearerToken);
+
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+    }
+
+    @Test
     void addNewAccount() throws Exception {
         Account account = aTestAccountWithRole("ROLE_ADMIN");
         accountRepository.save(account);

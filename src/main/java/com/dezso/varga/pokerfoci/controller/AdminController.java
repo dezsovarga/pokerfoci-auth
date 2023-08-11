@@ -35,14 +35,14 @@ public class AdminController {
         return adminService.updateAccount(updateAccountDtoRequest);
     }
 
-    @PostMapping("/event")
-    public EventResponseDto addEvent(@RequestBody CreateEventDto newEventDtoRequest) throws Exception{
-        return adminService.createEvent(newEventDtoRequest);
-    }
-
-    @GetMapping("/events")
-    public List<EventResponseDto> listEvents() {
-
-        return adminService.listEvents();
-    }
+//    @PostMapping("/event")
+//    public EventResponseDto addEvent(@RequestBody CreateEventDto newEventDtoRequest) throws Exception{
+//        return adminService.createEvent(newEventDtoRequest);
+//    }
+//
+//    @GetMapping("/events")
+//    public List<EventResponseDto> listEvents() {
+//
+//        return adminService.listEvents();
+//    }
 }
