@@ -2,26 +2,21 @@ package com.dezso.varga.pokerfoci.controller;
 
 import com.dezso.varga.pokerfoci.domain.Account;
 import com.dezso.varga.pokerfoci.domain.Event;
-import com.dezso.varga.pokerfoci.domain.Role;
 import com.dezso.varga.pokerfoci.dto.EventResponseDto;
 import com.dezso.varga.pokerfoci.dto.admin.AccountForAdminDto;
 import com.dezso.varga.pokerfoci.dto.admin.AccountDto;
-import com.dezso.varga.pokerfoci.dto.admin.AccountWithSkillDto;
 import com.dezso.varga.pokerfoci.dto.admin.CreateEventDto;
 import com.dezso.varga.pokerfoci.repository.EventRepository;
+import com.dezso.varga.pokerfoci.utils.Utils;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
 
@@ -35,7 +30,7 @@ class AdminControllerTest extends BaseControllerTest {
 
     @Test
     void getListOfAccountsForAdminPage() throws Exception {
-        Account account = aTestAccountWithRole("ROLE_ADMIN");
+        Account account = Utils.aTestAccountWithRole("ROLE_ADMIN", passwordEncoder.encode("password"));
         accountRepository.save(account);
         String bearerToken = this.generateBearerToken( "email@varga.com","password");
         ResponseEntity<String> response = apiWrapper.getAccountsForAdmin(port, bearerToken);
@@ -52,7 +47,7 @@ class AdminControllerTest extends BaseControllerTest {
 
     @Test
     void getListOfAccountsForAdminPageWithNoAdminRole() throws Exception {
-        Account account = aTestAccountWithRole("ROLE_USER");
+        Account account = Utils.aTestAccountWithRole("ROLE_USER", passwordEncoder.encode("password"));
         accountRepository.save(account);
         String bearerToken = this.generateBearerToken( "email@varga.com","password");
         ResponseEntity<String> response = apiWrapper.getAccountsForAdmin(port, bearerToken);
@@ -62,7 +57,7 @@ class AdminControllerTest extends BaseControllerTest {
 
     @Test
     void getListOfEventsForAdminPageWithNoAdminRole() throws Exception {
-        Account account = aTestAccountWithRole("ROLE_USER");
+        Account account = Utils.aTestAccountWithRole("ROLE_USER", passwordEncoder.encode("password"));
         accountRepository.save(account);
         String bearerToken = this.generateBearerToken( "email@varga.com","password");
         ResponseEntity<String> response = apiWrapper.getEventsForAdmin(port, bearerToken);
@@ -72,7 +67,7 @@ class AdminControllerTest extends BaseControllerTest {
 
     @Test
     void addNewAccount() throws Exception {
-        Account account = aTestAccountWithRole("ROLE_ADMIN");
+        Account account = Utils.aTestAccountWithRole("ROLE_ADMIN", passwordEncoder.encode("password"));
         accountRepository.save(account);
         String bearerToken = this.generateBearerToken( "email@varga.com","password");
 
@@ -87,7 +82,7 @@ class AdminControllerTest extends BaseControllerTest {
 
     @Test
     void updateAccount() throws Exception {
-        Account account = aTestAccountWithRole("ROLE_ADMIN");
+        Account account = Utils.aTestAccountWithRole("ROLE_ADMIN", passwordEncoder.encode("password"));
 
         accountRepository.save(account);
         String bearerToken = this.generateBearerToken( "email@varga.com","password");
@@ -130,16 +125,16 @@ class AdminControllerTest extends BaseControllerTest {
 
     @Test
     void addNewEvent() throws Exception {
-        Account account = aTestAccountWithRole("ROLE_ADMIN");
+        Account account = Utils.aTestAccountWithRole("ROLE_ADMIN", passwordEncoder.encode("password"));
         accountRepository.save(account);
-        Account account1 = aTestAccountWithUsername("szury", 11L);
+        Account account1 = Utils.aTestAccountWithUsername("szury", 11L,  passwordEncoder.encode("password"));
         accountRepository.save(account1);
-        Account account2 = aTestAccountWithUsername("dezsovarga", 12L);
+        Account account2 = Utils.aTestAccountWithUsername("dezsovarga", 12L,  passwordEncoder.encode("password"));
         accountRepository.save(account2);
 
         String bearerToken = this.generateBearerToken( "email@varga.com","password");
 
-        CreateEventDto createEventDto = aCreateEventDto(Arrays.asList("szury","dezsovarga"));
+        CreateEventDto createEventDto = Utils.aCreateEventDto(Arrays.asList("szury","dezsovarga"));
         ResponseEntity<String> response = apiWrapper.addNewEvent(port, bearerToken, createEventDto);
 
         Map responseEvent = mapper.readValue(response.getBody(), Map.class);
@@ -152,23 +147,23 @@ class AdminControllerTest extends BaseControllerTest {
 
     @Test
     void getListOfEventsForAdminPage() throws Exception {
-        Account account = aTestAccountWithRole("ROLE_ADMIN");
+        Account account = Utils.aTestAccountWithRole("ROLE_ADMIN", passwordEncoder.encode("password"));
         accountRepository.save(account);
-        Account account1 = aTestAccountWithUsername("szury", 11L);
+        Account account1 = Utils.aTestAccountWithUsername("szury", 11L, passwordEncoder.encode("password"));
         accountRepository.save(account1);
-        Account account2 = aTestAccountWithUsername("dezsovarga", 12L);
+        Account account2 = Utils.aTestAccountWithUsername("dezsovarga", 12L, passwordEncoder.encode("password"));
         accountRepository.save(account2);
-        Account account3 = aTestAccountWithUsername("csabesz", 13L);
+        Account account3 = Utils.aTestAccountWithUsername("csabesz", 13L, passwordEncoder.encode("password"));
         accountRepository.save(account3);
         String bearerToken = this.generateBearerToken( "email@varga.com","password");
 
-        CreateEventDto createEventDto1 = aCreateEventDto(Arrays.asList("szury","dezsovarga"));
+        CreateEventDto createEventDto1 = Utils.aCreateEventDto(Arrays.asList("szury","dezsovarga"));
         apiWrapper.addNewEvent(port, bearerToken, createEventDto1);
 
-        CreateEventDto createEventDto2 = aCreateEventDto(Arrays.asList("szury","csabesz"));
+        CreateEventDto createEventDto2 = Utils.aCreateEventDto(Arrays.asList("szury","csabesz"));
         apiWrapper.addNewEvent(port, bearerToken, createEventDto2);
 
-        CreateEventDto createEventDto3 = aCreateEventDto(Arrays.asList("dezsovarga","csabesz"));
+        CreateEventDto createEventDto3 = Utils.aCreateEventDto(Arrays.asList("dezsovarga","csabesz"));
         apiWrapper.addNewEvent(port, bearerToken, createEventDto3);
 
         ResponseEntity<String> response = apiWrapper.getEventsForAdmin(port, bearerToken);
@@ -179,33 +174,6 @@ class AdminControllerTest extends BaseControllerTest {
         assertFalse(eventForAdminDtoList.isEmpty());
         assertEquals("INITIATED", eventForAdminDtoList.get(0).getStatus().name());
         assertFalse(eventForAdminDtoList.get(0).getRegisteredPlayers().isEmpty());
-    }
-
-    private CreateEventDto aCreateEventDto(List<String> registeredPlayers) {
-        ZoneId zoneId = ZoneId.systemDefault(); // or: ZoneId.of("Europe/Oslo");
-        long epoch = LocalDateTime.now().atZone(zoneId).toEpochSecond()*1000;
-        return CreateEventDto.builder()
-                .eventDateEpoch(epoch)
-                .registeredPlayers(registeredPlayers)
-                .build();
-    }
-
-    private Account aTestAccountWithRole(String role) {
-        return new Account(1L,
-                "username",
-                "email@varga.com",
-                passwordEncoder.encode("password"),
-                true,
-                Set.of(new Role( role)));
-    }
-
-    private Account aTestAccountWithUsername(String username, Long id) {
-        return new Account(id,
-                username,
-                username+"@varga.com",
-                passwordEncoder.encode("password"),
-                true,
-                Set.of(new Role( "ROLE_USER")));
     }
 
     private AccountDto anAccountToBeAdded() {

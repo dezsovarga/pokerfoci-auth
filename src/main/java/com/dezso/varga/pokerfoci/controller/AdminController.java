@@ -1,9 +1,7 @@
 package com.dezso.varga.pokerfoci.controller;
 
-import com.dezso.varga.pokerfoci.dto.EventResponseDto;
 import com.dezso.varga.pokerfoci.dto.admin.AccountForAdminDto;
 import com.dezso.varga.pokerfoci.dto.admin.AccountDto;
-import com.dezso.varga.pokerfoci.dto.admin.CreateEventDto;
 import com.dezso.varga.pokerfoci.services.AdminService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.access.annotation.Secured;
@@ -34,15 +32,4 @@ public class AdminController {
 
         return adminService.updateAccount(updateAccountDtoRequest);
     }
-
-//    @PostMapping("/event")
-//    public EventResponseDto addEvent(@RequestBody CreateEventDto newEventDtoRequest) throws Exception{
-//        return adminService.createEvent(newEventDtoRequest);
-//    }
-//
-//    @GetMapping("/events")
-//    public List<EventResponseDto> listEvents() {
-//
-//        return adminService.listEvents();
-//    }
 }

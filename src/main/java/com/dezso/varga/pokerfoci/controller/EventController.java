@@ -3,6 +3,7 @@ package com.dezso.varga.pokerfoci.controller;
 import com.dezso.varga.pokerfoci.dto.EventResponseDto;
 import com.dezso.varga.pokerfoci.dto.admin.CreateEventDto;
 import com.dezso.varga.pokerfoci.services.AdminService;
+import com.dezso.varga.pokerfoci.services.EventService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +19,8 @@ import java.util.List;
 @AllArgsConstructor
 public class EventController {
 
-    private AdminService adminService;
+    private final AdminService adminService;
+    private final EventService eventService;
 
     @Secured( "ROLE_ADMIN" )
     @PostMapping("/event")
@@ -31,5 +33,11 @@ public class EventController {
     public List<EventResponseDto> listEvents() {
 
         return adminService.listEvents();
+    }
+
+    @GetMapping("/latest")
+    public EventResponseDto getLatestEvent() {
+
+        return eventService.getLatestEvent();
     }
 }
