@@ -9,6 +9,7 @@ import com.dezso.varga.pokerfoci.dto.admin.AccountDto;
 import com.dezso.varga.pokerfoci.dto.admin.AccountWithSkillDto;
 import com.dezso.varga.pokerfoci.repository.AccountRepository;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -18,12 +19,16 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 @Service
 @AllArgsConstructor
 public class AccountConverterImpl implements AccountConverter {
 
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     private final AccountRepository accountRepository;
+
+    private static final Logger LOG = getLogger(AccountConverterImpl.class);
 
     @Override
     public AccountForAdminDto fromAccountToAccountForAdminDto(Account account) {

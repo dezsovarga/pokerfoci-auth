@@ -9,7 +9,9 @@ import com.dezso.varga.pokerfoci.dto.admin.CreateEventDto;
 import com.dezso.varga.pokerfoci.repository.EventRepository;
 import com.dezso.varga.pokerfoci.utils.Utils;
 import com.fasterxml.jackson.core.type.TypeReference;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.*;
+import static org.slf4j.LoggerFactory.getLogger;
 
 class AdminControllerTest extends BaseControllerTest {
 
@@ -27,6 +30,8 @@ class AdminControllerTest extends BaseControllerTest {
 
     @Autowired
     private EventRepository eventRepository;
+
+    private static final Logger LOG = getLogger(AdminControllerTest.class);
 
     @Test
     void getListOfAccountsForAdminPage() throws Exception {
@@ -127,14 +132,17 @@ class AdminControllerTest extends BaseControllerTest {
     void addNewEvent() throws Exception {
         Account account = Utils.aTestAccountWithRole("ROLE_ADMIN", passwordEncoder.encode("password"));
         accountRepository.save(account);
-        Account account1 = Utils.aTestAccountWithUsername("szury", 11L,  passwordEncoder.encode("password"));
+        String username1 = RandomStringUtils.random(10, true, false);
+        Account account1 = Utils.aTestAccountWithUsername(username1, 11L,  passwordEncoder.encode("password"));
         accountRepository.save(account1);
-        Account account2 = Utils.aTestAccountWithUsername("dezsovarga", 12L,  passwordEncoder.encode("password"));
+
+        String username2 = RandomStringUtils.random(10, true, false);
+        Account account2 = Utils.aTestAccountWithUsername(username2, 12L,  passwordEncoder.encode("password"));
         accountRepository.save(account2);
 
         String bearerToken = this.generateBearerToken( "email@varga.com","password");
 
-        CreateEventDto createEventDto = Utils.aCreateEventDto(Arrays.asList("szury","dezsovarga"));
+        CreateEventDto createEventDto = Utils.aCreateEventDto(Arrays.asList(username1,username2));
         ResponseEntity<String> response = apiWrapper.addNewEvent(port, bearerToken, createEventDto);
 
         Map responseEvent = mapper.readValue(response.getBody(), Map.class);
@@ -149,21 +157,31 @@ class AdminControllerTest extends BaseControllerTest {
     void getListOfEventsForAdminPage() throws Exception {
         Account account = Utils.aTestAccountWithRole("ROLE_ADMIN", passwordEncoder.encode("password"));
         accountRepository.save(account);
-        Account account1 = Utils.aTestAccountWithUsername("szury", 11L, passwordEncoder.encode("password"));
+
+        String username1 = RandomStringUtils.random(10, true, false);
+        Account account1 = Utils.aTestAccountWithUsername(username1, 31L, passwordEncoder.encode("password"));
+        account1.setSkill(61);
         accountRepository.save(account1);
-        Account account2 = Utils.aTestAccountWithUsername("dezsovarga", 12L, passwordEncoder.encode("password"));
+
+        String username2 = RandomStringUtils.random(10, true, false);
+
+        Account account2 = Utils.aTestAccountWithUsername(username2, 32L, passwordEncoder.encode("password"));
+        account2.setSkill(62);
         accountRepository.save(account2);
-        Account account3 = Utils.aTestAccountWithUsername("csabesz", 13L, passwordEncoder.encode("password"));
+
+        String username3 = RandomStringUtils.random(10, true, false);
+        Account account3 = Utils.aTestAccountWithUsername(username3, 33L, passwordEncoder.encode("password"));
+        account3.setSkill(63);
         accountRepository.save(account3);
         String bearerToken = this.generateBearerToken( "email@varga.com","password");
 
-        CreateEventDto createEventDto1 = Utils.aCreateEventDto(Arrays.asList("szury","dezsovarga"));
+        CreateEventDto createEventDto1 = Utils.aCreateEventDto(Arrays.asList(username1,username2));
         apiWrapper.addNewEvent(port, bearerToken, createEventDto1);
 
-        CreateEventDto createEventDto2 = Utils.aCreateEventDto(Arrays.asList("szury","csabesz"));
+        CreateEventDto createEventDto2 = Utils.aCreateEventDto(Arrays.asList(username1,username3));
         apiWrapper.addNewEvent(port, bearerToken, createEventDto2);
 
-        CreateEventDto createEventDto3 = Utils.aCreateEventDto(Arrays.asList("dezsovarga","csabesz"));
+        CreateEventDto createEventDto3 = Utils.aCreateEventDto(Arrays.asList(username2,username3));
         apiWrapper.addNewEvent(port, bearerToken, createEventDto3);
 
         ResponseEntity<String> response = apiWrapper.getEventsForAdmin(port, bearerToken);

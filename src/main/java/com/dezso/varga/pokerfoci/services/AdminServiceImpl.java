@@ -14,6 +14,7 @@ import com.dezso.varga.pokerfoci.repository.AccountRepository;
 import com.dezso.varga.pokerfoci.repository.EventRepository;
 import com.dezso.varga.pokerfoci.repository.ParticipationRepository;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+
+import static org.slf4j.LoggerFactory.getLogger;
 
 @Service
 @AllArgsConstructor
@@ -31,6 +34,8 @@ public class AdminServiceImpl implements AdminService {
     private EventConverter eventConverter;
     private final EventRepository eventRepository;
     private final ParticipationRepository participationRepository;
+
+    private static final Logger LOG = getLogger(AdminServiceImpl.class);
 
     @Override
     public List<AccountForAdminDto> listAccounts() {

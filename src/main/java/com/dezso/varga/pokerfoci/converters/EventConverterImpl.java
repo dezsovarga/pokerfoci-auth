@@ -46,6 +46,6 @@ public class EventConverterImpl implements EventConverter {
     @Override
     public List<EventResponseDto> fromEventListToEventResponseDtoList(List<Event> eventList) {
 
-        return eventList.stream().map(event -> fromEventToEventResponseDto(event)).collect(Collectors.toList());
+        return eventList.stream().map(this::fromEventToEventResponseDto).collect(Collectors.toList());
     }
 }
