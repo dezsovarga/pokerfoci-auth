@@ -31,7 +31,7 @@ public class ApiWrapper {
     public static final String UPDATE_ACCOUNT_FOR_ADMIN_PATH = "/admin/account";
     public static final String ADD_NEW_EVENT_PATH = "/event/event";
     public static final String LIST_EVENTS_FOR_ADMIN_PATH = "/event/events";
-
+    public static final String GET_LATEST_EVENT_PATH = "/event/latest";
 
     public String registerUser(String path, int port, String jsonBody) throws Exception{
         headers.clear();
@@ -101,6 +101,11 @@ public class ApiWrapper {
         String jsonBody = mapper.writeValueAsString(newEventDto);
 
         return callApi(ADD_NEW_EVENT_PATH, port, createHeaders(bearerToken), jsonBody, HttpMethod.POST);
+    }
+
+    public ResponseEntity<String> getLatestEvent(int port, String bearerToken) {
+
+        return callApi(GET_LATEST_EVENT_PATH, port, createHeaders(bearerToken), null, HttpMethod.GET);
     }
 
     private HttpHeaders createHeaders(String bearerToken) {

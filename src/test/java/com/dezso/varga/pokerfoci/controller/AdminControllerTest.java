@@ -15,7 +15,6 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -24,9 +23,6 @@ import static org.junit.Assert.*;
 import static org.slf4j.LoggerFactory.getLogger;
 
 class AdminControllerTest extends BaseControllerTest {
-
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
     private EventRepository eventRepository;
