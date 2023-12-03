@@ -27,6 +27,7 @@ public class AuthUtils {
     //    static final long EXPIRATION_TIME = 1_000; // 1 sec
     private static final String SECRET_KEY = "secretkey";
     public static final String BASIC_TOKEN = "Basic ";
+    public static final String BEARER_TOKEN = "Bearer ";
     public static final String BASIC_AUTH_ENCODER_SEPARATOR = ":";
 
     public static String generateRegisterConfirmationToken(RegisterRequestDto registerRequest) throws Exception {
@@ -45,7 +46,7 @@ public class AuthUtils {
         return Base64.encodeBase64URLSafeString(objectMapper.writeValueAsBytes(fields));
     }
 
-    public static String decodeConfirmToken(String confirmToken) throws JsonProcessingException {
+    public static String decodeToken(String confirmToken) throws JsonProcessingException {
         String confirmTokenDecoded = new String(org.apache.commons.codec.binary.Base64.decodeBase64(confirmToken));
         return objectMapper.readValue(confirmTokenDecoded, Map.class).get("token").toString();
     }
@@ -66,10 +67,20 @@ public class AuthUtils {
         return Base64.encodeBase64URLSafeString(objectMapper.writeValueAsBytes(fields));
     }
 
+    public static String getAccountEmailFromBearerToken(String bearerToken) throws Exception {
+        Claims claims;
+        try {
+            claims = Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(bearerToken).getBody();
+        } catch (Exception ex) {
+            throw new ConfirmTokenExpiredException("Bearer token expired or invalid", HttpStatus.PRECONDITION_FAILED.value());
+        }
+        return claims.getSubject().split(",")[1];
+    }
+
     public static Account validateConfirmToken(String confirmToken) throws Exception {
         Claims claims;
         try {
-            confirmToken = decodeConfirmToken(confirmToken);
+            confirmToken = decodeToken(confirmToken);
             claims = Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(confirmToken).getBody();
         } catch (Exception ex) {
             throw new ConfirmTokenExpiredException("Confirmation token expired or invalid", HttpStatus.PRECONDITION_FAILED.value());
@@ -106,5 +117,18 @@ public class AuthUtils {
             }
         }
         throw new GlobalException("Invalid authorization header", HttpStatus.UNAUTHORIZED.value());
+    }
+
+    public static String extractTokenFromBearerToken(String authHeader) throws Exception {
+        if (!authHeader.startsWith(BEARER_TOKEN)) {
+            throw new GlobalException("Invalid authorization header", HttpStatus.UNAUTHORIZED.value());
+        }
+
+        String[] split = authHeader.split(BEARER_TOKEN);
+        if (split.length == 2) {
+            return split[1];
+        } else {
+            throw new GlobalException("Invalid authorization header", HttpStatus.UNAUTHORIZED.value());
+        }
     }
 }

@@ -13,13 +13,15 @@ import org.springframework.http.ResponseEntity;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Arrays;
+import java.util.Collections;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class EventControllerTest extends BaseControllerTest {
 
     @Test
-    void getListOfEventsForAdminPage() throws Exception {
+    void getLatestEvent() throws Exception {
         Account account = Utils.aTestAccountWithRole("ROLE_ADMIN", passwordEncoder.encode("password"));
         accountRepository.save(account);
 
@@ -51,5 +53,20 @@ public class EventControllerTest extends BaseControllerTest {
 
         assertNotNull(eventResponseDto);
         Assertions.assertEquals(eventResponseDto.getEventDateTime().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(), epoch);
+    }
+
+    @Test
+    void registerToLatestEvent() throws Exception {
+        Account account = Utils.aTestAccountWithRole("ROLE_ADMIN", passwordEncoder.encode("password"));
+        accountRepository.save(account);
+        String bearerToken = this.generateBearerToken( "email@varga.com","password");
+
+        CreateEventDto createEventDto1 = Utils.aCreateEventDto(Collections.singletonList(account.getUsername()));
+        apiWrapper.addNewEvent(port, bearerToken, createEventDto1);
+
+        ResponseEntity<String> response = apiWrapper.registerToLatestEvent(port, bearerToken);
+        EventResponseDto eventResponseDto = mapper.readValue(response.getBody(), new TypeReference<>() {} );
+        assertNotNull(eventResponseDto);
+        assertTrue(eventResponseDto.getRegisteredPlayers().size() > createEventDto1.getRegisteredPlayers().size());
     }
 }

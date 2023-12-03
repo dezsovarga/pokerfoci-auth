@@ -6,6 +6,7 @@ import com.dezso.varga.pokerfoci.dto.TokenInfoResponseDto;
 import com.dezso.varga.pokerfoci.dto.admin.AccountDto;
 import com.dezso.varga.pokerfoci.repository.AccountRepository;
 import com.dezso.varga.pokerfoci.repository.EventRepository;
+import com.dezso.varga.pokerfoci.repository.ParticipationRepository;
 import com.dezso.varga.pokerfoci.repository.RoleRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -65,11 +66,14 @@ public class BaseControllerTest {
 
     @Autowired
     private EventRepository eventRepository;
+    @Autowired
+    private ParticipationRepository participationRepository;
 
     @BeforeEach
     public void init() {
         mapper.registerModule(new JavaTimeModule());
         eventRepository.deleteAll();
+        participationRepository.deleteAll();
         accountRepository.deleteAll();
     }
 

@@ -1,5 +1,6 @@
 package com.dezso.varga.pokerfoci.controller;
 
+import com.dezso.varga.pokerfoci.authentication.utils.AuthUtils;
 import com.dezso.varga.pokerfoci.dto.EventResponseDto;
 import com.dezso.varga.pokerfoci.dto.admin.CreateEventDto;
 import com.dezso.varga.pokerfoci.services.AdminService;
@@ -9,6 +10,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -39,5 +41,13 @@ public class EventController {
     public EventResponseDto getLatestEvent() {
 
         return eventService.getLatestEvent();
+    }
+
+    @PostMapping("/register")
+    public EventResponseDto registerToLatestEvent(@RequestHeader("Authorization") String authHeader) throws Exception {
+
+        String token = AuthUtils.extractTokenFromBearerToken(authHeader);
+        String userEmail = AuthUtils.getAccountEmailFromBearerToken(token);
+        return eventService.registerToLatestEvent(userEmail);
     }
 }

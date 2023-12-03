@@ -2,6 +2,7 @@ package com.dezso.varga.pokerfoci.converters;
 
 import com.dezso.varga.pokerfoci.domain.Account;
 import com.dezso.varga.pokerfoci.domain.Event;
+import com.dezso.varga.pokerfoci.domain.Participation;
 import com.dezso.varga.pokerfoci.dto.EventResponseDto;
 import com.dezso.varga.pokerfoci.dto.admin.CreateEventDto;
 import com.dezso.varga.pokerfoci.repository.EventRepository;
@@ -34,7 +35,7 @@ public class EventConverterImpl implements EventConverter {
 
     @Override
     public EventResponseDto fromEventToEventResponseDto(Event event) {
-        List<Account> registeredPlayers = event.getParticipationList().stream().map(eventParticipation -> eventParticipation.getAccount()).collect(Collectors.toList());
+        List<Account> registeredPlayers = event.getParticipationList().stream().map(Participation::getAccount).collect(Collectors.toList());
         return EventResponseDto.builder()
                 .id(event.getId())
                 .eventDateTime(event.getDate())
