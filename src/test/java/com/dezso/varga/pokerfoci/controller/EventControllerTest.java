@@ -68,5 +68,10 @@ public class EventControllerTest extends BaseControllerTest {
         EventResponseDto eventResponseDto = mapper.readValue(response.getBody(), new TypeReference<>() {} );
         assertNotNull(eventResponseDto);
         assertTrue(eventResponseDto.getRegisteredPlayers().size() > createEventDto1.getRegisteredPlayers().size());
+
+        ResponseEntity<String> savedResponse = apiWrapper.getLatestEvent(port, bearerToken);
+        EventResponseDto savedLatestEventResponseDto = mapper.readValue(savedResponse.getBody(), new TypeReference<>() {} );
+
+        assertTrue(savedLatestEventResponseDto.getRegisteredPlayers().size() > createEventDto1.getRegisteredPlayers().size());
     }
 }
