@@ -48,11 +48,11 @@ class EventServiceImplTest {
     @Transactional
     void getLatestEvent() {
 
-        Account account1 = Utils.aTestAccountWithUsername("szury", 11L, "password");
+        Account account1 = Utils.aTestAccountWithUsername("szury", 21L, "password");
         accountRepository.save(account1);
-        Account account2 = Utils.aTestAccountWithUsername("dezsovarga", 12L, "password");
+        Account account2 = Utils.aTestAccountWithUsername("dezsovarga", 22L, "password");
         accountRepository.save(account2);
-        Account account3 = Utils.aTestAccountWithUsername("csabesz", 13L, "password");
+        Account account3 = Utils.aTestAccountWithUsername("csabesz", 23L, "password");
         accountRepository.save(account3);
 
         CreateEventDto createEventDto1 = Utils.aCreateEventDto(Arrays.asList("szury","dezsovarga"));

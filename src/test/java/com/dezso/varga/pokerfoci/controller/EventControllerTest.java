@@ -26,13 +26,13 @@ public class EventControllerTest extends BaseControllerTest {
         accountRepository.save(account);
 
         String username1 = RandomStringUtils.random(10, true, false);
-        Account account1 = Utils.aTestAccountWithUsername(username1, 31L, passwordEncoder.encode("password"));
+        Account account1 = Utils.aTestAccountWithUsername(username1, 41L, passwordEncoder.encode("password"));
         account1.setSkill(61);
         accountRepository.save(account1);
 
         String username2 = RandomStringUtils.random(10, true, false);
 
-        Account account2 = Utils.aTestAccountWithUsername(username2, 32L, passwordEncoder.encode("password"));
+        Account account2 = Utils.aTestAccountWithUsername(username2, 42L, passwordEncoder.encode("password"));
         account2.setSkill(62);
         accountRepository.save(account2);
 
