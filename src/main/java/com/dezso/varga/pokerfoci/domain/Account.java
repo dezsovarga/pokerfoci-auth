@@ -24,7 +24,7 @@ public class Account implements UserDetails {
 	private String username;
 	private String email;
 	private String password;
-	private int skill;
+	private Integer skill;
 	private Boolean active = true;
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -118,11 +118,11 @@ public class Account implements UserDetails {
 		this.password = password;
 	}
 
-	public int getSkill() {
+	public Integer getSkill() {
 		return skill;
 	}
 
-	public void setSkill(int skill) {
+	public void setSkill(Integer skill) {
 		this.skill = skill;
 	}
 
