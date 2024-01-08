@@ -14,5 +14,5 @@ public class AccountForAdminDto {
     private String email;
     private Boolean isAdmin;
     private Boolean isActive;
-    private int skill;
+    private Integer skill;
 }
