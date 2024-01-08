@@ -79,9 +79,16 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public List<EventResponseDto> listEvents() {
-        List<Event> allEvents = eventRepository.findAll();
-        List<EventResponseDto> dtoList = eventConverter.fromEventListToEventResponseDtoList(allEvents);
-        Collections.sort(dtoList, Comparator.comparing(EventResponseDto::getEventDateTime).reversed());
+        List<EventResponseDto> dtoList = null;
+        try {
+            List<Event> allEvents = eventRepository.findAll();
+            dtoList = eventConverter.fromEventListToEventResponseDtoList(allEvents);
+            Collections.sort(dtoList, Comparator.comparing(EventResponseDto::getEventDateTime).reversed());
+        }
+        catch (Exception ex) {
+            LOG.error("Debugging test error: ", ex);
+            ex.printStackTrace();
+        }
         return dtoList;
     }
 }
