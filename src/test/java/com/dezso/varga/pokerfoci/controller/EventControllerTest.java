@@ -66,7 +66,7 @@ public class EventControllerTest extends BaseControllerTest {
 //        account1.setSkill(61);
 //        accountRepository.save(account1);
 
-        CreateEventDto createEventDto1 = Utils.aCreateEventDto(Collections.singletonList(username1));
+        CreateEventDto createEventDto1 = Utils.aCreateEventDto(Collections.singletonList(account.getUsername()));
         apiWrapper.addNewEvent(port, bearerToken, createEventDto1);
 
         ResponseEntity<String> response = apiWrapper.registerToLatestEvent(port, bearerToken);
