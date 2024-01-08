@@ -58,13 +58,14 @@ public class EventControllerTest extends BaseControllerTest {
     @Test
     void registerToLatestEvent() throws Exception {
         Account account = Utils.aTestAccountWithRole("ROLE_ADMIN", passwordEncoder.encode("password"));
+        account.setSkill(70);
         accountRepository.save(account);
         String bearerToken = this.generateBearerToken( "email@varga.com","password");
 
-//        String username1 = RandomStringUtils.random(10, true, false);
-//        Account account1 = Utils.aTestAccountWithUsername(username1, 51L, passwordEncoder.encode("password"));
-//        account1.setSkill(61);
-//        accountRepository.save(account1);
+        String username1 = RandomStringUtils.random(10, true, false);
+        Account account1 = Utils.aTestAccountWithUsername(username1, 51L, passwordEncoder.encode("password"));
+        account1.setSkill(61);
+        accountRepository.save(account1);
 
         CreateEventDto createEventDto1 = Utils.aCreateEventDto(Collections.singletonList(account.getUsername()));
         apiWrapper.addNewEvent(port, bearerToken, createEventDto1);
