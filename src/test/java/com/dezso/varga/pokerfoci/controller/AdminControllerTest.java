@@ -167,6 +167,8 @@ class AdminControllerTest extends BaseControllerTest {
         String username = RandomStringUtils.random(10, true, false);
 
         Account account = Utils.aTestAccountWithRoleAndUsername(7L,"ROLE_ADMIN", username, passwordEncoder.encode("password"));
+        account.setSkill(60);
+
         accountRepository.save(account);
 
         String username1 = RandomStringUtils.random(10, true, false);
