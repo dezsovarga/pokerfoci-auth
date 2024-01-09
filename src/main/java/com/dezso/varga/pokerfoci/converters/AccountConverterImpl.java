@@ -90,6 +90,7 @@ public class AccountConverterImpl implements AccountConverter {
 
     @Override
     public AccountWithSkillDto fromAccountToAccountWithSkillDto(Account account) {
+        System.out.println("Debugging Account information when converting: username " + account.getUsername() + account.getSkill());
         LOG.info("Account information when converting: username: " + account.getUsername() + " skill: " + account.getSkill() );
         return AccountWithSkillDto.builder().username(account.getUsername())
                 .skill(account.getSkill())

@@ -206,8 +206,9 @@ class AdminControllerTest extends BaseControllerTest {
     }
 
     private AccountDto anAccountToBeAdded() {
-        return AccountDto.builder().username("username")
-                .email("email@mail.com")
+        String username = RandomStringUtils.random(10, true, false);
+        return AccountDto.builder().username(username)
+                .email(username+"@mail.com")
                 .password("password")
                 .confirmPassword("password")
                 .skill(65)
