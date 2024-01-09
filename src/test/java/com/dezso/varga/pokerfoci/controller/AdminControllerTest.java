@@ -170,7 +170,7 @@ class AdminControllerTest extends BaseControllerTest {
         account.setSkill(60);
         LOG.info("Saving account with email: " + account.getEmail() + " / " + account.getPassword());
         accountRepository.save(account);
-        LOG.info("Saved account with email: " + account.getEmail() + " / " + account.getPassword());
+        LOG.info("Saved account with email: " + account.getEmail() + " / " + passwordEncoder.encode("password"));
 
         String username1 = RandomStringUtils.random(10, true, false);
         Account account1 = Utils.aTestAccountWithUsername(username1, 31L, passwordEncoder.encode("password"));
@@ -179,6 +179,8 @@ class AdminControllerTest extends BaseControllerTest {
         accountRepository.save(account1);
         LOG.info("Saved account1 with email: " + account1.getEmail() + " / " + account1.getPassword());
 
+//        Issue with existing account: null trying to login with credentials: lXELrONeoS@ROLE_ADMIN.com/password ($2a$10$A6mPXgFSZ3HQlm9jgU0cAO7cItLrgcKExvhfJWJM69B6EcJYT4pma)
+//        Saved account with email: lXELrONeoS@ROLE_ADMIN.com / $2a$10$41bYRZeb4khwpxjtOivnMe0b9dQRksx25VODYcDRkdz4znZUXK2ra
 
         String username2 = RandomStringUtils.random(10, true, false);
         Account account2 = Utils.aTestAccountWithUsername(username2, 32L, passwordEncoder.encode("password"));
