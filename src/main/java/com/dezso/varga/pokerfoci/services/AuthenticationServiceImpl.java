@@ -40,7 +40,7 @@ public class AuthenticationServiceImpl implements AuthenticationService{
         Account credentials = AuthUtils.extractAccountFromBasicToken(authHeader);
         Account existingAccount = accountRepository.findByEmail(credentials.getEmail());
         if (existingAccount == null || !bCryptPasswordEncoder.matches(credentials.getPassword(), existingAccount.getPassword())) {
-            LOG.error("Issue with existing account: " + existingAccount + " trying to login with credentials: " + credentials.getEmail() + "/" + credentials.getPassword() + " ("+bCryptPasswordEncoder.encode(credentials.getPassword())+") ");
+            LOG.error("Issue with existing account: " + existingAccount + " trying to login with credentials: " + credentials.getEmail() + "/" + credentials.getPassword() + " ("+bCryptPasswordEncoder.encode(credentials.getPassword())+")  ");
             throw new AuthExeption("Invalid credentials. Please check your email and password.",
                     HttpStatus.UNAUTHORIZED.value());
         }
