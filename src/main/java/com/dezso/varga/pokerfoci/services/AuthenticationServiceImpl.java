@@ -1,6 +1,7 @@
 package com.dezso.varga.pokerfoci.services;
 
 import com.dezso.varga.pokerfoci.authentication.utils.AuthUtils;
+import com.dezso.varga.pokerfoci.converters.AccountConverterImpl;
 import com.dezso.varga.pokerfoci.domain.Account;
 import com.dezso.varga.pokerfoci.dto.ChangePasswordRequestDto;
 import com.dezso.varga.pokerfoci.dto.RegisterRequestDto;
@@ -9,6 +10,7 @@ import com.dezso.varga.pokerfoci.exeptions.AuthExeption;
 import com.dezso.varga.pokerfoci.exeptions.GlobalException;
 import com.dezso.varga.pokerfoci.exeptions.UserAlreadyExistsException;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -16,12 +18,17 @@ import org.springframework.stereotype.Service;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 @Service
 @AllArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService{
 
     private AccountRepository accountRepository;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    private static final Logger LOG = getLogger(AuthenticationServiceImpl.class);
+
 
     @Override
     public URL generateConfirmationLink(String confirmToken) throws MalformedURLException {
@@ -33,6 +40,7 @@ public class AuthenticationServiceImpl implements AuthenticationService{
         Account credentials = AuthUtils.extractAccountFromBasicToken(authHeader);
         Account existingAccount = accountRepository.findByEmail(credentials.getEmail());
         if (existingAccount == null || !bCryptPasswordEncoder.matches(credentials.getPassword(), existingAccount.getPassword())) {
+            LOG.error("Issue with existing account: " + existingAccount);
             throw new AuthExeption("Invalid credentials. Please check your email and password.",
                     HttpStatus.UNAUTHORIZED.value());
         }
