@@ -22,7 +22,9 @@ public class EventControllerTest extends BaseControllerTest {
 
     @Test
     void getLatestEvent() throws Exception {
-        Account account = Utils.aTestAccountWithRole("ROLE_ADMIN", passwordEncoder.encode("password"));
+        String username = RandomStringUtils.random(10, true, false);
+
+        Account account = Utils.aTestAccountWithRoleAndUsername("ROLE_ADMIN", username, passwordEncoder.encode("password"));
         accountRepository.save(account);
 
         String username1 = RandomStringUtils.random(10, true, false);
@@ -36,7 +38,7 @@ public class EventControllerTest extends BaseControllerTest {
         account2.setSkill(62);
         accountRepository.save(account2);
 
-        String bearerToken = this.generateBearerToken( "email@varga.com","password");
+        String bearerToken = this.generateBearerToken( username+"@varga.com","password");
 
         CreateEventDto createEventDto1 = Utils.aCreateEventDto(Arrays.asList(username1,username2));
         apiWrapper.addNewEvent(port, bearerToken, createEventDto1);
@@ -57,17 +59,19 @@ public class EventControllerTest extends BaseControllerTest {
 
     @Test
     void registerToLatestEvent() throws Exception {
-        Account account = Utils.aTestAccountWithRole("ROLE_ADMIN", passwordEncoder.encode("password"));
+        String username = RandomStringUtils.random(10, true, false);
+
+        Account account = Utils.aTestAccountWithRoleAndUsername("ROLE_ADMIN", username, passwordEncoder.encode("password"));
         account.setSkill(70);
         accountRepository.save(account);
-        String bearerToken = this.generateBearerToken( "email@varga.com","password");
+        String bearerToken = this.generateBearerToken( account.getEmail(),"password");
 
-//        String username1 = RandomStringUtils.random(10, true, false);
-//        Account account1 = Utils.aTestAccountWithUsername(username1, 51L, passwordEncoder.encode("password"));
-//        account1.setSkill(61);
-//        accountRepository.save(account1);
+        String username1 = RandomStringUtils.random(10, true, false);
+        Account account1 = Utils.aTestAccountWithUsername(username1, 51L, passwordEncoder.encode("password"));
+        account1.setSkill(61);
+        accountRepository.save(account1);
 
-        CreateEventDto createEventDto1 = Utils.aCreateEventDto(Collections.singletonList(account.getUsername()));
+        CreateEventDto createEventDto1 = Utils.aCreateEventDto(Collections.singletonList(account1.getUsername()));
         apiWrapper.addNewEvent(port, bearerToken, createEventDto1);
 
         ResponseEntity<String> response = apiWrapper.registerToLatestEvent(port, bearerToken);

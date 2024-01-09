@@ -31,9 +31,10 @@ class AdminControllerTest extends BaseControllerTest {
 
     @Test
     void getListOfAccountsForAdminPage() throws Exception {
-        Account account = Utils.aTestAccountWithRole("ROLE_ADMIN", passwordEncoder.encode("password"));
+        String username = RandomStringUtils.random(10, true, false);
+        Account account = Utils.aTestAccountWithRoleAndUsername("ROLE_ADMIN", username, passwordEncoder.encode("password"));
         accountRepository.save(account);
-        String bearerToken = this.generateBearerToken( "email@varga.com","password");
+        String bearerToken = this.generateBearerToken( account.getEmail(),"password");
         ResponseEntity<String> response = apiWrapper.getAccountsForAdmin(port, bearerToken);
 
         List<AccountForAdminDto> accountForAdminDtoList =
@@ -48,9 +49,10 @@ class AdminControllerTest extends BaseControllerTest {
 
     @Test
     void getListOfAccountsForAdminPageWithNoAdminRole() throws Exception {
-        Account account = Utils.aTestAccountWithRole("ROLE_USER", passwordEncoder.encode("password"));
+        String username = RandomStringUtils.random(10, true, false);
+        Account account = Utils.aTestAccountWithRoleAndUsername("ROLE_USER", username, passwordEncoder.encode("password"));
         accountRepository.save(account);
-        String bearerToken = this.generateBearerToken( "email@varga.com","password");
+        String bearerToken = this.generateBearerToken( account.getEmail(),"password");
         ResponseEntity<String> response = apiWrapper.getAccountsForAdmin(port, bearerToken);
 
         assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
@@ -58,9 +60,11 @@ class AdminControllerTest extends BaseControllerTest {
 
     @Test
     void getListOfEventsForAdminPageWithNoAdminRole() throws Exception {
-        Account account = Utils.aTestAccountWithRole("ROLE_USER", passwordEncoder.encode("password"));
+        String username = RandomStringUtils.random(10, true, false);
+
+        Account account = Utils.aTestAccountWithRoleAndUsername("ROLE_USER", username, passwordEncoder.encode("password"));
         accountRepository.save(account);
-        String bearerToken = this.generateBearerToken( "email@varga.com","password");
+        String bearerToken = this.generateBearerToken( account.getEmail(),"password");
         ResponseEntity<String> response = apiWrapper.getEventsForAdmin(port, bearerToken);
 
         assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
@@ -68,9 +72,11 @@ class AdminControllerTest extends BaseControllerTest {
 
     @Test
     void addNewAccount() throws Exception {
-        Account account = Utils.aTestAccountWithRole("ROLE_ADMIN", passwordEncoder.encode("password"));
+        String username = RandomStringUtils.random(10, true, false);
+
+        Account account = Utils.aTestAccountWithRoleAndUsername("ROLE_ADMIN", username, passwordEncoder.encode("password"));
         accountRepository.save(account);
-        String bearerToken = this.generateBearerToken( "email@varga.com","password");
+        String bearerToken = this.generateBearerToken( account.getEmail(),"password");
 
         AccountDto newAccountDto = anAccountToBeAdded();
         ResponseEntity<String> response = apiWrapper.addNewAccountForAdmin(port, bearerToken, newAccountDto);
@@ -83,10 +89,12 @@ class AdminControllerTest extends BaseControllerTest {
 
     @Test
     void updateAccount() throws Exception {
-        Account account = Utils.aTestAccountWithRole("ROLE_ADMIN", passwordEncoder.encode("password"));
+        String username = RandomStringUtils.random(10, true, false);
+
+        Account account = Utils.aTestAccountWithRoleAndUsername("ROLE_ADMIN", username, passwordEncoder.encode("password"));
 
         accountRepository.save(account);
-        String bearerToken = this.generateBearerToken( "email@varga.com","password");
+        String bearerToken = this.generateBearerToken( account.getEmail(),"password");
 
         AccountDto newAccountDto = anAccountToBeAdded();
         ResponseEntity<String> response = apiWrapper.addNewAccountForAdmin(port, bearerToken, newAccountDto);
@@ -126,17 +134,22 @@ class AdminControllerTest extends BaseControllerTest {
 
     @Test
     void addNewEvent() throws Exception {
-        Account account = Utils.aTestAccountWithRole("ROLE_ADMIN", passwordEncoder.encode("password"));
+        String username = RandomStringUtils.random(10, true, false);
+
+        Account account = Utils.aTestAccountWithRoleAndUsername("ROLE_ADMIN", username, passwordEncoder.encode("password"));
+//        account.setSkill(50);
         accountRepository.save(account);
         String username1 = RandomStringUtils.random(10, true, false);
         Account account1 = Utils.aTestAccountWithUsername(username1, 11L,  passwordEncoder.encode("password"));
+        account1.setSkill(51);
         accountRepository.save(account1);
 
         String username2 = RandomStringUtils.random(10, true, false);
         Account account2 = Utils.aTestAccountWithUsername(username2, 12L,  passwordEncoder.encode("password"));
+        account2.setSkill(52);
         accountRepository.save(account2);
 
-        String bearerToken = this.generateBearerToken( "email@varga.com","password");
+        String bearerToken = this.generateBearerToken( account.getEmail(),"password");
 
         CreateEventDto createEventDto = Utils.aCreateEventDto(Arrays.asList(username1,username2));
         ResponseEntity<String> response = apiWrapper.addNewEvent(port, bearerToken, createEventDto);
@@ -151,7 +164,9 @@ class AdminControllerTest extends BaseControllerTest {
 
     @Test
     void getListOfEventsForAdminPage() throws Exception {
-        Account account = Utils.aTestAccountWithRole("ROLE_ADMIN", passwordEncoder.encode("password"));
+        String username = RandomStringUtils.random(10, true, false);
+
+        Account account = Utils.aTestAccountWithRoleAndUsername("ROLE_ADMIN", username, passwordEncoder.encode("password"));
         accountRepository.save(account);
 
         String username1 = RandomStringUtils.random(10, true, false);
@@ -169,7 +184,7 @@ class AdminControllerTest extends BaseControllerTest {
         Account account3 = Utils.aTestAccountWithUsername(username3, 33L, passwordEncoder.encode("password"));
         account3.setSkill(63);
         accountRepository.save(account3);
-        String bearerToken = this.generateBearerToken( "email@varga.com","password");
+        String bearerToken = this.generateBearerToken( account.getEmail(),"password");
 
         CreateEventDto createEventDto1 = Utils.aCreateEventDto(Arrays.asList(username1,username2));
         apiWrapper.addNewEvent(port, bearerToken, createEventDto1);

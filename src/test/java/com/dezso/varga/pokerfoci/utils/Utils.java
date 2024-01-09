@@ -3,6 +3,7 @@ package com.dezso.varga.pokerfoci.utils;
 import com.dezso.varga.pokerfoci.domain.Account;
 import com.dezso.varga.pokerfoci.domain.Role;
 import com.dezso.varga.pokerfoci.dto.admin.CreateEventDto;
+import org.apache.commons.lang3.RandomStringUtils;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -27,10 +28,10 @@ public class Utils {
                 .build();
     }
 
-    public static Account aTestAccountWithRole(String role, String password) {
+    public static Account aTestAccountWithRoleAndUsername(String role, String username, String password) {
         return new Account(1L,
-                "username",
-                "email@varga.com",
+                username,
+                username+"@varga.com",
                 password,
                 true,
                 Set.of(new Role( role)));
