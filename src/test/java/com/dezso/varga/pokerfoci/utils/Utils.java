@@ -31,7 +31,7 @@ public class Utils {
     public static Account aTestAccountWithRoleAndUsername(String role, String username, String password) {
         return new Account(1L,
                 username,
-                username+"@varga.com",
+                username+"@"+role+".com",
                 password,
                 true,
                 Set.of(new Role( role)));
@@ -40,7 +40,7 @@ public class Utils {
     public static Account aTestAccountWithUsername(String username, Long id, String password) {
         return new Account(id,
                 username,
-                username+"@varga.com",
+                username+"@user.com",
                 password,
                 true,
                 Set.of(new Role( "ROLE_USER")));
