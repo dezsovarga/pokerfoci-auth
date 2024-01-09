@@ -24,7 +24,7 @@ public class EventControllerTest extends BaseControllerTest {
     void getLatestEvent() throws Exception {
         String username = RandomStringUtils.random(10, true, false);
 
-        Account account = Utils.aTestAccountWithRoleAndUsername("ROLE_ADMIN", username, passwordEncoder.encode("password"));
+        Account account = Utils.aTestAccountWithRoleAndUsername(8L,"ROLE_ADMIN", username, passwordEncoder.encode("password"));
         accountRepository.save(account);
 
         String username1 = RandomStringUtils.random(10, true, false);
@@ -61,7 +61,7 @@ public class EventControllerTest extends BaseControllerTest {
     void registerToLatestEvent() throws Exception {
         String username = RandomStringUtils.random(10, true, false);
 
-        Account account = Utils.aTestAccountWithRoleAndUsername("ROLE_ADMIN", username, passwordEncoder.encode("password"));
+        Account account = Utils.aTestAccountWithRoleAndUsername(9L,"ROLE_ADMIN", username, passwordEncoder.encode("password"));
         account.setSkill(70);
         accountRepository.save(account);
         String bearerToken = this.generateBearerToken( account.getEmail(),"password");

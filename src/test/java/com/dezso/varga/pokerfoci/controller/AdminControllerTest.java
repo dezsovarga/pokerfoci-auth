@@ -32,7 +32,7 @@ class AdminControllerTest extends BaseControllerTest {
     @Test
     void getListOfAccountsForAdminPage() throws Exception {
         String username = RandomStringUtils.random(10, true, false);
-        Account account = Utils.aTestAccountWithRoleAndUsername("ROLE_ADMIN", username, passwordEncoder.encode("password"));
+        Account account = Utils.aTestAccountWithRoleAndUsername(1L,"ROLE_ADMIN", username, passwordEncoder.encode("password"));
         accountRepository.save(account);
         String bearerToken = this.generateBearerToken( account.getEmail(),"password");
         ResponseEntity<String> response = apiWrapper.getAccountsForAdmin(port, bearerToken);
@@ -50,7 +50,7 @@ class AdminControllerTest extends BaseControllerTest {
     @Test
     void getListOfAccountsForAdminPageWithNoAdminRole() throws Exception {
         String username = RandomStringUtils.random(10, true, false);
-        Account account = Utils.aTestAccountWithRoleAndUsername("ROLE_USER", username, passwordEncoder.encode("password"));
+        Account account = Utils.aTestAccountWithRoleAndUsername(2L,"ROLE_USER", username, passwordEncoder.encode("password"));
         accountRepository.save(account);
         String bearerToken = this.generateBearerToken( account.getEmail(),"password");
         ResponseEntity<String> response = apiWrapper.getAccountsForAdmin(port, bearerToken);
@@ -62,7 +62,7 @@ class AdminControllerTest extends BaseControllerTest {
     void getListOfEventsForAdminPageWithNoAdminRole() throws Exception {
         String username = RandomStringUtils.random(10, true, false);
 
-        Account account = Utils.aTestAccountWithRoleAndUsername("ROLE_USER", username, passwordEncoder.encode("password"));
+        Account account = Utils.aTestAccountWithRoleAndUsername(3L,"ROLE_USER", username, passwordEncoder.encode("password"));
         accountRepository.save(account);
         String bearerToken = this.generateBearerToken( account.getEmail(),"password");
         ResponseEntity<String> response = apiWrapper.getEventsForAdmin(port, bearerToken);
@@ -74,7 +74,7 @@ class AdminControllerTest extends BaseControllerTest {
     void addNewAccount() throws Exception {
         String username = RandomStringUtils.random(10, true, false);
 
-        Account account = Utils.aTestAccountWithRoleAndUsername("ROLE_ADMIN", username, passwordEncoder.encode("password"));
+        Account account = Utils.aTestAccountWithRoleAndUsername(4L,"ROLE_ADMIN", username, passwordEncoder.encode("password"));
         accountRepository.save(account);
         String bearerToken = this.generateBearerToken( account.getEmail(),"password");
 
@@ -91,7 +91,7 @@ class AdminControllerTest extends BaseControllerTest {
     void updateAccount() throws Exception {
         String username = RandomStringUtils.random(10, true, false);
 
-        Account account = Utils.aTestAccountWithRoleAndUsername("ROLE_ADMIN", username, passwordEncoder.encode("password"));
+        Account account = Utils.aTestAccountWithRoleAndUsername(5L,"ROLE_ADMIN", username, passwordEncoder.encode("password"));
 
         accountRepository.save(account);
         String bearerToken = this.generateBearerToken( account.getEmail(),"password");
@@ -136,7 +136,7 @@ class AdminControllerTest extends BaseControllerTest {
     void addNewEvent() throws Exception {
         String username = RandomStringUtils.random(10, true, false);
 
-        Account account = Utils.aTestAccountWithRoleAndUsername("ROLE_ADMIN", username, passwordEncoder.encode("password"));
+        Account account = Utils.aTestAccountWithRoleAndUsername(6L,"ROLE_ADMIN", username, passwordEncoder.encode("password"));
 //        account.setSkill(50);
         accountRepository.save(account);
         String username1 = RandomStringUtils.random(10, true, false);
@@ -166,7 +166,7 @@ class AdminControllerTest extends BaseControllerTest {
     void getListOfEventsForAdminPage() throws Exception {
         String username = RandomStringUtils.random(10, true, false);
 
-        Account account = Utils.aTestAccountWithRoleAndUsername("ROLE_ADMIN", username, passwordEncoder.encode("password"));
+        Account account = Utils.aTestAccountWithRoleAndUsername(7L,"ROLE_ADMIN", username, passwordEncoder.encode("password"));
         accountRepository.save(account);
 
         String username1 = RandomStringUtils.random(10, true, false);
