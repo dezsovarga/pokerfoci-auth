@@ -197,6 +197,9 @@ class AdminControllerTest extends BaseControllerTest {
         accountRepository.save(account3);
         LOG.info("Saved account3 with email: " + account3.getEmail() + " / " + account3.getPassword());
 
+        LOG.info("Number of accounts in the system (test): " + accountRepository.findAll().size());
+
+
         String bearerToken = this.generateBearerToken( account.getEmail(),"password");
 
         CreateEventDto createEventDto1 = Utils.aCreateEventDto(Arrays.asList(username1,username2));
