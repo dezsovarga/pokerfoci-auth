@@ -38,7 +38,7 @@ public class EventControllerTest extends BaseControllerTest {
         account2.setSkill(62);
         accountRepository.save(account2);
 
-        String bearerToken = this.generateBearerToken( username+"@varga.com","password");
+        String bearerToken = this.generateBearerToken( account.getEmail(),"password");
 
         CreateEventDto createEventDto1 = Utils.aCreateEventDto(Arrays.asList(username1,username2));
         apiWrapper.addNewEvent(port, bearerToken, createEventDto1);
