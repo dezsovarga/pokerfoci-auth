@@ -39,6 +39,7 @@ public class AuthenticationServiceImpl implements AuthenticationService{
     public Account login(String authHeader) throws Exception {
         Account credentials = AuthUtils.extractAccountFromBasicToken(authHeader);
         Account existingAccount = accountRepository.findByEmail(credentials.getEmail());
+//        LOG.info("number of accounts in the system: ");
         if (existingAccount == null || !bCryptPasswordEncoder.matches(credentials.getPassword(), existingAccount.getPassword())) {
             LOG.error("Issue with existing account: " + existingAccount + " trying to login with credentials: " + credentials.getEmail() + "/" + credentials.getPassword() + " ("+bCryptPasswordEncoder.encode(credentials.getPassword())+")  ");
             throw new AuthExeption("Invalid credentials. Please check your email and password.",
