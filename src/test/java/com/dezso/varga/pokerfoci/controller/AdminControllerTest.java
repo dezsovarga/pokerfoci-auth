@@ -168,24 +168,34 @@ class AdminControllerTest extends BaseControllerTest {
 
         Account account = Utils.aTestAccountWithRoleAndUsername(7L,"ROLE_ADMIN", username, passwordEncoder.encode("password"));
         account.setSkill(60);
-
+        LOG.info("Saving account with email: " + account.getEmail());
         accountRepository.save(account);
+        LOG.info("Saved account with email: " + account.getEmail());
+
 
         String username1 = RandomStringUtils.random(10, true, false);
         Account account1 = Utils.aTestAccountWithUsername(username1, 31L, passwordEncoder.encode("password"));
         account1.setSkill(61);
+        LOG.info("Saving account1 with email: " + account1.getEmail());
         accountRepository.save(account1);
+        LOG.info("Saved account1 with email: " + account1.getEmail());
+
 
         String username2 = RandomStringUtils.random(10, true, false);
-
         Account account2 = Utils.aTestAccountWithUsername(username2, 32L, passwordEncoder.encode("password"));
         account2.setSkill(62);
+        LOG.info("Saving account2 with email: " + account2.getEmail());
         accountRepository.save(account2);
+        LOG.info("Saved account2 with email: " + account2.getEmail());
+
 
         String username3 = RandomStringUtils.random(10, true, false);
         Account account3 = Utils.aTestAccountWithUsername(username3, 33L, passwordEncoder.encode("password"));
         account3.setSkill(63);
+        LOG.info("Saving account3 with email: " + account3.getEmail());
         accountRepository.save(account3);
+        LOG.info("Saved account3 with email: " + account3.getEmail());
+
         String bearerToken = this.generateBearerToken( account.getEmail(),"password");
 
         CreateEventDto createEventDto1 = Utils.aCreateEventDto(Arrays.asList(username1,username2));
