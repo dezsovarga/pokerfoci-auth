@@ -24,18 +24,16 @@ public class EventControllerTest extends BaseControllerTest {
     void getLatestEvent() throws Exception {
         String username = RandomStringUtils.random(10, true, false);
 
-        Account account = Utils.aTestAccountWithRoleAndUsername(8L,"ROLE_ADMIN", username, passwordEncoder.encode("password"));
+        Account account = Utils.aTestAccountWithRoleAndUsername("ROLE_ADMIN", username, passwordEncoder.encode("password"));
         accountRepository.save(account);
 
         String username1 = RandomStringUtils.random(10, true, false);
-        Account account1 = Utils.aTestAccountWithUsername(username1, 41L, passwordEncoder.encode("password"));
-        account1.setSkill(61);
+        Account account1 = Utils.aTestAccountWithRoleAndUsername("ROLE_USER", username1, passwordEncoder.encode("password"));
         accountRepository.save(account1);
 
         String username2 = RandomStringUtils.random(10, true, false);
 
-        Account account2 = Utils.aTestAccountWithUsername(username2, 42L, passwordEncoder.encode("password"));
-        account2.setSkill(62);
+        Account account2 = Utils.aTestAccountWithRoleAndUsername("ROLE_USER", username2, passwordEncoder.encode("password"));
         accountRepository.save(account2);
 
         String bearerToken = this.generateBearerToken( account.getEmail(),"password");
@@ -61,14 +59,12 @@ public class EventControllerTest extends BaseControllerTest {
     void registerToLatestEvent() throws Exception {
         String username = RandomStringUtils.random(10, true, false);
 
-        Account account = Utils.aTestAccountWithRoleAndUsername(9L,"ROLE_ADMIN", username, passwordEncoder.encode("password"));
-        account.setSkill(70);
+        Account account = Utils.aTestAccountWithRoleAndUsername("ROLE_ADMIN", username, passwordEncoder.encode("password"));
         accountRepository.save(account);
         String bearerToken = this.generateBearerToken( account.getEmail(),"password");
 
         String username1 = RandomStringUtils.random(10, true, false);
-        Account account1 = Utils.aTestAccountWithUsername(username1, 51L, passwordEncoder.encode("password"));
-        account1.setSkill(61);
+        Account account1 = Utils.aTestAccountWithRoleAndUsername("ROLE_USER", username1, passwordEncoder.encode("password"));
         accountRepository.save(account1);
 
         CreateEventDto createEventDto1 = Utils.aCreateEventDto(Collections.singletonList(account1.getUsername()));

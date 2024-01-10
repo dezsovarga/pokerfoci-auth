@@ -32,7 +32,7 @@ class AdminControllerTest extends BaseControllerTest {
     @Test
     void getListOfAccountsForAdminPage() throws Exception {
         String username = RandomStringUtils.random(10, true, false);
-        Account account = Utils.aTestAccountWithRoleAndUsername(1L,"ROLE_ADMIN", username, passwordEncoder.encode("password"));
+        Account account = Utils.aTestAccountWithRoleAndUsername("ROLE_ADMIN", username, passwordEncoder.encode("password"));
         accountRepository.save(account);
         String bearerToken = this.generateBearerToken( account.getEmail(),"password");
         ResponseEntity<String> response = apiWrapper.getAccountsForAdmin(port, bearerToken);
@@ -50,7 +50,7 @@ class AdminControllerTest extends BaseControllerTest {
     @Test
     void getListOfAccountsForAdminPageWithNoAdminRole() throws Exception {
         String username = RandomStringUtils.random(10, true, false);
-        Account account = Utils.aTestAccountWithRoleAndUsername(2L,"ROLE_USER", username, passwordEncoder.encode("password"));
+        Account account = Utils.aTestAccountWithRoleAndUsername("ROLE_USER", username, passwordEncoder.encode("password"));
         accountRepository.save(account);
         String bearerToken = this.generateBearerToken( account.getEmail(),"password");
         ResponseEntity<String> response = apiWrapper.getAccountsForAdmin(port, bearerToken);
@@ -62,7 +62,7 @@ class AdminControllerTest extends BaseControllerTest {
     void getListOfEventsForAdminPageWithNoAdminRole() throws Exception {
         String username = RandomStringUtils.random(10, true, false);
 
-        Account account = Utils.aTestAccountWithRoleAndUsername(3L,"ROLE_USER", username, passwordEncoder.encode("password"));
+        Account account = Utils.aTestAccountWithRoleAndUsername("ROLE_USER", username, passwordEncoder.encode("password"));
         accountRepository.save(account);
         String bearerToken = this.generateBearerToken( account.getEmail(),"password");
         ResponseEntity<String> response = apiWrapper.getEventsForAdmin(port, bearerToken);
@@ -74,7 +74,7 @@ class AdminControllerTest extends BaseControllerTest {
     void addNewAccount() throws Exception {
         String username = RandomStringUtils.random(10, true, false);
 
-        Account account = Utils.aTestAccountWithRoleAndUsername(4L,"ROLE_ADMIN", username, passwordEncoder.encode("password"));
+        Account account = Utils.aTestAccountWithRoleAndUsername("ROLE_ADMIN", username, passwordEncoder.encode("password"));
         accountRepository.save(account);
         String bearerToken = this.generateBearerToken( account.getEmail(),"password");
 
@@ -91,7 +91,7 @@ class AdminControllerTest extends BaseControllerTest {
     void updateAccount() throws Exception {
         String username = RandomStringUtils.random(10, true, false);
 
-        Account account = Utils.aTestAccountWithRoleAndUsername(5L,"ROLE_ADMIN", username, passwordEncoder.encode("password"));
+        Account account = Utils.aTestAccountWithRoleAndUsername("ROLE_ADMIN", username, passwordEncoder.encode("password"));
 
         accountRepository.save(account);
         String bearerToken = this.generateBearerToken( account.getEmail(),"password");
@@ -136,16 +136,16 @@ class AdminControllerTest extends BaseControllerTest {
     void addNewEvent() throws Exception {
         String username = RandomStringUtils.random(10, true, false);
 
-        Account account = Utils.aTestAccountWithRoleAndUsername(6L,"ROLE_ADMIN", username, passwordEncoder.encode("password"));
+        Account account = Utils.aTestAccountWithRoleAndUsername("ROLE_ADMIN", username, passwordEncoder.encode("password"));
 //        account.setSkill(50);
         accountRepository.save(account);
         String username1 = RandomStringUtils.random(10, true, false);
-        Account account1 = Utils.aTestAccountWithUsername(username1, 11L,  passwordEncoder.encode("password"));
+        Account account1 = Utils.aTestAccountWithRoleAndUsername("ROLE_USER", username1, passwordEncoder.encode("password"));
         account1.setSkill(51);
         accountRepository.save(account1);
 
         String username2 = RandomStringUtils.random(10, true, false);
-        Account account2 = Utils.aTestAccountWithUsername(username2, 12L,  passwordEncoder.encode("password"));
+        Account account2 = Utils.aTestAccountWithRoleAndUsername("ROLE_USER", username2,  passwordEncoder.encode("password"));
         account2.setSkill(52);
         accountRepository.save(account2);
 
@@ -166,7 +166,7 @@ class AdminControllerTest extends BaseControllerTest {
     void getListOfEventsForAdminPage() throws Exception {
         String username = RandomStringUtils.random(10, true, false);
 
-        Account account = Utils.aTestAccountWithRoleAndUsername(7L,"ROLE_ADMIN", username, passwordEncoder.encode("password"));
+        Account account = Utils.aTestAccountWithRoleAndUsername("ROLE_ADMIN", username, passwordEncoder.encode("password"));
         account.setSkill(60);
         LOG.info("Saving account with email: " + account.getEmail() + " / " + account.getPassword());
         accountRepository.save(account);
@@ -174,7 +174,7 @@ class AdminControllerTest extends BaseControllerTest {
         LOG.info("Number of accounts in the system (test) after saving account: " + accountRepository.findAll().size());
 
         String username1 = RandomStringUtils.random(10, true, false);
-        Account account1 = Utils.aTestAccountWithUsername(username1, 31L, passwordEncoder.encode("password"));
+        Account account1 = Utils.aTestAccountWithRoleAndUsername("ROLE_USER", username1, passwordEncoder.encode("password"));
         account1.setSkill(61);
         LOG.info("Saving account1 with email: " + account1.getEmail() + " / " + account1.getPassword());
         accountRepository.save(account1);
@@ -185,7 +185,7 @@ class AdminControllerTest extends BaseControllerTest {
 //        Saved account with email: lXELrONeoS@ROLE_ADMIN.com / $2a$10$41bYRZeb4khwpxjtOivnMe0b9dQRksx25VODYcDRkdz4znZUXK2ra
 
         String username2 = RandomStringUtils.random(10, true, false);
-        Account account2 = Utils.aTestAccountWithUsername(username2, 32L, passwordEncoder.encode("password"));
+        Account account2 = Utils.aTestAccountWithRoleAndUsername("ROLE_USER", username2, passwordEncoder.encode("password"));
         account2.setSkill(62);
         LOG.info("Saving account2 with email: " + account2.getEmail()  + " / " + account2.getPassword());
         accountRepository.save(account2);
@@ -193,7 +193,7 @@ class AdminControllerTest extends BaseControllerTest {
         LOG.info("Number of accounts in the system (test) after saving account2: " + accountRepository.findAll().size());
 
         String username3 = RandomStringUtils.random(10, true, false);
-        Account account3 = Utils.aTestAccountWithUsername(username3, 33L, passwordEncoder.encode("password"));
+        Account account3 = Utils.aTestAccountWithRoleAndUsername("ROLE_USER", username3, passwordEncoder.encode("password"));
         account3.setSkill(63);
         LOG.info("Saving account3 with email: " + account3.getEmail() + " / " + account3.getPassword());
         accountRepository.save(account3);

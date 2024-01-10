@@ -28,24 +28,12 @@ public class Utils {
                 .build();
     }
 
-    public static Account aTestAccountWithRoleAndUsername(Long id, String role, String username, String password) {
-//        return new Account(id,
-//                username,
-//                username+"@"+role+".com",
-//                password,
-//                true,
-//                Set.of(new Role( role)));
+    public static Account aTestAccountWithRoleAndUsername(String role, String username, String password) {
         return new Account(username, username+"@"+role+".com", password, 70, true, Set.of(new Role( role)));
     }
 
-    public static Account aTestAccountWithUsername(String username, Long id, String password) {
-//        return new Account(id,
-//                username,
-//                username+"@user.com",
-//                password,
-//                true,
-//                Set.of(new Role( "ROLE_USER")));
-        return new Account(username, username+"@user.com", password, 70, true, Set.of(new Role( "ROLE_USER")));
-
-    }
+//    public static Account aTestAccountWithUsername(String username, String password) {
+//        return new Account(username, username+"@user.com", password, 70, true, Set.of(new Role( "ROLE_USER")));
+//
+//    }
 }
