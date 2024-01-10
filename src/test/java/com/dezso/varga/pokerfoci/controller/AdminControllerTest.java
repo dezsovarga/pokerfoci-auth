@@ -167,40 +167,19 @@ class AdminControllerTest extends BaseControllerTest {
         String username = RandomStringUtils.random(10, true, false);
 
         Account account = Utils.aTestAccountWithRoleAndUsername("ROLE_ADMIN", username, passwordEncoder.encode("password"));
-        account.setSkill(60);
-        LOG.info("Saving account with email: " + account.getEmail() + " / " + account.getPassword());
         accountRepository.save(account);
-        LOG.info("Saved account with email: " + account.getEmail() + " / " + passwordEncoder.encode("password"));
-        LOG.info("Number of accounts in the system (test) after saving account: " + accountRepository.findAll().size());
 
         String username1 = RandomStringUtils.random(10, true, false);
         Account account1 = Utils.aTestAccountWithRoleAndUsername("ROLE_USER", username1, passwordEncoder.encode("password"));
-        account1.setSkill(61);
-        LOG.info("Saving account1 with email: " + account1.getEmail() + " / " + account1.getPassword());
         accountRepository.save(account1);
-        LOG.info("Saved account1 with email: " + account1.getEmail() + " / " + account1.getPassword());
-        LOG.info("Number of accounts in the system (test) after saving account1: " + accountRepository.findAll().size());
-
-//        Issue with existing account: null trying to login with credentials: lXELrONeoS@ROLE_ADMIN.com/password ($2a$10$A6mPXgFSZ3HQlm9jgU0cAO7cItLrgcKExvhfJWJM69B6EcJYT4pma)
-//        Saved account with email: lXELrONeoS@ROLE_ADMIN.com / $2a$10$41bYRZeb4khwpxjtOivnMe0b9dQRksx25VODYcDRkdz4znZUXK2ra
 
         String username2 = RandomStringUtils.random(10, true, false);
         Account account2 = Utils.aTestAccountWithRoleAndUsername("ROLE_USER", username2, passwordEncoder.encode("password"));
-        account2.setSkill(62);
-        LOG.info("Saving account2 with email: " + account2.getEmail()  + " / " + account2.getPassword());
         accountRepository.save(account2);
-        LOG.info("Saved account2 with email: " + account2.getEmail() + " / " + account2.getPassword());
-        LOG.info("Number of accounts in the system (test) after saving account2: " + accountRepository.findAll().size());
 
         String username3 = RandomStringUtils.random(10, true, false);
         Account account3 = Utils.aTestAccountWithRoleAndUsername("ROLE_USER", username3, passwordEncoder.encode("password"));
-        account3.setSkill(63);
-        LOG.info("Saving account3 with email: " + account3.getEmail() + " / " + account3.getPassword());
         accountRepository.save(account3);
-        LOG.info("Saved account3 with email: " + account3.getEmail() + " / " + account3.getPassword());
-
-        LOG.info("Number of accounts in the system (test) after saving account3: " + accountRepository.findAll().size());
-
 
         String bearerToken = this.generateBearerToken( account.getEmail(),"password");
 

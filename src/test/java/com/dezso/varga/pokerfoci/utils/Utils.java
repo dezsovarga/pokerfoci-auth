@@ -32,8 +32,4 @@ public class Utils {
         return new Account(username, username+"@"+role+".com", password, 70, true, Set.of(new Role( role)));
     }
 
-//    public static Account aTestAccountWithUsername(String username, String password) {
-//        return new Account(username, username+"@user.com", password, 70, true, Set.of(new Role( "ROLE_USER")));
-//
-//    }
 }
