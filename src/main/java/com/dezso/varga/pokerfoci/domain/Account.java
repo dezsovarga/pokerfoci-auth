@@ -45,6 +45,15 @@ public class Account implements UserDetails {
 		this.roles = roles;
 	}
 
+	public Account(String username, String email, String password, Integer skill, Boolean active, Set<Role> roles) {
+		this.username = username;
+		this.email = email;
+		this.password = password;
+		this.skill = skill;
+		this.active = active;
+		this.roles = roles;
+	}
+
 	public Account(RegisterRequestDto registerRequestDto) {
 		this.username = registerRequestDto.getAccountDto().getUsername();
 		this.email = registerRequestDto.getAccountDto().getEmail();

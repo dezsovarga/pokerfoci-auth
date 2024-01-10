@@ -75,6 +75,7 @@ public class BaseControllerTest {
         eventRepository.deleteAll();
         participationRepository.deleteAll();
         accountRepository.deleteAll();
+        roleRepository.deleteAll();
     }
 
     @Test
