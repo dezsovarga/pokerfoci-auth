@@ -72,9 +72,9 @@ public class BaseControllerTest {
     @BeforeEach
     public void init() {
         mapper.registerModule(new JavaTimeModule());
-//        eventRepository.deleteAll();
-//        participationRepository.deleteAll();
-//        accountRepository.deleteAll();
+        eventRepository.deleteAll();
+        participationRepository.deleteAll();
+        accountRepository.deleteAll();
     }
 
     @Test
