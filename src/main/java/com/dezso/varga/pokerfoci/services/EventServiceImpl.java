@@ -14,6 +14,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 @AllArgsConstructor
 public class EventServiceImpl implements EventService {
@@ -38,7 +40,7 @@ public class EventServiceImpl implements EventService {
             throw new GlobalException(validationResult.getErrorMessages().get(0), HttpStatus.BAD_REQUEST.value());
         }
         Account loggedInAccount = accountRepository.findByEmail(userEmail);
-        Participation newParticipation = participationRepository.save(new Participation(loggedInAccount));
+        Participation newParticipation = participationRepository.save(new Participation(loggedInAccount, LocalDateTime.now()));
         latestEvent.getParticipationList().add(newParticipation);
         eventRepository.save(latestEvent);
         return eventConverter.fromEventToEventResponseDto(latestEvent);

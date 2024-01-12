@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
+import java.time.LocalDateTime;
 
 @Entity
 @Builder
@@ -27,10 +28,13 @@ public class Participation {
     @OneToOne
     private Account account;
 
+    private LocalDateTime registrationDate;
+
     public Participation() {
     }
 
-    public Participation(Account account) {
+    public Participation(Account account, LocalDateTime registrationDate) {
         this.account = account;
+        this.registrationDate = registrationDate;
     }
 }

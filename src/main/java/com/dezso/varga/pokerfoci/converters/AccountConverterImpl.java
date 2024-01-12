@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -84,24 +85,32 @@ public class AccountConverterImpl implements AccountConverter {
     @Override
     public List<Participation> fromAccountNameListToEventParticipationList(List<String> accountNames) {
         return accountNames.stream()
-                .map(username -> new Participation(accountRepository.findByUsername(username)))
+                .map(username -> new Participation(accountRepository.findByUsername(username), LocalDateTime.now()))
                 .collect(Collectors.toList());
     }
 
     @Override
     public AccountWithSkillDto fromAccountToAccountWithSkillDto(Account account) {
-        return AccountWithSkillDto.builder().username(account.getUsername())
+        return AccountWithSkillDto.builder()
+                .username(account.getUsername())
                 .skill(account.getSkill())
                 .build();
     }
 
     @Override
-    public List<AccountWithSkillDto> fromAccountListToAccountWithSkillDtoList(List<Account> accountList) {
-        return accountList
-                .stream()
-                .map(this::fromAccountToAccountWithSkillDto)
-                .collect(Collectors.toList());
+    public AccountWithSkillDto fromParticipationToAccountWithSkillDto(Participation participation) {
+        return AccountWithSkillDto.builder()
+                .username(participation.getAccount().getUsername())
+                .skill(participation.getAccount().getSkill())
+                .registrationDate(participation.getRegistrationDate())
+                .build();
     }
 
-
+    @Override
+    public List<AccountWithSkillDto> fromParticipationListToAccountWithSkillDtoList(List<Participation> participationList) {
+        return participationList
+                .stream()
+                .map(this::fromParticipationToAccountWithSkillDto)
+                .collect(Collectors.toList());
+    }
 }

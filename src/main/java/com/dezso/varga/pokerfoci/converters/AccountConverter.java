@@ -22,5 +22,7 @@ public interface AccountConverter {
 
     AccountWithSkillDto fromAccountToAccountWithSkillDto(Account account);
 
-    List<AccountWithSkillDto> fromAccountListToAccountWithSkillDtoList(List<Account> accountList);
+    AccountWithSkillDto fromParticipationToAccountWithSkillDto(Participation participation);
+
+    List<AccountWithSkillDto> fromParticipationListToAccountWithSkillDtoList(List<Participation> participationList);
 }

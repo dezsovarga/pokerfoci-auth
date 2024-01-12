@@ -1,9 +1,8 @@
 package com.dezso.varga.pokerfoci.converters;
 
-import com.dezso.varga.pokerfoci.domain.Account;
 import com.dezso.varga.pokerfoci.domain.Event;
-import com.dezso.varga.pokerfoci.domain.Participation;
 import com.dezso.varga.pokerfoci.dto.EventResponseDto;
+import com.dezso.varga.pokerfoci.dto.admin.AccountWithSkillDto;
 import com.dezso.varga.pokerfoci.dto.admin.CreateEventDto;
 import com.dezso.varga.pokerfoci.repository.EventRepository;
 import lombok.AllArgsConstructor;
@@ -12,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,12 +35,19 @@ public class EventConverterImpl implements EventConverter {
 
     @Override
     public EventResponseDto fromEventToEventResponseDto(Event event) {
-        List<Account> registeredPlayers = event.getParticipationList().stream().map(Participation::getAccount).collect(Collectors.toList());
+        List<AccountWithSkillDto> registeredPlayers = accountConverter.fromParticipationListToAccountWithSkillDtoList(event.getParticipationList());
+        for (AccountWithSkillDto participant: registeredPlayers) {
+            if (participant.getRegistrationDate() == null) {
+                participant.setRegistrationDate(LocalDateTime.now());
+            }
+        }
+        registeredPlayers.sort(Comparator.comparing(AccountWithSkillDto::getRegistrationDate));
+
         return EventResponseDto.builder()
                 .id(event.getId())
                 .eventDateTime(event.getDate())
                 .status(event.getStatus())
-                .registeredPlayers(accountConverter.fromAccountListToAccountWithSkillDtoList(registeredPlayers))
+                .registeredPlayers(registeredPlayers)
                 .build();
     }
 
