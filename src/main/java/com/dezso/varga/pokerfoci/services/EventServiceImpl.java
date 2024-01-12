@@ -3,9 +3,9 @@ package com.dezso.varga.pokerfoci.services;
 import com.dezso.varga.pokerfoci.converters.EventConverter;
 import com.dezso.varga.pokerfoci.domain.Account;
 import com.dezso.varga.pokerfoci.domain.Event;
-import com.dezso.varga.pokerfoci.domain.EventStatus;
 import com.dezso.varga.pokerfoci.domain.Participation;
 import com.dezso.varga.pokerfoci.dto.EventResponseDto;
+import com.dezso.varga.pokerfoci.dto.ValidationResult;
 import com.dezso.varga.pokerfoci.exeptions.GlobalException;
 import com.dezso.varga.pokerfoci.repository.AccountRepository;
 import com.dezso.varga.pokerfoci.repository.EventRepository;
@@ -22,6 +22,7 @@ public class EventServiceImpl implements EventService {
     private final EventConverter eventConverter;
     private final AccountRepository accountRepository;
     private final ParticipationRepository participationRepository;
+    private final ValidatorService validatorService;
 
     @Override
     public EventResponseDto getLatestEvent() {
@@ -32,8 +33,9 @@ public class EventServiceImpl implements EventService {
     @Override
     public EventResponseDto registerToLatestEvent(String userEmail) throws Exception{
         Event latestEvent = eventRepository.findLatestEvent();
-        if (!latestEvent.getStatus().equals(EventStatus.INITIATED)) {
-            throw new GlobalException("Event not active anymore", HttpStatus.BAD_REQUEST.value());
+        ValidationResult validationResult = validatorService.validateEventRegistration(latestEvent, userEmail);
+        if (!validationResult.isValid()) {
+            throw new GlobalException(validationResult.getErrorMessages().get(0), HttpStatus.BAD_REQUEST.value());
         }
         Account loggedInAccount = accountRepository.findByEmail(userEmail);
         Participation newParticipation = participationRepository.save(new Participation(loggedInAccount));

@@ -14,7 +14,9 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Map;
 
+import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -79,5 +81,10 @@ public class EventControllerTest extends BaseControllerTest {
         EventResponseDto savedLatestEventResponseDto = mapper.readValue(savedResponse.getBody(), new TypeReference<>() {} );
 
         assertTrue(savedLatestEventResponseDto.getRegisteredPlayers().size() > createEventDto1.getRegisteredPlayers().size());
+
+        //trying to register again with same user
+        response = apiWrapper.registerToLatestEvent(port, bearerToken);
+        Map<String, String> responseMap = mapper.readValue(response.getBody(), Map.class);
+        assertEquals("User already registered to the latest event", responseMap.get("reason"));
     }
 }
