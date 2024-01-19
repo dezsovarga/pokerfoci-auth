@@ -45,4 +45,17 @@ public class EventServiceImpl implements EventService {
         eventRepository.save(latestEvent);
         return eventConverter.fromEventToEventResponseDto(latestEvent);
     }
+
+    @Override
+    public EventResponseDto unRegisterFromLatestEvent(String userEmail) throws Exception {
+        Event latestEvent = eventRepository.findLatestEvent();
+        ValidationResult validationResult = validatorService.validateEventUnRegistration(latestEvent, userEmail);
+        if (!validationResult.isValid()) {
+            throw new GlobalException(validationResult.getErrorMessages().get(0), HttpStatus.BAD_REQUEST.value());
+        }
+        Account loggedInAccount = accountRepository.findByEmail(userEmail);
+        latestEvent.getParticipationList().removeIf(p -> p.getAccount().getEmail().equals(loggedInAccount.getEmail()));
+        eventRepository.save(latestEvent);
+        return eventConverter.fromEventToEventResponseDto(latestEvent);
+    }
 }

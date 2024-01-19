@@ -33,6 +33,7 @@ public class ApiWrapper {
     public static final String LIST_EVENTS_FOR_ADMIN_PATH = "/event/events";
     public static final String GET_LATEST_EVENT_PATH = "/event/latest";
     public static final String REGISTER_TO_LATEST_EVENT_PATH = "/event/register";
+    public static final String UN_REGISTER_FROM_LATEST_EVENT_PATH = "/event/unregister";
 
     public String registerUser(String path, int port, String jsonBody) throws Exception{
         headers.clear();
@@ -112,6 +113,11 @@ public class ApiWrapper {
     public ResponseEntity<String> registerToLatestEvent(int port, String bearerToken) {
 
         return callApi(REGISTER_TO_LATEST_EVENT_PATH, port, createHeaders(bearerToken), null, HttpMethod.POST);
+    }
+
+    public ResponseEntity<String> unRegisterFromLatestEvent(int port, String bearerToken) {
+
+        return callApi(UN_REGISTER_FROM_LATEST_EVENT_PATH, port, createHeaders(bearerToken), null, HttpMethod.POST);
     }
 
     private HttpHeaders createHeaders(String bearerToken) {

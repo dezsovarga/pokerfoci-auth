@@ -87,4 +87,32 @@ public class EventControllerTest extends BaseControllerTest {
         Map<String, String> responseMap = mapper.readValue(response.getBody(), Map.class);
         assertEquals("User already registered to the latest event", responseMap.get("reason"));
     }
+
+    @Test
+    void unRegisterFromLatestEvent() throws Exception {
+        String username = RandomStringUtils.random(10, true, false);
+
+        Account account = Utils.aTestAccountWithRoleAndUsername("ROLE_ADMIN", username, passwordEncoder.encode("password"));
+        accountRepository.save(account);
+        String bearerToken = this.generateBearerToken( account.getEmail(),"password");
+
+        String username1 = RandomStringUtils.random(10, true, false);
+        Account account1 = Utils.aTestAccountWithRoleAndUsername("ROLE_USER", username1, passwordEncoder.encode("password"));
+        accountRepository.save(account1);
+
+        CreateEventDto createEventDto1 = Utils.aCreateEventDto(Collections.singletonList(account1.getUsername()));
+        apiWrapper.addNewEvent(port, bearerToken, createEventDto1);
+
+        apiWrapper.unRegisterFromLatestEvent(port, bearerToken);
+
+        ResponseEntity<String> latestEventResponse = apiWrapper.getLatestEvent(port, bearerToken);
+        EventResponseDto latestEventResponseDto = mapper.readValue(latestEventResponse.getBody(), new TypeReference<>() {} );
+
+        assertTrue(latestEventResponseDto.getRegisteredPlayers().size() == createEventDto1.getRegisteredPlayers().size());
+
+//        trying to unregister again with same user
+        ResponseEntity<String> response = apiWrapper.unRegisterFromLatestEvent(port, bearerToken);
+        Map<String, String> responseMap = mapper.readValue(response.getBody(), Map.class);
+        assertEquals("User not registered to the latest event", responseMap.get("reason"));
+    }
 }

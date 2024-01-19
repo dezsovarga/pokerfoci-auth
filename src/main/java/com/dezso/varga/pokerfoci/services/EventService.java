@@ -8,4 +8,6 @@ public interface EventService {
     EventResponseDto getLatestEvent();
 
     EventResponseDto registerToLatestEvent(String userEmail) throws Exception;
+
+    EventResponseDto unRegisterFromLatestEvent(String userEmail) throws Exception;
 }
