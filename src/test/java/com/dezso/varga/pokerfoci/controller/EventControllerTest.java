@@ -55,6 +55,7 @@ public class EventControllerTest extends BaseControllerTest {
 
         assertNotNull(eventResponseDto);
         Assertions.assertEquals(eventResponseDto.getEventDateTime().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(), epoch);
+        assertEquals(account.getEmail() + " created a new event", eventResponseDto.getEventHistory().get(0).getHistoryMessage());
     }
 
     @Test

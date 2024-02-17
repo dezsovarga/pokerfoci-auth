@@ -23,8 +23,11 @@ class EventController(
 
     @Secured("ROLE_ADMIN")
     @PostMapping("/event")
-    fun addEvent(@RequestBody newEventDtoRequest: CreateEventDto): EventResponseDto {
-        return adminService.createEvent(newEventDtoRequest)
+    fun addEvent(@RequestHeader("Authorization") authHeader: String,
+                 @RequestBody newEventDtoRequest: CreateEventDto): EventResponseDto {
+        val token = AuthUtils.extractTokenFromBearerToken(authHeader)
+        val userEmail = AuthUtils.getAccountEmailFromBearerToken(token)
+        return adminService.createEvent(newEventDtoRequest, userEmail)
     }
 
     @Secured("ROLE_ADMIN")

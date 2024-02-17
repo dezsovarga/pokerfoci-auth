@@ -1,6 +1,8 @@
 package com.dezso.varga.pokerfoci.converters;
 
 import com.dezso.varga.pokerfoci.domain.Event;
+import com.dezso.varga.pokerfoci.domain.EventHistory;
+import com.dezso.varga.pokerfoci.dto.EventHistoryDto;
 import com.dezso.varga.pokerfoci.dto.EventResponseDto;
 import com.dezso.varga.pokerfoci.dto.admin.AccountWithSkillDto;
 import com.dezso.varga.pokerfoci.dto.admin.CreateEventDto;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,6 +33,7 @@ public class EventConverterImpl implements EventConverter {
         return Event.builder()
                 .date(eventDateTime)
                 .participationList(accountConverter.fromAccountNameListToEventParticipationList(createEventDto.getRegisteredPlayers()))
+                .eventHistoryList(new ArrayList<>())
                 .build();
     }
 
@@ -43,11 +47,14 @@ public class EventConverterImpl implements EventConverter {
         }
         registeredPlayers.sort(Comparator.comparing(AccountWithSkillDto::getRegistrationDate));
 
+        List<EventHistoryDto> eventHistoryDto = this.fromEventHistoryListToEventHistoryDtoList(event.getEventHistoryList());
+
         return EventResponseDto.builder()
                 .id(event.getId())
                 .eventDateTime(event.getDate())
                 .status(event.getStatus())
                 .registeredPlayers(registeredPlayers)
+                .eventHistory(eventHistoryDto)
                 .build();
     }
 
@@ -55,5 +62,18 @@ public class EventConverterImpl implements EventConverter {
     public List<EventResponseDto> fromEventListToEventResponseDtoList(List<Event> eventList) {
 
         return eventList.stream().map(this::fromEventToEventResponseDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public EventHistoryDto fromEventHistoryToEventHistoryDto(EventHistory eventHistory) {
+        return EventHistoryDto.builder()
+                .historyMessage(eventHistory.getHistoryMessage())
+                .historyTime(eventHistory.getHistoryTime())
+                .build();
+    }
+
+    @Override
+    public List<EventHistoryDto> fromEventHistoryListToEventHistoryDtoList(List<EventHistory> eventHistoryList) {
+        return eventHistoryList.stream().map(this::fromEventHistoryToEventHistoryDto).collect(Collectors.toList());
     }
 }

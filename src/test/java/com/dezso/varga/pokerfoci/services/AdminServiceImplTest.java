@@ -23,6 +23,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -94,12 +95,14 @@ class AdminServiceImplTest {
                 .date(LocalDateTime.now())
                 .status(EventStatus.INITIATED)
                 .participationList(Arrays.asList(participation1, participation2))
+                .eventHistoryList(new ArrayList<>())
                 .build();
         Event event2 = Event.builder()
                 .id(2L)
                 .date(LocalDateTime.now().plusDays(7))
                 .status(EventStatus.INITIATED)
                 .participationList(Arrays.asList(participation1, participation3))
+                .eventHistoryList(new ArrayList<>())
                 .build();
 
         Mockito.when(eventRepository.findAll()).thenReturn(List.of(event1, event2));

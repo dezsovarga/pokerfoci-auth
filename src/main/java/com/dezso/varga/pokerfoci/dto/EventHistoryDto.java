@@ -1,4 +1,4 @@
-package com.dezso.varga.pokerfoci.dto.admin;
+package com.dezso.varga.pokerfoci.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,10 +13,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AccountWithSkillDto {
+public class EventHistoryDto {
 
-    private String username;
-    private String userEmail;
-    private int skill;
-    private LocalDateTime registrationDate;
+    private LocalDateTime historyTime;
+    private String historyMessage;
+
 }

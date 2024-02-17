@@ -12,7 +12,7 @@ public interface AdminService {
     List<AccountForAdminDto> listAccounts();
     AccountForAdminDto addNewAccount(AccountDto newAccountDtoRequest);
     AccountForAdminDto updateAccount(AccountForAdminDto updateAccountDtoRequest) throws Exception;
-    EventResponseDto createEvent(CreateEventDto createEventDto) throws Exception;
+    EventResponseDto createEvent(CreateEventDto createEventDto, String userEmail) throws Exception;
     List<EventResponseDto> listEvents();
 
 }

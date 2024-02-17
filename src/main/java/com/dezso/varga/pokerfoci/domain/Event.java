@@ -12,7 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -34,6 +33,14 @@ public class Event {
             inverseJoinColumns = @JoinColumn(name = "PARTICIPATION_ID")
     )
     private List<Participation> participationList;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "EVENT_EVENTHISTORY",
+            joinColumns = @JoinColumn(name = "EVENT_ID"),
+            inverseJoinColumns = @JoinColumn(name = "EVENTHISTORY_ID")
+    )
+    private List<EventHistory> eventHistoryList;
 
     private String score;
 
@@ -72,6 +79,14 @@ public class Event {
 
     public void setParticipationList(List<Participation> participationList) {
         this.participationList = participationList;
+    }
+
+    public List<EventHistory> getEventHistoryList() {
+        return eventHistoryList;
+    }
+
+    public void setEventHistoryList(List<EventHistory> eventHistoryList) {
+        this.eventHistoryList = eventHistoryList;
     }
 
     public String getScore() {

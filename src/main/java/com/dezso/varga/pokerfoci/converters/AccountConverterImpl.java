@@ -101,6 +101,7 @@ public class AccountConverterImpl implements AccountConverter {
     public AccountWithSkillDto fromParticipationToAccountWithSkillDto(Participation participation) {
         return AccountWithSkillDto.builder()
                 .username(participation.getAccount().getUsername())
+                .userEmail(participation.getAccount().getEmail())
                 .skill(participation.getAccount().getSkill())
                 .registrationDate(participation.getRegistrationDate())
                 .build();
