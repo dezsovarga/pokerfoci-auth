@@ -45,12 +45,9 @@ public class EventServiceImpl implements EventService {
         Account loggedInAccount = accountRepository.findByEmail(userEmail);
         Participation newParticipation = participationRepository.save(new Participation(loggedInAccount, LocalDateTime.now()));
         latestEvent.getParticipationList().add(newParticipation);
-        EventLog eventHistory = EventLog.builder()
-                .logTime(LocalDateTime.now())
-                .logMessage(userEmail + " registered to the event")
-                .build();
-        eventHistoryRepository.save(eventHistory);
-        latestEvent.getEventLogList().add(eventHistory);
+        EventLog eventLog = new EventLogFactory().build("JOINED", userEmail);
+        eventHistoryRepository.save(eventLog);
+        latestEvent.getEventLogList().add(eventLog);
         eventRepository.save(latestEvent);
         return eventConverter.fromEventToEventResponseDto(latestEvent);
     }

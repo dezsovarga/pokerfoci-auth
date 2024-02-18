@@ -74,15 +74,12 @@ public class AdminServiceImpl implements AdminService {
         if (createEventDto.getEventDateEpoch() == null) {
             throw new GlobalException("Event date cannot be null", HttpStatus.PRECONDITION_FAILED.value());
         }
-        EventLog eventHistory = EventLog.builder()
-                .logTime(LocalDateTime.now())
-                .logMessage(userEmail + " created a new event")
-                .build();
-        eventHistoryRepository.save(eventHistory);
+        EventLog eventLog = new EventLogFactory().build("CREATED", userEmail);
+        eventHistoryRepository.save(eventLog);
         Event event = eventConverter.fromCreateEventDtoToEvent(createEventDto);
         event.getParticipationList().forEach(eventParticipation -> participationRepository.save(eventParticipation));
         event.setStatus(EventStatus.INITIATED);
-        event.getEventLogList().add(eventHistory);
+        event.getEventLogList().add(eventLog);
         eventRepository.save(event);
         return eventConverter.fromEventToEventResponseDto(event);
     }
