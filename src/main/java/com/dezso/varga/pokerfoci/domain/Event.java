@@ -36,11 +36,11 @@ public class Event {
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(
-            name = "EVENT_EVENTHISTORY",
+            name = "EVENT_EVENTLOG",
             joinColumns = @JoinColumn(name = "EVENT_ID"),
-            inverseJoinColumns = @JoinColumn(name = "EVENTHISTORY_ID")
+            inverseJoinColumns = @JoinColumn(name = "EVENTLOG_ID")
     )
-    private List<EventHistory> eventHistoryList;
+    private List<EventLog> eventLogList;
 
     private String score;
 
@@ -81,12 +81,12 @@ public class Event {
         this.participationList = participationList;
     }
 
-    public List<EventHistory> getEventHistoryList() {
-        return eventHistoryList;
+    public List<EventLog> getEventLogList() {
+        return eventLogList;
     }
 
-    public void setEventHistoryList(List<EventHistory> eventHistoryList) {
-        this.eventHistoryList = eventHistoryList;
+    public void setEventLogList(List<EventLog> eventLogList) {
+        this.eventLogList = eventLogList;
     }
 
     public String getScore() {

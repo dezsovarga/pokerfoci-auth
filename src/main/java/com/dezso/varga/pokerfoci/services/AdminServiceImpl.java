@@ -4,7 +4,7 @@ import com.dezso.varga.pokerfoci.converters.AccountConverter;
 import com.dezso.varga.pokerfoci.converters.EventConverter;
 import com.dezso.varga.pokerfoci.domain.Account;
 import com.dezso.varga.pokerfoci.domain.Event;
-import com.dezso.varga.pokerfoci.domain.EventHistory;
+import com.dezso.varga.pokerfoci.domain.EventLog;
 import com.dezso.varga.pokerfoci.domain.EventStatus;
 import com.dezso.varga.pokerfoci.dto.EventResponseDto;
 import com.dezso.varga.pokerfoci.dto.admin.AccountForAdminDto;
@@ -12,7 +12,7 @@ import com.dezso.varga.pokerfoci.dto.admin.AccountDto;
 import com.dezso.varga.pokerfoci.dto.admin.CreateEventDto;
 import com.dezso.varga.pokerfoci.exeptions.GlobalException;
 import com.dezso.varga.pokerfoci.repository.AccountRepository;
-import com.dezso.varga.pokerfoci.repository.EventHistoryRepository;
+import com.dezso.varga.pokerfoci.repository.EventLogRepository;
 import com.dezso.varga.pokerfoci.repository.EventRepository;
 import com.dezso.varga.pokerfoci.repository.ParticipationRepository;
 import lombok.AllArgsConstructor;
@@ -37,7 +37,7 @@ public class AdminServiceImpl implements AdminService {
     private EventConverter eventConverter;
     private final EventRepository eventRepository;
     private final ParticipationRepository participationRepository;
-    private final EventHistoryRepository eventHistoryRepository;
+    private final EventLogRepository eventHistoryRepository;
 
     private static final Logger LOG = getLogger(AdminServiceImpl.class);
 
@@ -74,15 +74,15 @@ public class AdminServiceImpl implements AdminService {
         if (createEventDto.getEventDateEpoch() == null) {
             throw new GlobalException("Event date cannot be null", HttpStatus.PRECONDITION_FAILED.value());
         }
-        EventHistory eventHistory = EventHistory.builder()
-                .historyTime(LocalDateTime.now())
-                .historyMessage(userEmail + " created a new event")
+        EventLog eventHistory = EventLog.builder()
+                .logTime(LocalDateTime.now())
+                .logMessage(userEmail + " created a new event")
                 .build();
         eventHistoryRepository.save(eventHistory);
         Event event = eventConverter.fromCreateEventDtoToEvent(createEventDto);
         event.getParticipationList().forEach(eventParticipation -> participationRepository.save(eventParticipation));
         event.setStatus(EventStatus.INITIATED);
-        event.getEventHistoryList().add(eventHistory);
+        event.getEventLogList().add(eventHistory);
         eventRepository.save(event);
         return eventConverter.fromEventToEventResponseDto(event);
     }

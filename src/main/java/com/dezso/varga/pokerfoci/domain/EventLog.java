@@ -17,18 +17,18 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Getter
 @Setter
-public class EventHistory {
+public class EventLog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id", nullable = false)
     private Long id;
 
-    private LocalDateTime historyTime;
+    private LocalDateTime logTime;
 
-    private String historyMessage;
+    private String logMessage;
 
-    public EventHistory() {
+    public EventLog() {
 
     }
 }

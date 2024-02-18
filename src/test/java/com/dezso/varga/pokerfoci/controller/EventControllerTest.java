@@ -82,6 +82,8 @@ public class EventControllerTest extends BaseControllerTest {
         EventResponseDto savedLatestEventResponseDto = mapper.readValue(savedResponse.getBody(), new TypeReference<>() {} );
 
         assertTrue(savedLatestEventResponseDto.getRegisteredPlayers().size() > createEventDto1.getRegisteredPlayers().size());
+        assertEquals(2, savedLatestEventResponseDto.getEventHistory().size());
+        assertEquals(account.getEmail() + " registered to the event", savedLatestEventResponseDto.getEventHistory().get(1).getHistoryMessage());
 
         //trying to register again with same user
         response = apiWrapper.registerToLatestEvent(port, bearerToken);

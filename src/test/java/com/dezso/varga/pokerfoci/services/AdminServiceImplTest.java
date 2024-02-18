@@ -95,14 +95,14 @@ class AdminServiceImplTest {
                 .date(LocalDateTime.now())
                 .status(EventStatus.INITIATED)
                 .participationList(Arrays.asList(participation1, participation2))
-                .eventHistoryList(new ArrayList<>())
+                .eventLogList(new ArrayList<>())
                 .build();
         Event event2 = Event.builder()
                 .id(2L)
                 .date(LocalDateTime.now().plusDays(7))
                 .status(EventStatus.INITIATED)
                 .participationList(Arrays.asList(participation1, participation3))
-                .eventHistoryList(new ArrayList<>())
+                .eventLogList(new ArrayList<>())
                 .build();
 
         Mockito.when(eventRepository.findAll()).thenReturn(List.of(event1, event2));
