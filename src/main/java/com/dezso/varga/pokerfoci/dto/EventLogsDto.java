@@ -13,9 +13,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class EventHistoryDto {
+public class EventLogsDto {
 
-    private LocalDateTime historyTime;
-    private String historyMessage;
+    private LocalDateTime logTime;
+    private String logMessage;
 
 }

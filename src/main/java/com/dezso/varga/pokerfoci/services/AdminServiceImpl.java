@@ -20,7 +20,6 @@ import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -37,7 +36,7 @@ public class AdminServiceImpl implements AdminService {
     private EventConverter eventConverter;
     private final EventRepository eventRepository;
     private final ParticipationRepository participationRepository;
-    private final EventLogRepository eventHistoryRepository;
+    private final EventLogRepository eventLogRepository;
 
     private static final Logger LOG = getLogger(AdminServiceImpl.class);
 
@@ -75,7 +74,7 @@ public class AdminServiceImpl implements AdminService {
             throw new GlobalException("Event date cannot be null", HttpStatus.PRECONDITION_FAILED.value());
         }
         EventLog eventLog = new EventLogFactory().build("CREATED", userEmail);
-        eventHistoryRepository.save(eventLog);
+        eventLogRepository.save(eventLog);
         Event event = eventConverter.fromCreateEventDtoToEvent(createEventDto);
         event.getParticipationList().forEach(eventParticipation -> participationRepository.save(eventParticipation));
         event.setStatus(EventStatus.INITIATED);

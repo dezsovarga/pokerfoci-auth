@@ -2,7 +2,7 @@ package com.dezso.varga.pokerfoci.converters;
 
 import com.dezso.varga.pokerfoci.domain.Event;
 import com.dezso.varga.pokerfoci.domain.EventLog;
-import com.dezso.varga.pokerfoci.dto.EventHistoryDto;
+import com.dezso.varga.pokerfoci.dto.EventLogsDto;
 import com.dezso.varga.pokerfoci.dto.EventResponseDto;
 import com.dezso.varga.pokerfoci.dto.admin.AccountWithSkillDto;
 import com.dezso.varga.pokerfoci.dto.admin.CreateEventDto;
@@ -47,14 +47,15 @@ public class EventConverterImpl implements EventConverter {
         }
         registeredPlayers.sort(Comparator.comparing(AccountWithSkillDto::getRegistrationDate));
 
-        List<EventHistoryDto> eventHistoryDto = this.fromEventHistoryListToEventHistoryDtoList(event.getEventLogList());
+        List<EventLogsDto> eventLogsDto = this.fromEventLogsListToEventLogsDtoList(event.getEventLogList());
+        eventLogsDto.sort(Comparator.comparing(EventLogsDto::getLogTime));
 
         return EventResponseDto.builder()
                 .id(event.getId())
                 .eventDateTime(event.getDate())
                 .status(event.getStatus())
                 .registeredPlayers(registeredPlayers)
-                .eventHistory(eventHistoryDto)
+                .eventLogs(eventLogsDto)
                 .build();
     }
 
@@ -65,15 +66,15 @@ public class EventConverterImpl implements EventConverter {
     }
 
     @Override
-    public EventHistoryDto fromEventHistoryToEventHistoryDto(EventLog eventHistory) {
-        return EventHistoryDto.builder()
-                .historyMessage(eventHistory.getLogMessage())
-                .historyTime(eventHistory.getLogTime())
+    public EventLogsDto fromEventLogsToEventLogsDto(EventLog evenLogs) {
+        return EventLogsDto.builder()
+                .logMessage(evenLogs.getLogMessage())
+                .logTime(evenLogs.getLogTime())
                 .build();
     }
 
     @Override
-    public List<EventHistoryDto> fromEventHistoryListToEventHistoryDtoList(List<EventLog> eventHistoryList) {
-        return eventHistoryList.stream().map(this::fromEventHistoryToEventHistoryDto).collect(Collectors.toList());
+    public List<EventLogsDto> fromEventLogsListToEventLogsDtoList(List<EventLog> eventLogsList) {
+        return eventLogsList.stream().map(this::fromEventLogsToEventLogsDto).collect(Collectors.toList());
     }
 }

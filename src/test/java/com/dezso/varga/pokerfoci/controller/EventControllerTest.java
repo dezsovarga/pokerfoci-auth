@@ -6,6 +6,7 @@ import com.dezso.varga.pokerfoci.dto.admin.CreateEventDto;
 import com.dezso.varga.pokerfoci.utils.Utils;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
@@ -55,7 +56,7 @@ public class EventControllerTest extends BaseControllerTest {
 
         assertNotNull(eventResponseDto);
         Assertions.assertEquals(eventResponseDto.getEventDateTime().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(), epoch);
-        assertEquals(account.getEmail() + " created a new event", eventResponseDto.getEventHistory().get(0).getHistoryMessage());
+        assertEquals(account.getEmail() + " created a new event", eventResponseDto.getEventLogs().get(0).getLogMessage());
     }
 
     @Test
@@ -82,8 +83,8 @@ public class EventControllerTest extends BaseControllerTest {
         EventResponseDto savedLatestEventResponseDto = mapper.readValue(savedResponse.getBody(), new TypeReference<>() {} );
 
         assertTrue(savedLatestEventResponseDto.getRegisteredPlayers().size() > createEventDto1.getRegisteredPlayers().size());
-        assertEquals(2, savedLatestEventResponseDto.getEventHistory().size());
-        assertEquals(account.getUsername() + " registered to the event", savedLatestEventResponseDto.getEventHistory().get(1).getHistoryMessage());
+        assertEquals(2, savedLatestEventResponseDto.getEventLogs().size());
+        assertEquals(account.getUsername() + " registered to the event", savedLatestEventResponseDto.getEventLogs().get(1).getLogMessage());
 
         //trying to register again with same user
         response = apiWrapper.registerToLatestEvent(port, bearerToken);
@@ -111,10 +112,9 @@ public class EventControllerTest extends BaseControllerTest {
         ResponseEntity<String> latestEventResponse = apiWrapper.getLatestEvent(port, bearerToken);
         EventResponseDto latestEventResponseDto = mapper.readValue(latestEventResponse.getBody(), new TypeReference<>() {} );
 
-        assertTrue(latestEventResponseDto.getRegisteredPlayers().size() == createEventDto1.getRegisteredPlayers().size());
-        assertEquals(3, latestEventResponseDto.getEventHistory().size());
-        assertEquals(account.getUsername() + " unregistered from the event", latestEventResponseDto.getEventHistory().get(2).getHistoryMessage());
-
+        Assert.assertEquals(latestEventResponseDto.getRegisteredPlayers().size(), createEventDto1.getRegisteredPlayers().size());
+        assertEquals(3, latestEventResponseDto.getEventLogs().size());
+        assertEquals(account.getUsername() + " unregistered from the event", latestEventResponseDto.getEventLogs().get(2).getLogMessage());
 
 //        trying to unregister again with same user
         ResponseEntity<String> response = apiWrapper.unRegisterFromLatestEvent(port, bearerToken);
