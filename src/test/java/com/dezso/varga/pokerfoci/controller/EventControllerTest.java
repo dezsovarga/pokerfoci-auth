@@ -83,7 +83,7 @@ public class EventControllerTest extends BaseControllerTest {
 
         assertTrue(savedLatestEventResponseDto.getRegisteredPlayers().size() > createEventDto1.getRegisteredPlayers().size());
         assertEquals(2, savedLatestEventResponseDto.getEventHistory().size());
-        assertEquals(account.getEmail() + " registered to the event", savedLatestEventResponseDto.getEventHistory().get(1).getHistoryMessage());
+        assertEquals(account.getUsername() + " registered to the event", savedLatestEventResponseDto.getEventHistory().get(1).getHistoryMessage());
 
         //trying to register again with same user
         response = apiWrapper.registerToLatestEvent(port, bearerToken);
@@ -105,13 +105,16 @@ public class EventControllerTest extends BaseControllerTest {
 
         CreateEventDto createEventDto1 = Utils.aCreateEventDto(Collections.singletonList(account1.getUsername()));
         apiWrapper.addNewEvent(port, bearerToken, createEventDto1);
-
+        apiWrapper.registerToLatestEvent(port, bearerToken);
         apiWrapper.unRegisterFromLatestEvent(port, bearerToken);
 
         ResponseEntity<String> latestEventResponse = apiWrapper.getLatestEvent(port, bearerToken);
         EventResponseDto latestEventResponseDto = mapper.readValue(latestEventResponse.getBody(), new TypeReference<>() {} );
 
         assertTrue(latestEventResponseDto.getRegisteredPlayers().size() == createEventDto1.getRegisteredPlayers().size());
+        assertEquals(3, latestEventResponseDto.getEventHistory().size());
+        assertEquals(account.getUsername() + " unregistered from the event", latestEventResponseDto.getEventHistory().get(2).getHistoryMessage());
+
 
 //        trying to unregister again with same user
         ResponseEntity<String> response = apiWrapper.unRegisterFromLatestEvent(port, bearerToken);

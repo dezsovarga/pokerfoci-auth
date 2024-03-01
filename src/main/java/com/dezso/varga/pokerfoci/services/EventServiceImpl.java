@@ -27,7 +27,7 @@ public class EventServiceImpl implements EventService {
     private final AccountRepository accountRepository;
     private final ParticipationRepository participationRepository;
     private final ValidatorService validatorService;
-    private final EventLogRepository eventHistoryRepository;
+    private final EventLogRepository eventLogRepository;
 
     @Override
     public EventResponseDto getLatestEvent() {
@@ -45,8 +45,8 @@ public class EventServiceImpl implements EventService {
         Account loggedInAccount = accountRepository.findByEmail(userEmail);
         Participation newParticipation = participationRepository.save(new Participation(loggedInAccount, LocalDateTime.now()));
         latestEvent.getParticipationList().add(newParticipation);
-        EventLog eventLog = new EventLogFactory().build("JOINED", userEmail);
-        eventHistoryRepository.save(eventLog);
+        EventLog eventLog = new EventLogFactory().build("JOINED", loggedInAccount.getUsername());
+        eventLogRepository.save(eventLog);
         latestEvent.getEventLogList().add(eventLog);
         eventRepository.save(latestEvent);
         return eventConverter.fromEventToEventResponseDto(latestEvent);
@@ -60,6 +60,9 @@ public class EventServiceImpl implements EventService {
             throw new GlobalException(validationResult.getErrorMessages().get(0), HttpStatus.BAD_REQUEST.value());
         }
         Account loggedInAccount = accountRepository.findByEmail(userEmail);
+        EventLog eventLog = new EventLogFactory().build("LEFT", loggedInAccount.getUsername());
+        eventLogRepository.save(eventLog);
+        latestEvent.getEventLogList().add(eventLog);
         latestEvent.getParticipationList().removeIf(p -> p.getAccount().getEmail().equals(loggedInAccount.getEmail()));
         eventRepository.save(latestEvent);
         return eventConverter.fromEventToEventResponseDto(latestEvent);
