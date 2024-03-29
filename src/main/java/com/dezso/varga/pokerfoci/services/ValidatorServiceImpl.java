@@ -29,6 +29,13 @@ public class ValidatorServiceImpl implements ValidatorService {
         return errorMessages.isEmpty() ? ValidationResult.valid() : ValidationResult.invalid(errorMessages);
     }
 
+    @Override
+    public ValidationResult validateEventUpdate(Event latestEvent, String userEmail) {
+        List<String> errorMessages = validateEventNotActive(latestEvent);
+
+        return errorMessages.isEmpty() ? ValidationResult.valid() : ValidationResult.invalid(errorMessages);
+    }
+
     private List<String> validateEventNotActive(Event latestEvent) {
         List<String> errorMessages = new ArrayList<>();
         if (!latestEvent.getStatus().equals(EventStatus.INITIATED)) {

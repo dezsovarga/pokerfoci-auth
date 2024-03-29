@@ -30,6 +30,7 @@ public class ApiWrapper {
     public static final String ADD_NEW_ACCOUNT_FOR_ADMIN_PATH = "/admin/account";
     public static final String UPDATE_ACCOUNT_FOR_ADMIN_PATH = "/admin/account";
     public static final String ADD_NEW_EVENT_PATH = "/event/event";
+    public static final String UPDATE_EVENT_PATH = "/event/event";
     public static final String LIST_EVENTS_FOR_ADMIN_PATH = "/event/events";
     public static final String GET_LATEST_EVENT_PATH = "/event/latest";
     public static final String REGISTER_TO_LATEST_EVENT_PATH = "/event/register";
@@ -50,7 +51,7 @@ public class ApiWrapper {
                 "http://localhost:" + port + path, httpMethod, entity, String.class);
     }
 
-    public ResponseEntity<String> confirmUser(String path, int port, String confirmToken) throws Exception {
+    public ResponseEntity<String> confirmUser(String path, int port, String confirmToken) {
         headers.clear();
         headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
         return callApi(path+confirmToken, port, headers, null, HttpMethod.GET);
@@ -67,7 +68,7 @@ public class ApiWrapper {
         return mapper.readValue(decodedResponse, Map.class).get("token").toString();
     }
 
-    public ResponseEntity<String> changePassword(int port, String bearerToken, String changePasswordRequestBody) throws Exception{
+    public ResponseEntity<String> changePassword(int port, String bearerToken, String changePasswordRequestBody) {
 
         return callApi(CHANGE_PASSWORD_PATH, port, createHeaders(bearerToken), changePasswordRequestBody, HttpMethod.POST);
     }
@@ -103,6 +104,15 @@ public class ApiWrapper {
         String jsonBody = mapper.writeValueAsString(newEventDto);
 
         return callApi(ADD_NEW_EVENT_PATH, port, createHeaders(bearerToken), jsonBody, HttpMethod.POST);
+    }
+
+    public ResponseEntity<String> updateEvent(int port, String bearerToken, CreateEventDto updateEventDto) throws JsonProcessingException {
+
+        mapper.registerModule(new JavaTimeModule());
+        mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+        String jsonBody = mapper.writeValueAsString(updateEventDto);
+
+        return callApi(UPDATE_EVENT_PATH, port, createHeaders(bearerToken), jsonBody, HttpMethod.PUT);
     }
 
     public ResponseEntity<String> getLatestEvent(int port, String bearerToken) {

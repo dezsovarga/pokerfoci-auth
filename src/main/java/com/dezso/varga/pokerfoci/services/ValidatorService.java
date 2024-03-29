@@ -8,4 +8,7 @@ public interface ValidatorService {
     ValidationResult validateEventRegistration(Event latestEvent, String userEmail);
 
     ValidationResult validateEventUnRegistration(Event latestEvent, String userEmail);
+
+    ValidationResult validateEventUpdate(Event latestEvent, String userEmail);
+
 }

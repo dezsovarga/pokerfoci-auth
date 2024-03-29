@@ -121,4 +121,50 @@ public class EventControllerTest extends BaseControllerTest {
         Map<String, String> responseMap = mapper.readValue(response.getBody(), Map.class);
         assertEquals("User not registered to the latest event", responseMap.get("reason"));
     }
+
+    @Test
+    void updateEventPlayers() throws Exception {
+        String username = RandomStringUtils.random(10, true, false);
+        Account account = Utils.aTestAccountWithRoleAndUsername("ROLE_ADMIN", username, passwordEncoder.encode("password"));
+        accountRepository.save(account);
+        String bearerToken = this.generateBearerToken( account.getEmail(),"password");
+
+        String username1 = RandomStringUtils.random(10, true, false);
+        Account account1 = Utils.aTestAccountWithRoleAndUsername(
+                "ROLE_USER",
+                username1,
+                passwordEncoder.encode("password"));
+        accountRepository.save(account1);
+
+        String username2 = RandomStringUtils.random(10, true, false);
+        Account account2 = Utils.aTestAccountWithRoleAndUsername(
+                "ROLE_USER",
+                username2,
+                passwordEncoder.encode("password"));
+        accountRepository.save(account2);
+
+        String username3 = RandomStringUtils.random(10, true, false);
+        Account account3 = Utils.aTestAccountWithRoleAndUsername(
+                "ROLE_USER",
+                username3,
+                passwordEncoder.encode("password"));
+        accountRepository.save(account3);
+
+        CreateEventDto createEventDto = Utils.aCreateEventDto(Arrays.asList(account1.getUsername(), account2.getUsername()));
+        apiWrapper.addNewEvent(port, bearerToken, createEventDto);
+
+        CreateEventDto updateEventDto = Utils.aCreateEventDto(
+                Arrays.asList(account2.getUsername(), account3.getUsername())
+        );
+        apiWrapper.updateEvent(port, bearerToken, updateEventDto);
+
+        ResponseEntity<String> savedResponse = apiWrapper.getLatestEvent(port, bearerToken);
+        EventResponseDto savedLatestEventResponseDto = mapper.readValue(savedResponse.getBody(), new TypeReference<>() {} );
+        Assert.assertEquals(2, savedLatestEventResponseDto.getRegisteredPlayers().size());
+        Assert.assertEquals(account2.getUsername(), savedLatestEventResponseDto.getRegisteredPlayers().get(0).getUsername());
+        Assert.assertEquals(account3.getUsername(), savedLatestEventResponseDto.getRegisteredPlayers().get(1).getUsername());
+
+
+    }
+
 }

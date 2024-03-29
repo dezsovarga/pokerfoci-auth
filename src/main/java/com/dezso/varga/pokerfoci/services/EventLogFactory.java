@@ -13,6 +13,11 @@ public class EventLogFactory {
                     .logMessage(userEmail + " created a new event")
                     .build();
 
+            case "UPDATED": return EventLog.builder()
+                    .logTime(LocalDateTime.now())
+                    .logMessage(userEmail + " updated the players list from the latest event")
+                    .build();
+
             case "JOINED": return EventLog.builder()
                     .logTime(LocalDateTime.now())
                     .logMessage(userEmail + " registered to the event")

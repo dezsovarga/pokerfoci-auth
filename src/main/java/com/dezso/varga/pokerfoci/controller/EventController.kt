@@ -8,6 +8,7 @@ import com.dezso.varga.pokerfoci.dto.EventResponseDto
 import org.springframework.security.access.annotation.Secured
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
@@ -28,6 +29,15 @@ class EventController(
         val token = AuthUtils.extractTokenFromBearerToken(authHeader)
         val userEmail = AuthUtils.getAccountEmailFromBearerToken(token)
         return adminService.createEvent(newEventDtoRequest, userEmail)
+    }
+
+    @Secured("ROLE_ADMIN")
+    @PutMapping("/event")
+    fun updateEvent(@RequestHeader("Authorization") authHeader: String,
+                 @RequestBody eventDtoRequest: CreateEventDto): EventResponseDto {
+        val token = AuthUtils.extractTokenFromBearerToken(authHeader)
+        val userEmail = AuthUtils.getAccountEmailFromBearerToken(token)
+        return adminService.updateEvent(eventDtoRequest, userEmail)
     }
 
     @Secured("ROLE_ADMIN")
