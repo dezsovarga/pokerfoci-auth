@@ -94,9 +94,11 @@ public class AdminServiceImpl implements AdminService {
         if (!validationResult.isValid()) {
             throw new GlobalException(validationResult.getErrorMessages().get(0), HttpStatus.BAD_REQUEST.value());
         }
-        EventLog eventLog = new EventLogFactory().build("UPDATED", userEmail);
+        Account loggedInAccount = accountRepository.findByEmail(userEmail);
+        EventLog eventLog = new EventLogFactory().build("UPDATED", loggedInAccount.getUsername());
         eventLogRepository.save(eventLog);
         this.syncEventPlayers(latestEvent, eventDto);
+        latestEvent.getEventLogList().add(eventLog);
         eventRepository.save(latestEvent);
         return eventConverter.fromEventToEventResponseDto(latestEvent);
     }

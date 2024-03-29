@@ -163,6 +163,7 @@ public class EventControllerTest extends BaseControllerTest {
         Assert.assertEquals(2, savedLatestEventResponseDto.getRegisteredPlayers().size());
         Assert.assertEquals(account2.getUsername(), savedLatestEventResponseDto.getRegisteredPlayers().get(0).getUsername());
         Assert.assertEquals(account3.getUsername(), savedLatestEventResponseDto.getRegisteredPlayers().get(1).getUsername());
+        assertEquals(account.getUsername() + " updated the players list from the latest event", savedLatestEventResponseDto.getEventLogs().get(1).getLogMessage());
 
 
     }
