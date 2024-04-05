@@ -7,6 +7,8 @@ import com.dezso.varga.pokerfoci.domain.Event;
 import com.dezso.varga.pokerfoci.domain.EventLog;
 import com.dezso.varga.pokerfoci.domain.EventStatus;
 import com.dezso.varga.pokerfoci.domain.Participation;
+import com.dezso.varga.pokerfoci.domain.Team;
+import com.dezso.varga.pokerfoci.domain.TeamVariation;
 import com.dezso.varga.pokerfoci.dto.EventResponseDto;
 import com.dezso.varga.pokerfoci.dto.ValidationResult;
 import com.dezso.varga.pokerfoci.dto.admin.AccountForAdminDto;
@@ -15,14 +17,17 @@ import com.dezso.varga.pokerfoci.dto.admin.CreateEventDto;
 import com.dezso.varga.pokerfoci.exeptions.GlobalException;
 import com.dezso.varga.pokerfoci.repository.AccountRepository;
 import com.dezso.varga.pokerfoci.repository.EventLogRepository;
+import com.dezso.varga.pokerfoci.repository.TeamRepository;
 import com.dezso.varga.pokerfoci.repository.EventRepository;
 import com.dezso.varga.pokerfoci.repository.ParticipationRepository;
+import com.dezso.varga.pokerfoci.repository.TeamVariationRepository;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -41,6 +46,9 @@ public class AdminServiceImpl implements AdminService {
     private final ParticipationRepository participationRepository;
     private final EventLogRepository eventLogRepository;
     private final ValidatorService validatorService;
+    private final TeamGeneratorService teamGeneratorService;
+    private final TeamRepository teamRepository;
+    private final TeamVariationRepository teamVariationRepository;
 
     private static final Logger LOG = getLogger(AdminServiceImpl.class);
 
@@ -127,5 +135,27 @@ public class AdminServiceImpl implements AdminService {
         List<EventResponseDto> dtoList = eventConverter.fromEventListToEventResponseDtoList(allEvents);
         dtoList.sort(Comparator.comparing(EventResponseDto::getEventDateTime).reversed());
         return dtoList;
+    }
+
+    @Override
+    public EventResponseDto generateTeams(String userEmail) {
+        Event latestEvent = eventRepository.findLatestEvent();
+        List<Account> registeredAccounts = latestEvent.getParticipationList()
+                .stream()
+                .map(Participation::getAccount)
+                .collect(Collectors.toList());
+        List<TeamVariation> teamVariations = teamGeneratorService.generateVariations(registeredAccounts);
+        List<TeamVariation> variations = new ArrayList<>();
+        teamVariations.forEach(v -> {
+            Team team1 = teamRepository.save(v.getTeam1());
+            Team team2 = teamRepository.save(v.getTeam2());
+            v.setTeam1(team1);
+            v.setTeam2(team2);
+            TeamVariation variation = teamVariationRepository.save(v);
+            variations.add(variation);
+        });
+        latestEvent.getTeamVariations().addAll(variations);
+        eventRepository.save(latestEvent);
+        return eventConverter.fromEventToEventResponseDto(latestEvent);
     }
 }

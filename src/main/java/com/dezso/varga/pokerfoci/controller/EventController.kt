@@ -41,6 +41,14 @@ class EventController(
     }
 
     @Secured("ROLE_ADMIN")
+    @PostMapping("/generate-teams")
+    fun generateTeams(@RequestHeader("Authorization") authHeader: String): EventResponseDto {
+        val token = AuthUtils.extractTokenFromBearerToken(authHeader)
+        val userEmail = AuthUtils.getAccountEmailFromBearerToken(token)
+        return adminService.generateTeams(userEmail)
+    }
+
+    @Secured("ROLE_ADMIN")
     @GetMapping("/events")
     fun listEvents() : List<EventResponseDto> {
         return adminService.listEvents()

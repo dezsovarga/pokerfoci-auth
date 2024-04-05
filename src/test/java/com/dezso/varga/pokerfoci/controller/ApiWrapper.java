@@ -31,6 +31,7 @@ public class ApiWrapper {
     public static final String UPDATE_ACCOUNT_FOR_ADMIN_PATH = "/admin/account";
     public static final String ADD_NEW_EVENT_PATH = "/event/event";
     public static final String UPDATE_EVENT_PATH = "/event/event";
+    public static final String GENERATE_TEAMS_PATH = "/event/generate-teams";
     public static final String LIST_EVENTS_FOR_ADMIN_PATH = "/event/events";
     public static final String GET_LATEST_EVENT_PATH = "/event/latest";
     public static final String REGISTER_TO_LATEST_EVENT_PATH = "/event/register";
@@ -113,6 +114,14 @@ public class ApiWrapper {
         String jsonBody = mapper.writeValueAsString(updateEventDto);
 
         return callApi(UPDATE_EVENT_PATH, port, createHeaders(bearerToken), jsonBody, HttpMethod.PUT);
+    }
+
+    public ResponseEntity<String> generateTeamVariations(int port, String bearerToken) throws JsonProcessingException {
+
+        mapper.registerModule(new JavaTimeModule());
+        mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+
+        return callApi(GENERATE_TEAMS_PATH, port, createHeaders(bearerToken), null, HttpMethod.POST);
     }
 
     public ResponseEntity<String> getLatestEvent(int port, String bearerToken) {

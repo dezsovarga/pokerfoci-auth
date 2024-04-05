@@ -22,6 +22,7 @@ public class EventResponseDto {
     private LocalDateTime eventDateTime;
     private List<AccountWithSkillDto> registeredPlayers;
     private List<EventLogsDto> eventLogs;
+    private List<TeamVariationDto> teamVariations;
     private EventStatus status;
     private String score;
 }

@@ -2,8 +2,13 @@ package com.dezso.varga.pokerfoci.converters;
 
 import com.dezso.varga.pokerfoci.domain.Event;
 import com.dezso.varga.pokerfoci.domain.EventLog;
+import com.dezso.varga.pokerfoci.domain.Team;
+import com.dezso.varga.pokerfoci.domain.TeamMember;
+import com.dezso.varga.pokerfoci.domain.TeamVariation;
 import com.dezso.varga.pokerfoci.dto.EventLogsDto;
 import com.dezso.varga.pokerfoci.dto.EventResponseDto;
+import com.dezso.varga.pokerfoci.dto.TeamDto;
+import com.dezso.varga.pokerfoci.dto.TeamVariationDto;
 import com.dezso.varga.pokerfoci.dto.admin.AccountWithSkillDto;
 import com.dezso.varga.pokerfoci.dto.admin.CreateEventDto;
 import com.dezso.varga.pokerfoci.repository.EventRepository;
@@ -50,11 +55,14 @@ public class EventConverterImpl implements EventConverter {
         List<EventLogsDto> eventLogsDto = this.fromEventLogsListToEventLogsDtoList(event.getEventLogList());
         eventLogsDto.sort(Comparator.comparing(EventLogsDto::getLogTime));
 
+        List<TeamVariationDto> teamVariationDtoList = this.fromTeamVariationListToTeamVariationDtoList(event.getTeamVariations());
+
         return EventResponseDto.builder()
                 .id(event.getId())
                 .eventDateTime(event.getDate())
                 .status(event.getStatus())
                 .registeredPlayers(registeredPlayers)
+                .teamVariations(teamVariationDtoList)
                 .eventLogs(eventLogsDto)
                 .build();
     }
@@ -77,4 +85,29 @@ public class EventConverterImpl implements EventConverter {
     public List<EventLogsDto> fromEventLogsListToEventLogsDtoList(List<EventLog> eventLogsList) {
         return eventLogsList.stream().map(this::fromEventLogsToEventLogsDto).collect(Collectors.toList());
     }
+
+    @Override
+    public List<TeamVariationDto> fromTeamVariationListToTeamVariationDtoList(List<TeamVariation> teamVariations) {
+        return teamVariations.stream().map(this::fromTeamVariationToTeamVariationDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public TeamVariationDto fromTeamVariationToTeamVariationDto(TeamVariation teamVariation) {
+        return new TeamVariationDto(
+                fromTeamToTeamDto(teamVariation.getTeam1()),
+                fromTeamToTeamDto(teamVariation.getTeam2()),
+                teamVariation.getSkillDifference()
+        );
+    }
+
+    @Override
+    public TeamDto fromTeamToTeamDto(Team team) {
+        return new TeamDto(
+                accountConverter
+                        .fromAccountListToAccountWithSkillDtoList(
+                                team.getTeamMembers().stream().map(TeamMember::getAccount).collect(Collectors.toList())),
+                                team.getSkillSum()
+        );
+    }
+
 }

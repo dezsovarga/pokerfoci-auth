@@ -1,6 +1,7 @@
 package com.dezso.varga.pokerfoci.controller;
 
 import com.dezso.varga.pokerfoci.domain.Account;
+import com.dezso.varga.pokerfoci.domain.Role;
 import com.dezso.varga.pokerfoci.dto.EventResponseDto;
 import com.dezso.varga.pokerfoci.dto.admin.CreateEventDto;
 import com.dezso.varga.pokerfoci.utils.Utils;
@@ -16,6 +17,7 @@ import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Set;
 
 import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -124,31 +126,16 @@ public class EventControllerTest extends BaseControllerTest {
 
     @Test
     void updateEventPlayers() throws Exception {
-        String username = RandomStringUtils.random(10, true, false);
-        Account account = Utils.aTestAccountWithRoleAndUsername("ROLE_ADMIN", username, passwordEncoder.encode("password"));
-        accountRepository.save(account);
+        Account account = createTestAccount(
+                "ROLE_ADMIN", RandomStringUtils.random(10, true, false), 70);
         String bearerToken = this.generateBearerToken( account.getEmail(),"password");
 
-        String username1 = RandomStringUtils.random(10, true, false);
-        Account account1 = Utils.aTestAccountWithRoleAndUsername(
-                "ROLE_USER",
-                username1,
-                passwordEncoder.encode("password"));
-        accountRepository.save(account1);
-
-        String username2 = RandomStringUtils.random(10, true, false);
-        Account account2 = Utils.aTestAccountWithRoleAndUsername(
-                "ROLE_USER",
-                username2,
-                passwordEncoder.encode("password"));
-        accountRepository.save(account2);
-
-        String username3 = RandomStringUtils.random(10, true, false);
-        Account account3 = Utils.aTestAccountWithRoleAndUsername(
-                "ROLE_USER",
-                username3,
-                passwordEncoder.encode("password"));
-        accountRepository.save(account3);
+        Account account1 = createTestAccount(
+                "ROLE_USER", RandomStringUtils.random(10, true, false), 73);
+        Account account2 = createTestAccount(
+                "ROLE_USER", RandomStringUtils.random(10, true, false), 74);
+        Account account3 = createTestAccount(
+                "ROLE_USER", RandomStringUtils.random(10, true, false), 65);
 
         CreateEventDto createEventDto = Utils.aCreateEventDto(Arrays.asList(account1.getUsername(), account2.getUsername()));
         apiWrapper.addNewEvent(port, bearerToken, createEventDto);
@@ -164,8 +151,79 @@ public class EventControllerTest extends BaseControllerTest {
         Assert.assertEquals(account2.getUsername(), savedLatestEventResponseDto.getRegisteredPlayers().get(0).getUsername());
         Assert.assertEquals(account3.getUsername(), savedLatestEventResponseDto.getRegisteredPlayers().get(1).getUsername());
         assertEquals(account.getUsername() + " updated the players list from the latest event", savedLatestEventResponseDto.getEventLogs().get(1).getLogMessage());
+    }
+
+    @Test
+    void generateTeamVariations() throws Exception {
+        Account account = createTestAccount(
+                "ROLE_ADMIN", RandomStringUtils.random(10, true, false), 70);
+        String bearerToken = this.generateBearerToken( account.getEmail(),"password");
+        CreateEventDto createEventDto = this.createEventWith12Players();
+        apiWrapper.addNewEvent(port, bearerToken, createEventDto);
+
+        apiWrapper.generateTeamVariations(port, bearerToken);
+
+        ResponseEntity<String> savedResponse = apiWrapper.getLatestEvent(port, bearerToken);
+        EventResponseDto savedLatestEventResponseDto = mapper.readValue(savedResponse.getBody(), new TypeReference<>() {} );
+        Assert.assertEquals(10, savedLatestEventResponseDto.getTeamVariations().size());
+    }
+
+    private CreateEventDto createEventWith12Players() {
 
 
+        Account account1 = createTestAccount(
+                "ROLE_USER", "Csabesz", 85);
+        Account account2 = createTestAccount(
+                "ROLE_USER", "dezsovarga", 64);
+        Account account3 = createTestAccount(
+                "ROLE_USER", "Dragos", 58);
+        Account account4 = createTestAccount(
+                "ROLE_USER", "horvathkuki", 73);
+        Account account5 = createTestAccount(
+                "ROLE_USER", "kuplung", 72);
+        Account account6 = createTestAccount(
+                "ROLE_USER", "pistike", 80);
+        Account account7 = createTestAccount(
+                "ROLE_USER", "szloszlo", 76);
+        Account account8 = createTestAccount(
+                "ROLE_USER", "szury", 34);
+        Account account9 = createTestAccount(
+                "ROLE_USER", "atarr", 76);
+        Account account10 = createTestAccount(
+                "ROLE_USER", "mikloszsolt", 74);
+        Account account11 = createTestAccount(
+                "ROLE_USER", "orban", 75);
+        Account account12 = createTestAccount(
+                "ROLE_USER", "vinitor", 68);
+
+        return Utils.aCreateEventDto(
+                Arrays.asList(
+                        account1.getUsername(),
+                        account2.getUsername(),
+                        account3.getUsername(),
+                        account4.getUsername(),
+                        account5.getUsername(),
+                        account6.getUsername(),
+                        account7.getUsername(),
+                        account8.getUsername(),
+                        account9.getUsername(),
+                        account10.getUsername(),
+                        account11.getUsername(),
+                        account12.getUsername()
+                )
+        );
+    }
+
+    private Account createTestAccount(String role, String username, int skill) {
+        Account account = new Account(
+                username,
+                username+"@"+role+".com",
+                passwordEncoder.encode("password"),
+                skill,
+                true,
+                Set.of(new Role( role)));
+        accountRepository.save(account);
+        return account;
     }
 
 }

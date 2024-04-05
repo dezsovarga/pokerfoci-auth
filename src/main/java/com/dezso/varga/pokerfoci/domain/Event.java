@@ -42,6 +42,14 @@ public class Event {
     )
     private List<EventLog> eventLogList;
 
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "EVENT_TEAMVARIATION",
+            joinColumns = @JoinColumn(name = "EVENT_ID"),
+            inverseJoinColumns = @JoinColumn(name = "TEAMVARIATION_ID")
+    )
+    private List<TeamVariation> teamVariations;
+
     private String score;
 
 
@@ -95,5 +103,13 @@ public class Event {
 
     public void setScore(String score) {
         this.score = score;
+    }
+
+    public List<TeamVariation> getTeamVariations() {
+        return teamVariations;
+    }
+
+    public void setTeamVariations(List<TeamVariation> teamVariations) {
+        this.teamVariations = teamVariations;
     }
 }

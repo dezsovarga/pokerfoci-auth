@@ -114,4 +114,12 @@ public class AccountConverterImpl implements AccountConverter {
                 .map(this::fromParticipationToAccountWithSkillDto)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public List<AccountWithSkillDto> fromAccountListToAccountWithSkillDtoList(List<Account> accountList) {
+        return accountList
+                .stream()
+                .map(this::fromAccountToAccountWithSkillDto)
+                .collect(Collectors.toList());
+    }
 }
