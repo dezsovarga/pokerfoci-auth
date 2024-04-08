@@ -95,6 +95,7 @@ class AdminServiceImplTest {
                 .date(LocalDateTime.now())
                 .status(EventStatus.INITIATED)
                 .participationList(Arrays.asList(participation1, participation2))
+                .teamVariations(new ArrayList<>())
                 .eventLogList(new ArrayList<>())
                 .build();
         Event event2 = Event.builder()
@@ -102,6 +103,7 @@ class AdminServiceImplTest {
                 .date(LocalDateTime.now().plusDays(7))
                 .status(EventStatus.INITIATED)
                 .participationList(Arrays.asList(participation1, participation3))
+                .teamVariations(new ArrayList<>())
                 .eventLogList(new ArrayList<>())
                 .build();
 

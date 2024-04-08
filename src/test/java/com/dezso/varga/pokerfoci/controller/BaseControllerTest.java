@@ -8,6 +8,9 @@ import com.dezso.varga.pokerfoci.repository.AccountRepository;
 import com.dezso.varga.pokerfoci.repository.EventRepository;
 import com.dezso.varga.pokerfoci.repository.ParticipationRepository;
 import com.dezso.varga.pokerfoci.repository.RoleRepository;
+import com.dezso.varga.pokerfoci.repository.TeamMemberRepository;
+import com.dezso.varga.pokerfoci.repository.TeamRepository;
+import com.dezso.varga.pokerfoci.repository.TeamVariationRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.apache.commons.codec.binary.Base64;
@@ -68,12 +71,21 @@ public class BaseControllerTest {
     private EventRepository eventRepository;
     @Autowired
     private ParticipationRepository participationRepository;
+    @Autowired
+    private TeamMemberRepository teamMemberRepository;
+    @Autowired
+    private TeamRepository teamRepository;
+    @Autowired
+    private TeamVariationRepository teamVariationRepository;
 
     @BeforeEach
     public void init() {
         mapper.registerModule(new JavaTimeModule());
         eventRepository.deleteAll();
         participationRepository.deleteAll();
+        teamVariationRepository.deleteAll();
+        teamRepository.deleteAll();
+        teamMemberRepository.deleteAll();
         accountRepository.deleteAll();
         roleRepository.deleteAll();
     }

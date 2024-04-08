@@ -39,6 +39,7 @@ public class EventConverterImpl implements EventConverter {
                 .date(eventDateTime)
                 .participationList(accountConverter.fromAccountNameListToEventParticipationList(createEventDto.getRegisteredPlayers()))
                 .eventLogList(new ArrayList<>())
+                .teamVariations(new ArrayList<>())
                 .build();
     }
 
