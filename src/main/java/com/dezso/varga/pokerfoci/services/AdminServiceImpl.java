@@ -102,16 +102,24 @@ public class AdminServiceImpl implements AdminService {
         if (!validationResult.isValid()) {
             throw new GlobalException(validationResult.getErrorMessages().get(0), HttpStatus.BAD_REQUEST.value());
         }
-        Account loggedInAccount = accountRepository.findByEmail(userEmail);
-        EventLog eventLog = new EventLogFactory().build("UPDATED", loggedInAccount.getUsername());
-        eventLogRepository.save(eventLog);
-        this.syncEventPlayers(latestEvent, eventDto);
-        latestEvent.getEventLogList().add(eventLog);
+        boolean playerListChanged = this.syncEventPlayers(latestEvent, eventDto);
+        if (playerListChanged) {
+            latestEvent.getTeamVariations().removeAll(latestEvent.getTeamVariations());
+            Account loggedInAccount = accountRepository.findByEmail(userEmail);
+            EventLog eventLog = new EventLogFactory().build("UPDATED", loggedInAccount.getUsername());
+            eventLogRepository.save(eventLog);
+            latestEvent.getEventLogList().add(eventLog);
+        }
         eventRepository.save(latestEvent);
         return eventConverter.fromEventToEventResponseDto(latestEvent);
     }
 
-    private void syncEventPlayers(Event event, CreateEventDto eventDto) {
+    private boolean syncEventPlayers(Event event, CreateEventDto eventDto) {
+        List<String> playerNameListBeforeSync = event.getParticipationList()
+                .stream()
+                .map(participation -> participation.getAccount().getUsername())
+                .collect(Collectors.toList());
+
         event.getParticipationList()
                 .removeIf(p -> !eventDto.getRegisteredPlayers().contains(p.getAccount().getUsername()));
 
@@ -127,6 +135,14 @@ public class AdminServiceImpl implements AdminService {
                 .collect(Collectors.toList());
 
         event.getParticipationList().addAll(missingPlayers);
+
+        List<String> playerNameListAfterSync = event.getParticipationList()
+                .stream()
+                .map(participation -> participation.getAccount().getUsername())
+                .collect(Collectors.toList());
+
+//        return if there is any difference after the sync
+        return !playerNameListBeforeSync.equals(playerNameListAfterSync);
     }
 
     @Override
@@ -140,6 +156,7 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public EventResponseDto generateTeams(String userEmail) {
         Event latestEvent = eventRepository.findLatestEvent();
+        latestEvent.getTeamVariations().removeAll(latestEvent.getTeamVariations());
         List<Account> registeredAccounts = latestEvent.getParticipationList()
                 .stream()
                 .map(Participation::getAccount)

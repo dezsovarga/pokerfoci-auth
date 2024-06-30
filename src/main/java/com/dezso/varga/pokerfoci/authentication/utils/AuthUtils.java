@@ -91,6 +91,7 @@ public class AuthUtils {
         roles.add(new Role(claims.get("roles").toString()));
         Account account = new Account(initialRequest);
         account.setRoles(roles);
+        account.setSkill(50); //setting a default initial skill when registering
         return account;
     }
 

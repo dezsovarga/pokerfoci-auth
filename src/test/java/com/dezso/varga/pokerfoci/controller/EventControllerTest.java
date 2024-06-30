@@ -166,10 +166,39 @@ public class EventControllerTest extends BaseControllerTest {
         ResponseEntity<String> savedResponse = apiWrapper.getLatestEvent(port, bearerToken);
         EventResponseDto savedLatestEventResponseDto = mapper.readValue(savedResponse.getBody(), new TypeReference<>() {} );
         Assert.assertEquals(10, savedLatestEventResponseDto.getTeamVariations().size());
+
+        //generate teams again
+        apiWrapper.generateTeamVariations(port, bearerToken);
+
+        ResponseEntity<String> savedResponseAgain = apiWrapper.getLatestEvent(port, bearerToken);
+        EventResponseDto savedLatestEventResponseDtoAgain = mapper.readValue(savedResponseAgain.getBody(), new TypeReference<>() {} );
+        //assert that team variations were replaced instead of adding them again in the list
+        Assert.assertEquals(10, savedLatestEventResponseDtoAgain.getTeamVariations().size());
+    }
+
+    @Test
+    void generateTeamVariationsThenUpdatePlayersList() throws Exception {
+        Account account = createTestAccount(
+                "ROLE_ADMIN", RandomStringUtils.random(10, true, false), 70);
+        String bearerToken = this.generateBearerToken( account.getEmail(),"password");
+        CreateEventDto createEventDto = this.createEventWith12Players();
+        apiWrapper.addNewEvent(port, bearerToken, createEventDto);
+
+        apiWrapper.generateTeamVariations(port, bearerToken);
+
+        CreateEventDto updateEventDto = Utils.aCreateEventDto(
+                Arrays.asList(createTestAccount(
+                        "ROLE_USER", "Csabesz", 85).getUsername())
+        );
+        apiWrapper.updateEvent(port, bearerToken, updateEventDto);
+
+        ResponseEntity<String> savedResponse = apiWrapper.getLatestEvent(port, bearerToken);
+        EventResponseDto savedLatestEventResponseDto = mapper.readValue(savedResponse.getBody(), new TypeReference<>() {} );
+        Assert.assertEquals(0, savedLatestEventResponseDto.getTeamVariations().size());
+
     }
 
     private CreateEventDto createEventWith12Players() {
-
 
         Account account1 = createTestAccount(
                 "ROLE_USER", "Csabesz", 85);
