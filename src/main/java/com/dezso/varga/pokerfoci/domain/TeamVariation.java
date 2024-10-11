@@ -28,14 +28,17 @@ public class TeamVariation {
 
     private double skillDifference;
 
+    private boolean selectedForVoting;
+
     public TeamVariation() {
 
     }
 
-    public TeamVariation(Team team1, Team team2, double skillDifference) {
+    public TeamVariation(Team team1, Team team2, double skillDifference, boolean selectedForVoting) {
         this.team1 = team1;
         this.team2 = team2;
         this.skillDifference = skillDifference;
+        this.selectedForVoting = selectedForVoting;
     }
 
     public Long getId() {
@@ -69,4 +72,13 @@ public class TeamVariation {
     public void setSkillDifference(double skillDifference) {
         this.skillDifference = skillDifference;
     }
+
+    public boolean isSelectedForVoting() {
+        return selectedForVoting;
+    }
+
+    public void setSelectedForVoting(boolean selectedForVoting) {
+        this.selectedForVoting = selectedForVoting;
+    }
+
 }

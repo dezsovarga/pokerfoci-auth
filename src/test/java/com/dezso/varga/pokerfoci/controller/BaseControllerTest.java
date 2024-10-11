@@ -76,7 +76,7 @@ public class BaseControllerTest {
     @Autowired
     private TeamRepository teamRepository;
     @Autowired
-    private TeamVariationRepository teamVariationRepository;
+    protected TeamVariationRepository teamVariationRepository;
 
     @BeforeEach
     public void init() {

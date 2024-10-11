@@ -6,14 +6,7 @@ import com.dezso.varga.pokerfoci.services.EventService
 import com.dezso.varga.pokerfoci.services.AdminService
 import com.dezso.varga.pokerfoci.dto.EventResponseDto
 import org.springframework.security.access.annotation.Secured
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestHeader
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/event")
@@ -46,6 +39,15 @@ class EventController(
         val token = AuthUtils.extractTokenFromBearerToken(authHeader)
         val userEmail = AuthUtils.getAccountEmailFromBearerToken(token)
         return adminService.generateTeams(userEmail)
+    }
+
+    @Secured("ROLE_ADMIN")
+    @PutMapping("/update-variation-selection")
+    fun updateTeamSelection(@RequestHeader("Authorization") authHeader: String,
+                            @RequestParam("ids") selectedVariationIds: List<Long>): EventResponseDto {
+        val token = AuthUtils.extractTokenFromBearerToken(authHeader)
+        val userEmail = AuthUtils.getAccountEmailFromBearerToken(token)
+        return adminService.updateTeamVariationSelection(userEmail, selectedVariationIds)
     }
 
     @Secured("ROLE_ADMIN")

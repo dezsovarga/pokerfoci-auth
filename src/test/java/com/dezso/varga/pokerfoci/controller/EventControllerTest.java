@@ -14,10 +14,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -174,6 +171,32 @@ public class EventControllerTest extends BaseControllerTest {
         EventResponseDto savedLatestEventResponseDtoAgain = mapper.readValue(savedResponseAgain.getBody(), new TypeReference<>() {} );
         //assert that team variations were replaced instead of adding them again in the list
         Assert.assertEquals(10, savedLatestEventResponseDtoAgain.getTeamVariations().size());
+    }
+
+    @Test
+    void selectTeamVariationsForVoting() throws Exception {
+        Account account = createTestAccount(
+                "ROLE_ADMIN", RandomStringUtils.random(10, true, false), 70);
+        String bearerToken = this.generateBearerToken( account.getEmail(),"password");
+        CreateEventDto createEventDto = this.createEventWith12Players();
+        apiWrapper.addNewEvent(port, bearerToken, createEventDto);
+
+        apiWrapper.generateTeamVariations(port, bearerToken);
+
+        ResponseEntity<String> savedResponse = apiWrapper.getLatestEvent(port, bearerToken);
+        EventResponseDto savedLatestEventResponseDto = mapper.readValue(savedResponse.getBody(), new TypeReference<>() {} );
+        Assert.assertEquals(10, savedLatestEventResponseDto.getTeamVariations().size());
+
+        List<Long> variationIdsToUpdate = List.of(savedLatestEventResponseDto.getTeamVariations().get(0).getVariationId(),
+                savedLatestEventResponseDto.getTeamVariations().get(1).getVariationId(),
+                savedLatestEventResponseDto.getTeamVariations().get(2).getVariationId());
+
+        savedResponse = apiWrapper.updateTeamVariationsSelection(port, bearerToken, variationIdsToUpdate);
+        savedLatestEventResponseDto = mapper.readValue(savedResponse.getBody(), new TypeReference<>() {} );
+
+        Assert.assertTrue(savedLatestEventResponseDto.getTeamVariations().get(0).isSelectedForVoting());
+        Assert.assertTrue(savedLatestEventResponseDto.getTeamVariations().get(1).isSelectedForVoting());
+        Assert.assertTrue(savedLatestEventResponseDto.getTeamVariations().get(2).isSelectedForVoting());
     }
 
     @Test

@@ -19,7 +19,7 @@ class TeamGeneratorService {
                 val teamMembers = accounts.map { TeamMember(it) }
                 val team1 = Team(teamMembers, accounts.sumOf { it.skill })
                 val team2 = getOtherTeam(team1, players)
-                TeamVariation(team1, team2, getTeamDifference(team1, team2))
+                TeamVariation(team1, team2, getTeamDifference(team1, team2), false)
             }.filter { variation -> variation.skillDifference < 3 }.sortedBy { it.skillDifference }
         return teamVariations.take(20).filterIndexed { index, _ -> index % 2 == 0  }
     }

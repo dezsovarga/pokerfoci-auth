@@ -12,7 +12,9 @@ import org.apache.commons.codec.binary.Base64;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created by dezso on 17.12.2017.
@@ -32,6 +34,7 @@ public class ApiWrapper {
     public static final String ADD_NEW_EVENT_PATH = "/event/event";
     public static final String UPDATE_EVENT_PATH = "/event/event";
     public static final String GENERATE_TEAMS_PATH = "/event/generate-teams";
+    public static final String UPDATE_VARIATION_SELECTION_PATH = "/event/update-variation-selection";
     public static final String LIST_EVENTS_FOR_ADMIN_PATH = "/event/events";
     public static final String GET_LATEST_EVENT_PATH = "/event/latest";
     public static final String REGISTER_TO_LATEST_EVENT_PATH = "/event/register";
@@ -107,21 +110,31 @@ public class ApiWrapper {
         return callApi(ADD_NEW_EVENT_PATH, port, createHeaders(bearerToken), jsonBody, HttpMethod.POST);
     }
 
-    public ResponseEntity<String> updateEvent(int port, String bearerToken, CreateEventDto updateEventDto) throws JsonProcessingException {
+    public void updateEvent(int port, String bearerToken, CreateEventDto updateEventDto) throws JsonProcessingException {
 
         mapper.registerModule(new JavaTimeModule());
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         String jsonBody = mapper.writeValueAsString(updateEventDto);
 
-        return callApi(UPDATE_EVENT_PATH, port, createHeaders(bearerToken), jsonBody, HttpMethod.PUT);
+        callApi(UPDATE_EVENT_PATH, port, createHeaders(bearerToken), jsonBody, HttpMethod.PUT);
     }
 
-    public ResponseEntity<String> generateTeamVariations(int port, String bearerToken) throws JsonProcessingException {
+    public void generateTeamVariations(int port, String bearerToken) throws JsonProcessingException {
 
         mapper.registerModule(new JavaTimeModule());
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
 
-        return callApi(GENERATE_TEAMS_PATH, port, createHeaders(bearerToken), null, HttpMethod.POST);
+        callApi(GENERATE_TEAMS_PATH, port, createHeaders(bearerToken), null, HttpMethod.POST);
+    }
+
+    public ResponseEntity<String> updateTeamVariationsSelection(int port, String bearerToken, List<Long> variationIdsToUpdate) throws JsonProcessingException {
+
+        mapper.registerModule(new JavaTimeModule());
+        mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+        String idsParam = variationIdsToUpdate.stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining(","));
+        return callApi(UPDATE_VARIATION_SELECTION_PATH+"?ids="+idsParam, port, createHeaders(bearerToken), null, HttpMethod.PUT);
     }
 
     public ResponseEntity<String> getLatestEvent(int port, String bearerToken) {

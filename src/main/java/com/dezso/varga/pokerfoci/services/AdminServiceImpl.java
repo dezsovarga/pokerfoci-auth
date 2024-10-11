@@ -175,4 +175,21 @@ public class AdminServiceImpl implements AdminService {
         eventRepository.save(latestEvent);
         return eventConverter.fromEventToEventResponseDto(latestEvent);
     }
+
+    @Override
+    public EventResponseDto updateTeamVariationSelection(String userEmail, List<Long> selectedVariationIds) throws Exception {
+
+        for (Long variationId : selectedVariationIds) {
+            Optional<TeamVariation> variationOptional = teamVariationRepository.findById(variationId);
+            if (variationOptional.isEmpty()) {
+                throw new GlobalException("Team variation with id ${variationId} not found", HttpStatus.PRECONDITION_FAILED.value());
+            }
+            TeamVariation variation = variationOptional.get();
+            variation.setSelectedForVoting(true);
+            teamVariationRepository.save(variation);
+        }
+
+        Event latestEvent = eventRepository.findLatestEvent();
+        return eventConverter.fromEventToEventResponseDto(latestEvent);
+    }
 }

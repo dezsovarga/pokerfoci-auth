@@ -16,5 +16,7 @@ public interface AdminService {
     EventResponseDto updateEvent(CreateEventDto eventDto, String userEmail) throws Exception;
     List<EventResponseDto> listEvents();
     EventResponseDto generateTeams(String userEmail) throws Exception;
+    EventResponseDto updateTeamVariationSelection(String userEmail, List<Long> selectedVariationIds) throws Exception;
+
 
 }

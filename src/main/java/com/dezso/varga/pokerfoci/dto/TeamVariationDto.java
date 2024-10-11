@@ -13,7 +13,9 @@ import lombok.Setter;
 @Builder
 public class TeamVariationDto {
 
+    private long variationId;
     private TeamDto team1;
     private TeamDto team2;
     double skillDifference;
+    boolean selectedForVoting;
 }

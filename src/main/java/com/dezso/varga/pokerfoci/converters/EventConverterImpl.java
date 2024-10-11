@@ -95,9 +95,11 @@ public class EventConverterImpl implements EventConverter {
     @Override
     public TeamVariationDto fromTeamVariationToTeamVariationDto(TeamVariation teamVariation) {
         return new TeamVariationDto(
+                teamVariation.getId(),
                 fromTeamToTeamDto(teamVariation.getTeam1()),
                 fromTeamToTeamDto(teamVariation.getTeam2()),
-                teamVariation.getSkillDifference()
+                teamVariation.getSkillDifference(),
+                teamVariation.isSelectedForVoting()
         );
     }
 
