@@ -11,4 +11,6 @@ public interface ValidatorService {
 
     ValidationResult validateEventUpdate(Event latestEvent, String userEmail);
 
+    ValidationResult validateEventStatusUpdate(Event latestEvent, String userEmail, String newStatus);
+
 }

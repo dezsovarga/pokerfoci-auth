@@ -1,6 +1,7 @@
 package com.dezso.varga.pokerfoci.controller;
 
 import com.dezso.varga.pokerfoci.domain.Account;
+import com.dezso.varga.pokerfoci.domain.EventStatus;
 import com.dezso.varga.pokerfoci.domain.Role;
 import com.dezso.varga.pokerfoci.dto.EventResponseDto;
 import com.dezso.varga.pokerfoci.dto.admin.CreateEventDto;
@@ -10,6 +11,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDateTime;
@@ -218,6 +220,38 @@ public class EventControllerTest extends BaseControllerTest {
         ResponseEntity<String> savedResponse = apiWrapper.getLatestEvent(port, bearerToken);
         EventResponseDto savedLatestEventResponseDto = mapper.readValue(savedResponse.getBody(), new TypeReference<>() {} );
         Assert.assertEquals(0, savedLatestEventResponseDto.getTeamVariations().size());
+
+    }
+
+    @Test
+    void updateEventStatus() throws Exception {
+        Account account = createTestAccount(
+                "ROLE_ADMIN", RandomStringUtils.random(10, true, false), 70);
+        String bearerToken = this.generateBearerToken( account.getEmail(),"password");
+        CreateEventDto createEventDto = this.createEventWith12Players();
+        apiWrapper.addNewEvent(port, bearerToken, createEventDto);
+
+        apiWrapper.generateTeamVariations(port, bearerToken);
+
+        CreateEventDto updateEventDto = Utils.aCreateEventDto(
+                Arrays.asList(createTestAccount(
+                        "ROLE_USER", "Csabesz", 85).getUsername())
+        );
+        apiWrapper.updateEvent(port, bearerToken, updateEventDto);
+
+        ResponseEntity<String> savedResponse = apiWrapper.getLatestEvent(port, bearerToken);
+        EventResponseDto savedLatestEventResponseDto = mapper.readValue(savedResponse.getBody(), new TypeReference<>() {} );
+
+        Assert.assertEquals(EventStatus.INITIATED, savedLatestEventResponseDto.getStatus());
+
+        apiWrapper.updateEventStatus(port, bearerToken, "MANAGEABLE");
+
+        savedResponse = apiWrapper.getLatestEvent(port, bearerToken);
+        savedLatestEventResponseDto = mapper.readValue(savedResponse.getBody(), new TypeReference<>() {} );
+        Assert.assertEquals(EventStatus.MANAGEABLE, savedLatestEventResponseDto.getStatus());
+
+        ResponseEntity<String> updateResponse = apiWrapper.updateEventStatus(port, bearerToken, "INVALID_STATUS");
+        Assert.assertSame(HttpStatus.PRECONDITION_FAILED, updateResponse.getStatusCode());
 
     }
 

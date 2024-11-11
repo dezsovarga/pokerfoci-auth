@@ -156,6 +156,7 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public EventResponseDto generateTeams(String userEmail) {
         Event latestEvent = eventRepository.findLatestEvent();
+        //TODO: add validation
         latestEvent.getTeamVariations().removeAll(latestEvent.getTeamVariations());
         List<Account> registeredAccounts = latestEvent.getParticipationList()
                 .stream()
@@ -179,7 +180,20 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public EventResponseDto updateTeamVariationSelection(String userEmail, List<Long> selectedVariationIds) throws Exception {
 
+        Event latestEvent = eventRepository.findLatestEvent();
+
+        //unselecting all variations
+        latestEvent.getTeamVariations().forEach(v -> {
+            v.setSelectedForVoting(false);
+            teamVariationRepository.save(v);
+        });
+
+        List<Long> variationIdsFromLatestEvent = latestEvent.getTeamVariations().stream().map(TeamVariation::getId).collect(Collectors.toList());
+
         for (Long variationId : selectedVariationIds) {
+            if (!variationIdsFromLatestEvent.contains(variationId) ) {
+                throw new GlobalException("Team variation with id ${variationId} is not part of the latest event", HttpStatus.PRECONDITION_FAILED.value());
+            }
             Optional<TeamVariation> variationOptional = teamVariationRepository.findById(variationId);
             if (variationOptional.isEmpty()) {
                 throw new GlobalException("Team variation with id ${variationId} not found", HttpStatus.PRECONDITION_FAILED.value());
@@ -189,7 +203,20 @@ public class AdminServiceImpl implements AdminService {
             teamVariationRepository.save(variation);
         }
 
+        return eventConverter.fromEventToEventResponseDto(latestEvent);
+    }
+
+    @Override
+    public EventResponseDto updateStatus(String userEmail, String status) throws Exception {
         Event latestEvent = eventRepository.findLatestEvent();
+
+        ValidationResult validationResult = validatorService.validateEventStatusUpdate(latestEvent, userEmail, status);
+        if (!validationResult.isValid()) {
+            throw new GlobalException(validationResult.getErrorMessages().get(0), HttpStatus.BAD_REQUEST.value());
+        }
+
+        latestEvent.setStatus(EventStatus.valueOf(status));
+        eventRepository.save(latestEvent);
         return eventConverter.fromEventToEventResponseDto(latestEvent);
     }
 }

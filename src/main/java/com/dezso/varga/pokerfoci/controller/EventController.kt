@@ -51,6 +51,15 @@ class EventController(
     }
 
     @Secured("ROLE_ADMIN")
+    @PutMapping("/update-status")
+    fun updateStatus(@RequestHeader("Authorization") authHeader: String,
+                            @RequestParam("status") status: String): EventResponseDto {
+        val token = AuthUtils.extractTokenFromBearerToken(authHeader)
+        val userEmail = AuthUtils.getAccountEmailFromBearerToken(token)
+        return adminService.updateStatus(userEmail, status)
+    }
+
+    @Secured("ROLE_ADMIN")
     @GetMapping("/events")
     fun listEvents() : List<EventResponseDto> {
         return adminService.listEvents()
