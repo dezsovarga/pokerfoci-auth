@@ -96,6 +96,7 @@ class AdminServiceImplTest {
                 .status(EventStatus.INITIATED)
                 .participationList(Arrays.asList(participation1, participation2))
                 .teamVariations(new ArrayList<>())
+                .voteList(new ArrayList<>())
                 .eventLogList(new ArrayList<>())
                 .build();
         Event event2 = Event.builder()
@@ -104,6 +105,7 @@ class AdminServiceImplTest {
                 .status(EventStatus.INITIATED)
                 .participationList(Arrays.asList(participation1, participation3))
                 .teamVariations(new ArrayList<>())
+                .voteList(new ArrayList<>())
                 .eventLogList(new ArrayList<>())
                 .build();
 

@@ -41,6 +41,7 @@ public class EventConverterImpl implements EventConverter {
                 .participationList(accountConverter.fromAccountNameListToEventParticipationList(createEventDto.getRegisteredPlayers()))
                 .eventLogList(new ArrayList<>())
                 .teamVariations(new ArrayList<>())
+                .voteList(new ArrayList<>())
                 .build();
     }
 
