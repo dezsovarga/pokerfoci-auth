@@ -25,4 +25,6 @@ public class EventResponseDto {
     private List<TeamVariationDto> teamVariations;
     private EventStatus status;
     private String score;
+    private List<VoteDto> votes;
+    private boolean votingEnabled;
 }

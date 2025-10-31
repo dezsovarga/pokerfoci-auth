@@ -51,8 +51,17 @@ public class Event {
     )
     private List<TeamVariation> teamVariations;
 
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "EVENT_VOTE",
+            joinColumns = @JoinColumn(name = "EVENT_ID"),
+            inverseJoinColumns = @JoinColumn(name = "VOTE_ID")
+    )
+    private List<Vote> voteList;
+
     private String score;
 
+    private boolean votingEnabled;
 
     public Event() {
 
@@ -112,5 +121,21 @@ public class Event {
 
     public void setTeamVariations(List<TeamVariation> teamVariations) {
         this.teamVariations = teamVariations;
+    }
+
+    public List<Vote> getVoteList() {
+        return voteList;
+    }
+
+    public void setVoteList(List<Vote> voteList) {
+        this.voteList = voteList;
+    }
+
+    public boolean isVotingEnabled() {
+        return votingEnabled;
+    }
+
+    public void setVotingEnabled(boolean votingEnabled) {
+        this.votingEnabled = votingEnabled;
     }
 }

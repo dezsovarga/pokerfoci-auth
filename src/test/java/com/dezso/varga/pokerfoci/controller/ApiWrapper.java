@@ -34,6 +34,7 @@ public class ApiWrapper {
     public static final String ADD_NEW_EVENT_PATH = "/event/event";
     public static final String UPDATE_EVENT_PATH = "/event/event";
     public static final String UPDATE_EVENT_STATUS_PATH = "/event/update-status";
+    public static final String CREATE_VOTING_PATH = "/event/create-voting";
 
     public static final String GENERATE_TEAMS_PATH = "/event/generate-teams";
     public static final String UPDATE_VARIATION_SELECTION_PATH = "/event/update-variation-selection";
@@ -120,6 +121,15 @@ public class ApiWrapper {
 
         callApi(UPDATE_EVENT_PATH, port, createHeaders(bearerToken), jsonBody, HttpMethod.PUT);
     }
+
+    public ResponseEntity<String> createVoting(int port, String bearerToken) throws JsonProcessingException {
+
+        mapper.registerModule(new JavaTimeModule());
+        mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+
+        return callApi(CREATE_VOTING_PATH, port, createHeaders(bearerToken), null, HttpMethod.POST);
+    }
+
 
     public ResponseEntity<String> updateEventStatus(int port, String bearerToken, String newStatus) throws JsonProcessingException {
 

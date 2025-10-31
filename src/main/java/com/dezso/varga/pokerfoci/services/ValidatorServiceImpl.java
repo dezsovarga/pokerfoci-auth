@@ -55,6 +55,15 @@ public class ValidatorServiceImpl implements ValidatorService {
         return errorMessages.isEmpty() ? ValidationResult.valid() : ValidationResult.invalid(errorMessages);
     }
 
+    @Override
+    public ValidationResult validateCreateVoting(Event latestEvent, String userEmail) {
+        List<String> errorMessages = validateEventNotActive(latestEvent);
+        if (latestEvent.isVotingEnabled()) {
+            errorMessages.add("Voting was already enabled for the latest event");
+        }
+        return errorMessages.isEmpty() ? ValidationResult.valid() : ValidationResult.invalid(errorMessages);
+    }
+
     private List<String> validateEventNotActive(Event latestEvent) {
         List<String> errorMessages = new ArrayList<>();
         if (latestEvent.getStatus().equals(EventStatus.COMPLETED)) {

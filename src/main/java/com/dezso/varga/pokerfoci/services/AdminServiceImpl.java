@@ -219,4 +219,16 @@ public class AdminServiceImpl implements AdminService {
         eventRepository.save(latestEvent);
         return eventConverter.fromEventToEventResponseDto(latestEvent);
     }
+
+    @Override
+    public EventResponseDto createVoting(String userEmail) throws Exception {
+        Event latestEvent = eventRepository.findLatestEvent();
+        ValidationResult validationResult = validatorService.validateCreateVoting(latestEvent, userEmail);
+        if (!validationResult.isValid()) {
+            throw new GlobalException(validationResult.getErrorMessages().get(0), HttpStatus.BAD_REQUEST.value());
+        }
+        latestEvent.setVotingEnabled(true);
+        eventRepository.save(latestEvent);
+        return eventConverter.fromEventToEventResponseDto(latestEvent);
+    }
 }

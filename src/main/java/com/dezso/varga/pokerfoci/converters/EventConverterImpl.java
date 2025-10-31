@@ -9,6 +9,7 @@ import com.dezso.varga.pokerfoci.dto.EventLogsDto;
 import com.dezso.varga.pokerfoci.dto.EventResponseDto;
 import com.dezso.varga.pokerfoci.dto.TeamDto;
 import com.dezso.varga.pokerfoci.dto.TeamVariationDto;
+import com.dezso.varga.pokerfoci.dto.VoteDto;
 import com.dezso.varga.pokerfoci.dto.admin.AccountWithSkillDto;
 import com.dezso.varga.pokerfoci.dto.admin.CreateEventDto;
 import com.dezso.varga.pokerfoci.repository.EventRepository;
@@ -58,6 +59,14 @@ public class EventConverterImpl implements EventConverter {
 
         List<TeamVariationDto> teamVariationDtoList = this.fromTeamVariationListToTeamVariationDtoList(event.getTeamVariations());
 
+        List<VoteDto> votesDtoList = event.getVoteList().stream()
+                .map(vote -> new VoteDto(
+                        vote.getId(),
+                        vote.getParticipation().getAccount().getUsername(),
+                        vote.getTeamVariation().getId())
+                )
+                .collect(Collectors.toList());
+
         return EventResponseDto.builder()
                 .id(event.getId())
                 .eventDateTime(event.getDate())
@@ -65,6 +74,8 @@ public class EventConverterImpl implements EventConverter {
                 .registeredPlayers(registeredPlayers)
                 .teamVariations(teamVariationDtoList)
                 .eventLogs(eventLogsDto)
+                .votes(votesDtoList)
+                .votingEnabled(event.isVotingEnabled())
                 .build();
     }
 

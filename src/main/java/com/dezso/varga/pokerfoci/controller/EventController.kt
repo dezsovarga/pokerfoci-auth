@@ -42,6 +42,14 @@ class EventController(
     }
 
     @Secured("ROLE_ADMIN")
+    @PostMapping("/create-voting")
+    fun createVoting(@RequestHeader("Authorization") authHeader: String): EventResponseDto {
+        val token = AuthUtils.extractTokenFromBearerToken(authHeader)
+        val userEmail = AuthUtils.getAccountEmailFromBearerToken(token)
+        return adminService.createVoting(userEmail)
+    }
+
+    @Secured("ROLE_ADMIN")
     @PutMapping("/update-variation-selection")
     fun updateTeamSelection(@RequestHeader("Authorization") authHeader: String,
                             @RequestParam("ids") selectedVariationIds: List<Long>): EventResponseDto {

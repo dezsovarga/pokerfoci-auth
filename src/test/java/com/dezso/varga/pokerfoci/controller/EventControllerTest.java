@@ -255,6 +255,37 @@ public class EventControllerTest extends BaseControllerTest {
 
     }
 
+    @Test
+    void createVoting() throws Exception {
+        Account account = createTestAccount(
+                "ROLE_ADMIN", RandomStringUtils.random(10, true, false), 70);
+        String bearerToken = this.generateBearerToken( account.getEmail(),"password");
+        CreateEventDto createEventDto = this.createEventWith12Players();
+        apiWrapper.addNewEvent(port, bearerToken, createEventDto);
+
+        apiWrapper.generateTeamVariations(port, bearerToken);
+
+        CreateEventDto updateEventDto = Utils.aCreateEventDto(
+                Arrays.asList(createTestAccount(
+                        "ROLE_USER", "Csabesz", 85).getUsername())
+        );
+        apiWrapper.updateEvent(port, bearerToken, updateEventDto);
+
+        ResponseEntity<String> savedResponse = apiWrapper.getLatestEvent(port, bearerToken);
+        EventResponseDto savedLatestEventResponseDto = mapper.readValue(savedResponse.getBody(), new TypeReference<>() {} );
+
+        Assert.assertEquals(EventStatus.INITIATED, savedLatestEventResponseDto.getStatus());
+
+        apiWrapper.createVoting(port, bearerToken);
+
+        savedResponse = apiWrapper.getLatestEvent(port, bearerToken);
+        savedLatestEventResponseDto = mapper.readValue(savedResponse.getBody(), new TypeReference<>() {} );
+        Assert.assertTrue(savedLatestEventResponseDto.isVotingEnabled());
+
+        ResponseEntity<String> wrongCreateVotingResponse = apiWrapper.createVoting(port, bearerToken);
+        Assert.assertSame(HttpStatus.PRECONDITION_FAILED, wrongCreateVotingResponse.getStatusCode());
+    }
+
     private CreateEventDto createEventWith12Players() {
 
         Account account1 = createTestAccount(

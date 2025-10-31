@@ -19,4 +19,5 @@ public interface AdminService {
     EventResponseDto updateTeamVariationSelection(String userEmail, List<Long> selectedVariationIds) throws Exception;
     EventResponseDto updateStatus(String userEmail, String status) throws Exception;
 
+    EventResponseDto createVoting(String userEmail) throws Exception;
 }
